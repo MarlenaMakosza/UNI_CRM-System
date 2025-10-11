@@ -1,0 +1,182 @@
+@startuml 04-data-model
+!theme plain
+
+title Model Danych - System CRM (Wersja Minimalna)\nDrizzle ORM + PostgreSQL 15
+
+skinparam linetype ortho
+skinparam class {
+  BackgroundColor #E3F2FD
+  BorderColor #1976D2
+  ArrowColor #1976D2
+}
+
+entity "users" as users {
+  * id: SERIAL <<PK>>
+  --
+  * username: VARCHAR(50) <<UNIQUE>>
+  * password_hash: VARCHAR(255)
+  * role: VARCHAR(20)
+  * first_name: VARCHAR(100)
+  * last_name: VARCHAR(100)
+  territory: VARCHAR(50)
+  * created_at: TIMESTAMP
+  ..
+  **role:** 'PH' | 'MANAGER'
+  **territory:** 'Poznan' | 'Wroclaw' | 'Szczecin'
+}
+
+entity "leads" as leads {
+  * id: SERIAL <<PK>>
+  --
+  * company_name: VARCHAR(255)
+  * city: VARCHAR(100)
+  address: VARCHAR(255)
+  phone: VARCHAR(20)
+  email: VARCHAR(100)
+  * contact_person: VARCHAR(255)
+  * lead_source: VARCHAR(100)
+  * status: VARCHAR(20)
+  assigned_to: INTEGER <<FK>>
+  total_revenue: DECIMAL(10,2)
+  * created_at: TIMESTAMP
+  ..
+  **CONSTRAINT:** phone OR email NOT NULL
+  **city:** 'Poznan' | 'Wroclaw' | 'Szczecin'
+  **lead_source:** 'Internet' | 'Prasa' | 'Ksiazki branzowe' |
+    'Spisy firm' | 'Polecenie' | 'Inne'
+  **status:** 'NEW' | 'QUALIFIED' | 'ACTIVE' | 'INACTIVE'
+}
+
+entity "activities" as activities {
+  * id: SERIAL <<PK>>
+  --
+  * lead_id: INTEGER <<FK>>
+  * user_id: INTEGER <<FK>>
+  * activity_date: DATE
+  contact_person_name: VARCHAR(255)
+  * outcome: VARCHAR(50)
+  * notes: TEXT
+  * created_at: TIMESTAMP
+  ..
+  **outcome:**
+  - 'NO_ANSWER' - nie odbiera
+  - 'MEETING_SET' - umowiono wizyte
+  - 'ORDER_TAKEN' - zamowienie (w notatce)
+  - 'INFO_SENT' - wyslano informacje
+  - 'OFFER_PRESENTED' - przedstawiono oferte
+  - 'POST_DELIVERY_CHECK' - telefon po dostawie
+}
+
+entity "visits" as visits {
+  * id: SERIAL <<PK>>
+  --
+  * lead_id: INTEGER <<FK>>
+  * user_id: INTEGER <<FK>>
+  * scheduled_at: TIMESTAMP
+  * address: VARCHAR(255)
+  * status: VARCHAR(20)
+  visit_notes: TEXT
+  competitor_prices: TEXT
+  * created_at: TIMESTAMP
+  ..
+  **status:** 'PLANNED' | 'DONE' | 'CANCELLED' | 'NO_SHOW'
+  **competitor_prices format:**
+  "Jablka: 5 zl/kg (Sklep X)
+  Pomarancze: 7 zl/kg (Hurtownia Y)"
+}
+
+entity "contracts" as contracts #F0F0F0 {
+  * id: SERIAL <<PK>>
+  --
+  * lead_id: INTEGER <<FK>>
+  * user_id: INTEGER <<FK>>
+  * signed_at: DATE
+  products: TEXT
+  terms: TEXT
+  contract_value: DECIMAL(10,2)
+  * created_at: TIMESTAMP
+  ..
+  **OPCJONALNE** - mozna pominac w MVP
+  Alternatywa: tylko zmiana statusu leada na 'ACTIVE'
+}
+
+' Relationships
+users ||--o{ leads : "assigned_to"
+users ||--o{ activities : "created by"
+users ||--o{ visits : "created by"
+users ||--o{ contracts : "created by"
+
+leads ||--o{ activities : "has"
+leads ||--o{ visits : "has"
+leads ||--o{ contracts : "has"
+
+note right of users
+  **Przykladowi uzytkownicy:**
+  - admin (MANAGER)
+  - jan_kowalski (PH, Poznan)
+  - anna_nowak (PH, Wroclaw)
+  - piotr_wisniewski (PH, Szczecin)
+end note
+
+note right of leads
+  **Walidacje:**
+  - Telefon: 9-15 cyfr
+  - Email: format xxx@xxx.xx
+  - Min. 1 kanal: phone OR email
+  - NIP: opcjonalny, jesli podano -> 10 cyfr
+
+  **Autoprzypis ywanie:**
+  Domyslnie wg miasta:
+  - Poznan -> PH1
+  - Wroclaw -> PH2
+  - Szczecin -> PH3
+end note
+
+note bottom of activities
+  **Kluczowy ekran dla instrukcji obslugi:**
+  Formularz dodawania kontaktu telefonicznego
+  (PDF, punkt 6: instrukcja dla PH)
+
+  **Timeline:** Sortowanie DESC po activity_date
+end note
+
+note bottom of visits
+  **Harmonogram wizyt:**
+  - Kalendarza dla PH (tylko swoje)
+  - Lista dla Kierownika (wszystkie)
+  - Grouping po miescie (optymalizacja trasy)
+
+  **Ceny konkurencji:**
+  Pole TEXT, nie JSON (prostsze dla studenta)
+end note
+
+note bottom of contracts
+  **Uproszczenie MVP:**
+  Zamiast pelnej tabeli umow mozesz:
+  1. Tylko zmienic status leada na 'ACTIVE'
+  2. Pole leads.total_revenue (suma obrotow)
+
+  **Jesli czas pozwala:**
+  Dodaj te tabele dla pelniejszego obrazu
+end note
+
+legend right
+  **Technologie:**
+  - ORM: Drizzle ORM 0.38+
+  - Baza: PostgreSQL 15 (Docker)
+  - Migracje: drizzle-kit
+
+  **Indeksy (wydajnosc):**
+  - leads(assigned_to)
+  - leads(city)
+  - leads(status)
+  - activities(lead_id, activity_date)
+  - visits(user_id, scheduled_at)
+
+  **ON DELETE:**
+  - activities: CASCADE (jesli lead usuniety -> usun aktywnosci)
+  - visits: CASCADE
+  - contracts: CASCADE
+endlegend
+
+@enduml

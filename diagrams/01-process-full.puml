@@ -1,0 +1,161 @@
+@startuml 01-process-full
+!theme plain
+title Proces "od leada do umowy" - Firma X (Hurtownia warzyw/owocow)\nPelny przeplyw z PDF (Zalacznik nr 1)
+
+|Przedstawiciel Handlowy|
+start
+:Pozyskuje informacje o potencjalnym kliencie
+(Internet, prasa, ksiazki branzowe, spisy firm);
+note right
+  **Zrodla leadow:**
+  * Internet
+  * Prasa
+  * Ksiazki branzowe
+  * Spisy firm
+  * Polecenia
+end note
+
+:Wprowadza dane firmy do systemu CRM
+(nazwa, miasto, adres, telefon/email,
+osoba decyzyjna, zrodlo leada);
+note right
+  **Status:** NEW
+  **Wymagane:**
+  * Nazwa firmy
+  * Miasto (Poznan/Wroclaw/Szczecin)
+  * Min. 1 kanal: telefon lub email
+  * Osoba decyzyjna
+  * Zrodlo leada
+end note
+
+:Rejestruje kontakt telefoniczny
+(data, rozmowca, wynik, notatka);
+
+if (Kontakt udany?) then (Tak)
+  if (Typ wyniku?) then (Umowiono wizyte)
+    :Tworzy wizyte w harmonogramie
+    (data, godzina, adres);
+    note right
+      "Na kazdy dzien sporzadzany byl
+      harmonogram z adresami i godzinami"
+    end note
+  elseif (Zamowienie telefoniczne) then
+    :Zapisuje zamowienie w notatce;
+    note right
+      **Uproszczenie MVP:**
+      Bez osobnej tabeli zamowien
+    end note
+  elseif (Wyslano informacje) then
+    :Rejestruje wyslanie informacji;
+    :Planuje follow-up (T+3 dni);
+  endif
+else (Nie odbiera)
+  :Rejestruje brak kontaktu (NO_ANSWER);
+  :Planuje ponowny telefon (T+1 dzien);
+  note right
+    Maksymalnie 3 proby kontaktu
+  end note
+  stop
+endif
+
+:Realizuje wizyte w sklepie;
+note right
+  "Staral sie zanotowac ceny
+  produktow sprzedawanych
+  w tym sklepie"
+end note
+
+:Wprowadza wyniki wizyty do systemu
+(status: DONE/CANCELLED/NO_SHOW,
+notatki, ceny konkurencji);
+
+if (Wizyta zakonczona?) then (DONE)
+  :Analizuje zebrane informacje
+  (potrzeby klienta, ceny konkurencji);
+
+  :Czeka kilka dni...;
+  note right
+    "Kilka dni po wizycie"
+  end note
+
+  :Dzwoni ponownie i przedstawia oferte
+  (dostosowana do potrzeb i konkurencji);
+
+  :Rejestruje kontakt z oferta
+  (typ: OFFER_PRESENTED);
+
+  if (Reakcja na oferte?) then (Zaakceptowana)
+    :Przygotowuje umowe na dostawe
+    (produkty, ceny, warunki);
+
+    :Zmienia status leada na ACTIVE;
+    note right
+      "Jezeli umowa na dostawe
+      okreslonych produktow
+      zostala podpisana"
+    end note
+
+    :Rejestruje umowe w systemie
+    (opcjonalnie: produkty, warunki, kwota);
+
+    :Organizuje pierwsza dostawe;
+
+    :Dzien po dostawie: telefon kontrolny
+    (czy wszystko OK, czy sa braki);
+    note right
+      "Dzwonil w dzien po pierwszej
+      dostawie produktow, zeby
+      upewnic sie ze... jest wszystko ok"
+    end note
+
+    :Rejestruje telefon kontrolny
+    (typ: POST_DELIVERY_CHECK);
+
+    if (Wszystko OK?) then (Tak)
+      :Dodaje klienta do listy newslettera;
+      note right
+        "Raz w miesiacu wysylany byl
+        do klientow newsletter
+        z informacjami o najnowszych
+        promocjach"
+      end note
+
+      |Kierownik|
+      :Analizuje raporty:
+      * Liczba wizyt per PH
+      * Liczba telefonow per PH
+      * Liczba umow per PH
+      * Obroty per klient;
+
+      stop
+    else (Problem)
+      |Przedstawiciel Handlowy|
+      :Rozwiazuje problem z klientem;
+      :Rejestruje notatki w systemie;
+      stop
+    endif
+
+  elseif (Negocjacja) then
+    :Rejestruje status: NEGOTIATION;
+    :Przygotowuje zaktualizowana oferte
+    (wraca do prezentacji);
+    stop
+  else (Odrzucona)
+    :Rejestruje odrzucenie oferty;
+    :Zmienia status leada na INACTIVE;
+    stop
+  endif
+
+else (CANCELLED/NO_SHOW)
+  :Probuje umowic nowy termin;
+  if (Klient chce?) then (Tak)
+    :Planuje nowa wizyte
+    (powrot do kroku 3);
+    stop
+  else (Nie)
+    :Zamyka lead;
+    stop
+  endif
+endif
+
+@enduml

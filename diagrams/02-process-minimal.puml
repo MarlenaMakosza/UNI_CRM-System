@@ -1,0 +1,222 @@
+@startuml 02-process-minimal
+!theme plain
+skinparam activityBackgroundColor #E8F5E9
+skinparam activityBorderColor #4CAF50
+skinparam activityDiamondBackgroundColor #FFF9C4
+skinparam activityDiamondBorderColor #FBC02D
+
+title Proces CRM - Implementacja Minimalna (2 tygodnie)\nUproszczona wersja z pelnym zakresem funkcjonalnym
+
+|Przedstawiciel Handlowy (PH)|
+
+partition "KROK 1: Pozyskanie leada" {
+  start
+  :Znajduje potencjalnego klienta
+  (Internet/Prasa/Ksiazki/Spisy);
+
+  :Dodaje lead do systemu;
+  note right
+    **Formularz:**
+    * Nazwa firmy*
+    * Miasto* (dropdown)
+    * Adres
+    * Telefon (9-15 cyfr)
+    * Email (format xxx@xxx.xx)
+    * Osoba decyzyjna*
+    * Zrodlo leada* (dropdown)
+
+    **Walidacja:**
+    Min. 1 kanal: telefon LUB email
+
+    **System:**
+    Status -> NEW
+    Przypisanie -> PH (wg miasta)
+  end note
+}
+
+partition "KROK 2: Kontakt telefoniczny" {
+  :Otwiera ekran "Dodaj kontakt telefoniczny"
+  (GLOWNY EKRAN - instrukcja obslugi);
+  note right
+    **Formularz:**
+    * Data kontaktu* (auto: dzisiaj)
+    * Rozmowca
+    * Wynik rozmowy* (dropdown)
+    * Notatka* (textarea)
+
+    **Wyniki:**
+    - NO_ANSWER - nie odbiera
+    - MEETING_SET - umowiono wizyte
+    - ORDER_TAKEN - zamowienie (w notatce)
+    - INFO_SENT - wyslano info
+    - OFFER_PRESENTED - przedstawiono oferte
+    - POST_DELIVERY_CHECK - telefon po dostawie
+  end note
+
+  if (Wynik?) then (NO_ANSWER)
+    :System zapisuje probe kontaktu;
+    :Proponuje callback T+1 dzien;
+    stop
+  elseif (INFO_SENT)
+    :System zapisuje kontakt;
+    stop
+  elseif (ORDER_TAKEN)
+    :Szczegoly zamowienia w notatce;
+    note right
+      **Uproszczenie:**
+      Bez osobnej tabeli
+      zamowien
+    end note
+    stop
+  elseif (MEETING_SET)
+    :System zapisuje kontakt;
+  endif
+}
+
+partition "KROK 3: Wizyta w sklepie" {
+  :System przekierowuje do dodania wizyty;
+  note right
+    **Pre-fill:**
+    Lead, adres, data
+  end note
+
+  :PH planuje wizyte (data+godzina+adres);
+  note right
+    Status -> PLANNED
+  end note
+
+  :PH realizuje wizyte;
+
+  :Po wizycie: wprowadza wyniki;
+  note right
+    **Formularz:**
+    * Status* -> DONE/CANCELLED/NO_SHOW
+    * Notatka* (efekty rozmowy)
+    * Ceny konkurencji (TEXT)
+
+    **Format cen:**
+    "Jablka: 5 zl/kg (Sklep X)
+    Pomarancze: 7 zl/kg (Hurt Y)"
+  end note
+}
+
+partition "KROK 4: Oferta (uproszczona)" {
+  :Kilka dni po wizycie: dzwoni z oferta;
+
+  :Dodaje kolejny kontakt telefoniczny
+  (typ: OFFER_PRESENTED);
+  note right
+    **Uproszczenie MVP:**
+    Oferta jako typ kontaktu
+    (nie osobna tabela)
+
+    W notatce:
+    - Jakie produkty oferowano
+    - Jakie ceny zaproponowano
+    - Reakcja klienta
+  end note
+
+  if (Reakcja?) then (ACCEPTED)
+    :Notatka: "Oferta zaakceptowana";
+  elseif (NEGOTIATION)
+    :Notatka: "Klient negocjuje ceny";
+    :Przygotowuje nowa oferte
+    (wraca do oferty);
+    stop
+  else (REJECTED)
+    :Notatka: "Oferta odrzucona - powod";
+    :Status leada -> INACTIVE;
+    stop
+  endif
+}
+
+partition "KROK 5: Umowa (opcjonalna)" {
+  if (Chcesz zarejestrowac umowe?) then (Tak - pelna wersja)
+    :Dodaje umowe do systemu;
+    note right
+      **Tabela contracts:**
+      * Produkty (TEXT)
+      * Warunki (TEXT)
+      * Kwota
+      * Data podpisania
+    end note
+    :Status leada -> ACTIVE;
+  else (Nie - tylko status)
+    :Zmienia status leada -> ACTIVE;
+    note right
+      **Uproszczenie MVP:**
+      Bez tabeli umow
+      (tylko zmiana statusu)
+    end note
+  endif
+}
+
+partition "KROK 6: Telefon kontrolny" {
+  :Po pierwszej dostawie (dzien pozniej):
+  dzwoni i sprawdza czy wszystko OK;
+
+  :Dodaje kontakt telefoniczny
+  (typ: POST_DELIVERY_CHECK);
+  note right
+    W notatce:
+    - Czy klient jest zadowolony
+    - Czy sa braki
+    - Czy jakosc OK
+  end note
+}
+
+partition "KROK 7: Newsletter (manualny)" {
+  |Kierownik|
+  if (Co miesiac: newsletter?) then (Tak)
+    :Klika przycisk "Pobierz liste mailingowa";
+    note right
+      **Uproszczenie MVP:**
+      System pokazuje liste emaili
+      klientow ACTIVE (do skopiowania)
+
+      Bez faktycznego wysylania
+      (brak Cron, brak SMTP)
+    end note
+    :Kopiuje emaile i wysyla recznie;
+  endif
+}
+
+partition "Raporty dla Kierownika" {
+  :Otwiera ekran "Raporty";
+  note right
+    **Filtry:**
+    - Okres (od-do)
+    - Przedstawiciel (dropdown)
+    - Miasto
+
+    **Wyswietla:**
+    - Imie PH
+    - Liczba wizyt
+    - Liczba telefonow
+    - Liczba umow
+    - Suma obrotow (opcjonalnie)
+  end note
+
+  :Analizuje statystyki pracy PH;
+
+  stop
+}
+
+legend right
+  **Kolory:**
+  |<back:#E8F5E9>      </back>| Ekran/akcja |
+  |<back:#FFF9C4>      </back>| Decyzja |
+
+  **Role:**
+  - PH widzi tylko swoich klientow (podzial terytorialny)
+  - Kierownik widzi wszystko
+
+  **Tabele MVP:**
+  - users (PH + Kierownik)
+  - leads (z contact_person)
+  - activities (6 typow)
+  - visits (z competitor_prices)
+  - contracts (opcjonalnie)
+endlegend
+
+@enduml

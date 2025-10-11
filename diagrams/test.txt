@@ -1,0 +1,158 @@
+@startuml
+title CRM - Lead to Contract (Company X) - Activity Flow
+
+' Skin & styling (readable defaults)
+skinparam backgroundColor #FFFFFF
+skinparam activity {
+  StartColor #6AA84F
+  BarColor #444444
+  DiamondBackgroundColor #FFE599
+  DiamondBorderColor #B7B7B7
+}
+skinparam partition {
+  BackgroundColor #F3F3F3
+  BorderColor #B7B7B7
+}
+
+' Legend for statuses
+legend right
+  Status conventions:
+  [Lead] NEW -> QUALIFIED/DISQUALIFIED
+  [Visit] PLANNED -> DONE/CANCELLED/NO_SHOW
+  [Offer] DRAFT -> SENT -> NEGOTIATION -> ACCEPTED/REJECTED/EXPIRED
+  [Contract] DRAFT -> SIGNED -> ACTIVE/TERMINATED
+endlegend
+
+' Swimlanes
+partition "Sales Rep" {
+  start
+  :Research potential store\n(Internet/press/lists);
+  :Create Lead\n(min: name, city, phone or email,\nsource, (optional NIP), notes);
+}
+
+partition System {
+  if ("NIP provided?\nFormat & duplicate check") then (valid or absent)
+    :Create Lead [status=NEW]\nAssign to Sales Rep;
+    :Schedule Task\n"First call" (T+1d);
+  else (invalid/duplicate)
+    :Warn about invalid NIP or duplicate;
+  endif
+}
+
+partition "Sales Rep" {
+  :First call attempt;
+  if ("Call outcome?") then (NO_ANSWER)
+    :Log activity: NO_ANSWER + note;
+    partition System {
+      :Schedule callback (T+1d);\nIncrement attempt count;
+      if ("Attempts < 3?") then (yes)
+        :Return to call queue;
+      else (no)
+        :Mark as hard-to-reach;\nNotify Sales Rep;
+      endif
+    }
+    -> [Back to "First call attempt"];
+  else (CALLBACK)
+    :Log activity: CALLBACK + note;
+    partition System {
+      :Schedule callback on date/time agreed;
+    }
+    --> [Back to "First call attempt later"];
+  else (MEETING_SET)
+    :Log activity: MEETING_SET + note;
+  endif
+}
+
+partition System {
+  if ("Lead completeness\n(name, city, contact channel,\nNIP or decision maker)?") then (yes)
+    :Set Lead status -> QUALIFIED;
+    :Create Visit [status=PLANNED]\n(date/time, address, goal);
+  else (no)
+    :Keep Lead status = NEW;
+    :Create Task "Complete data";
+  endif
+}
+
+partition "Sales Rep" {
+  if ("Visit planned?") then (yes)
+    :Perform visit;
+    if ("Visit result") then (DONE)
+      :Record visit result\n(notes, needs, competitor prices JSON);
+      partition System {
+        :If no Offer in 48h -> reminder "Send Offer";
+      }
+    else (NO_SHOW)
+      :Mark NO_SHOW;
+      partition System {
+        :Propose new date (T+7d);
+      }
+    else (CANCELLED)
+      :Mark CANCELLED; 
+    endif
+  else (no)
+    :Continue call/email follow-ups;
+  endif
+
+  :Prepare Offer (DRAFT)\n(lines: product, qty, price, discount %, terms, validity);
+  :Send Offer;
+}
+
+partition System {
+  :Set Offer status -> SENT;
+  :Schedule follow-up (T+3d);
+}
+
+partition "Customer" {
+  if ("Client response to offer?") then (ACCEPTED)
+    :Accepts offer / agrees terms;
+  else (REJECTED)
+    :Rejects offer;
+  else (NEGOTIATION)
+    :Requests negotiation;
+  else (NO RESPONSE)
+    :No response until validity;
+  endif
+}
+
+partition "Sales Rep" {
+  if ("Offer status change") then (ACCEPTED)
+    :Finalize terms;\nInitiate Contract (DRAFT);
+  else (NEGOTIATION)
+    :Negotiate terms;\nUpdate Offer -> NEGOTIATION;
+    partition System {
+      :Resend/Update Offer;\nMaintain SLA follow-ups;
+    }
+    --> [Back to "Client response to offer?"];
+  else (REJECTED)
+    :Close opportunity;\nRecord reason;
+  else (EXPIRED/NO RESPONSE)
+    partition System {
+      :Auto-expire Offer on validity date;
+      :Notify Sales Rep;
+    }
+  endif
+}
+
+partition "Manager" {
+  if ("Discount > X% or special terms?") then (yes)
+    :Review and Approve Exception;
+  else (no)
+    :No approval needed;
+  endif
+}
+
+partition System {
+  if ("Contract ready?") then (yes)
+    :Set Contract -> SIGNED -> ACTIVE;
+    :Set Customer.status -> active;
+    :Create Task "Post-delivery call" (T+1d);
+  else (no)
+    :Keep Contract = DRAFT;
+  endif
+}
+
+partition "Sales Rep" {
+  :Post-delivery call (T+1d)\n(satisfaction, issues, upsell);
+  stop
+}
+@enduml

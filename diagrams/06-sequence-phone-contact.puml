@@ -1,0 +1,159 @@
+@startuml 06-sequence-phone-contact
+!theme plain
+
+title Diagram Sekwencji - Dodawanie Kontaktu Telefonicznego\n(GLOWNY EKRAN dla instrukcji obslugi - PDF punkt 6)
+
+actor "Przedstawiciel\nHandlowy (PH)" as PH
+participant "Dashboard\n(Lista leadow)" as Dashboard
+participant "Formularz\nKontaktu" as Form
+participant "Walidator" as Validator
+participant "API Server\n(SvelteKit)" as API
+participant "Baza Danych\n(PostgreSQL)" as DB
+participant "Formularz\nWizyty" as VisitForm
+
+== Krok 1: Wybor leada ==
+
+PH -> Dashboard: Otwiera liste leadow\n(GET /leads)
+activate Dashboard
+Dashboard -> API: fetch('/leads')
+activate API
+API -> DB: SELECT * FROM leads\nWHERE assigned_to = :user_id
+activate DB
+DB --> API: Lista leadow PH
+deactivate DB
+API --> Dashboard: JSON leadow
+deactivate API
+Dashboard --> PH: Wyswietla liste
+deactivate Dashboard
+
+PH -> Dashboard: Klika "Dodaj kontakt"\nprzy wybranym leadzie
+activate Dashboard
+Dashboard -> Form: Przekierowanie do\n/activities/new?leadId=:id
+deactivate Dashboard
+
+== Krok 2: Wypelnienie formularza ==
+
+activate Form
+Form -> API: Pobiera szczegoly leada\n(GET /activities/new)
+activate API
+API -> DB: SELECT * FROM leads\nWHERE id = :leadId
+activate DB
+DB --> API: Dane leada
+deactivate DB
+API --> Form: Pre-fill formularza\n(nazwa firmy, lead_id)
+deactivate API
+
+Form --> PH: Wyswietla formularz
+note right
+  **Pola formularza:**
+  - Lead: "ABC Market" (readonly)
+  - Data kontaktu: 2025-10-11 (readonly, dzisiaj)
+  - Rozmowca: [input text]
+  - Wynik rozmowy*: [dropdown]
+    - NO_ANSWER
+    - MEETING_SET
+    - ORDER_TAKEN
+    - INFO_SENT
+    - OFFER_PRESENTED
+    - POST_DELIVERY_CHECK
+  - Notatka*: [textarea]
+end note
+
+PH -> Form: Wypelnia pola:\n- Rozmowca: "Jan Kowalski"\n- Wynik: "MEETING_SET"\n- Notatka: "Umowiono wizyte na piatek..."
+PH -> Form: Klika "Zapisz"
+
+== Krok 3: Walidacja ==
+
+Form -> Validator: Sprawdz dane formularza
+activate Validator
+Validator -> Validator: Sprawdz wymagane pola:\n- Wynik rozmowy*\n- Notatka* (min. 10 znakow)
+alt Walidacja OK
+  Validator --> Form: OK Dane poprawne
+  deactivate Validator
+else Blad walidacji
+  Validator --> Form: X Blad:\n"Notatka wymagana"
+  Form --> PH: Wyswietla komunikat bledu
+  PH -> Form: Poprawia dane
+end
+
+== Krok 4: Zapis do bazy ==
+
+Form -> API: POST /activities/new\n{ lead_id, user_id, activity_date,\ncontact_person_name, outcome, notes }
+activate API
+
+API -> Validator: Walidacja po stronie serwera
+activate Validator
+Validator -> Validator: Sprawdz:\n- lead_id istnieje\n- user_id ma dostep do tego leada\n- outcome jest z dozwolonych wartosci
+Validator --> API: OK
+deactivate Validator
+
+API -> DB: INSERT INTO activities\n(lead_id, user_id, activity_date,\ncontact_person_name, outcome, notes)\nVALUES (...)\nRETURNING id
+activate DB
+DB --> API: { id: 123 }
+deactivate DB
+
+API -> DB: UPDATE leads\nSET updated_at = NOW()\nWHERE id = :lead_id
+activate DB
+DB --> API: OK Updated
+deactivate DB
+
+API --> Form: { success: true, activity_id: 123 }
+deactivate API
+
+== Krok 5: Obsluga wyniku "MEETING_SET" ==
+
+alt Wynik === "MEETING_SET"
+  Form --> PH: Dialog:\n"Czy chcesz zaplanowac wizyte?"
+  PH -> Form: Klika "Tak"
+  Form -> VisitForm: Przekierowanie do\n/visits/new?leadId=:id
+  activate VisitForm
+  VisitForm -> API: Pobiera dane leada\ndo pre-fill (adres, telefon)
+  activate API
+  API -> DB: SELECT * FROM leads\nWHERE id = :leadId
+  activate DB
+  DB --> API: Dane leada
+  deactivate DB
+  API --> VisitForm: Pre-fill:\n- Adres\n- Data (propozycja)\n- Lead
+  deactivate API
+  VisitForm --> PH: Wyswietla formularz\nwizyty
+  deactivate VisitForm
+  note right
+    PH kontynuuje planowanie wizyty
+    (osobny diagram sekwencji)
+  end note
+else Wynik !== "MEETING_SET" lub kliknal "Nie"
+  Form -> Dashboard: Przekierowanie do\n/leads?success=true
+  activate Dashboard
+  Dashboard --> PH: Wyswietla komunikat:\n"OK Kontakt zapisany"
+  deactivate Dashboard
+end
+
+deactivate Form
+
+== Krok 6: Timeline kontaktow (opcjonalnie) ==
+
+PH -> Dashboard: Klika na leada\naby zobaczyc szczegoly
+activate Dashboard
+Dashboard -> API: GET /leads/:id
+activate API
+API -> DB: SELECT * FROM activities\nWHERE lead_id = :id\nORDER BY activity_date DESC
+activate DB
+DB --> API: Lista aktywnosci
+deactivate DB
+API --> Dashboard: JSON timeline
+deactivate API
+Dashboard --> PH: Wyswietla chronologie\nkontaktow
+deactivate Dashboard
+
+note right
+  **Timeline kontaktow:**
+  Telefon 2025-10-11: Kontakt telefoniczny
+  Wynik: MEETING_SET
+  Notatka: "Umowiono wizyte na piatek..."
+
+  Telefon 2025-10-08: Kontakt telefoniczny
+  Wynik: NO_ANSWER
+  Notatka: "Nikt nie odbiera"
+end note
+
+@enduml
