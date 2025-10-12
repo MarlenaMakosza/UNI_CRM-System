@@ -5,14 +5,16 @@ System CRM dla hurtowni warzyw i owoców - projekt studencki na Laboratorium 6.
 ## 📋 Status projektu
 
 ### ✅ Gotowe
+
 - [x] Docker Compose dla PostgreSQL
 - [x] Instrukcja instalacji (Windows)
-- [x] Konfiguracja projektu (Deno, SvelteKit, Drizzle, Tailwind)
+- [x] Konfiguracja projektu (Nodejs, SvelteKit, Drizzle, Tailwind)
 - [x] Wymagania minimalne (pełny zakres z PDF)
 - [x] Specyfikacja techniczna
 - [x] **KROK 1 - Diagramy PlantUML** (6 diagramów: proces, role, ERD, use cases, sequence)
 
 ### ⏳ Do zrobienia
+
 - [ ] KROK 2 - Model bazy danych (już w diagramach, do implementacji Drizzle)
 - [ ] KROK 3 - Uzasadnienie wyboru technologii (już w specyfikacji)
 - [ ] KROK 4 - Strategia testowania (już w specyfikacji)
@@ -28,12 +30,14 @@ System CRM dla hurtowni warzyw i owoców - projekt studencki na Laboratorium 6.
 ### 1. Instalacja środowiska
 
 Postępuj zgodnie z instrukcją:
+
 ```
 docs/minimal-student/INSTALLATION.md
 ```
 
 Instaluje:
-- Deno 2.0+
+
+- Nodejs
 - Docker Desktop
 - VS Code + rozszerzenia
 
@@ -54,19 +58,19 @@ Wygeneruj `AUTH_SECRET` (patrz INSTALLATION.md, Krok 5.2)
 ### 4. Zainstaluj zależności (po utworzeniu projektu)
 
 ```powershell
-deno install
+npm install
 ```
 
 ### 5. Uruchom migracje (po utworzeniu schematu)
 
 ```powershell
-deno task db:migrate
+npm run db:migrate
 ```
 
 ### 6. Uruchom aplikację
 
 ```powershell
-deno task dev
+npm run dev
 ```
 
 Aplikacja: http://localhost:5173
@@ -104,7 +108,6 @@ CRM_Lab6/
 │       │   ├── visits/
 │       │   └── reports/
 ├── docker-compose.yml                 # PostgreSQL w Docker
-├── deno.json                          # Konfiguracja Deno
 ├── package.json                       # Zależności npm
 ├── drizzle.config.ts                  # Konfiguracja Drizzle ORM
 ├── svelte.config.js                   # Konfiguracja SvelteKit
@@ -114,25 +117,29 @@ CRM_Lab6/
 
 ## 🛠️ Stack technologiczny
 
-- **Runtime**: Deno 2.0+
+- **Runtime**: Node.js
+- **Package Manager**: npm
 - **Framework**: SvelteKit 2.0+
 - **Baza danych**: PostgreSQL 15 (Docker)
 - **ORM**: Drizzle ORM
 - **Auth**: Lucia v3
 - **UI**: Tailwind CSS + DaisyUI
-- **TypeScript**: 5.7+
+- **TypeScript**: 5.5+
 
 ## 📖 Dokumentacja
 
 ### Wymagania
+
 - **Główne**: `docs/minimal-student/requirements-minimal.md`
 - **Pełne** (referencja): `docs/full/requirements.md`
 
 ### Specyfikacja techniczna
+
 - **Główna**: `docs/minimal-student/technical-specification-minimal.md`
 - **Pełna** (referencja): `docs/full/technical-specification.md`
 
 ### Proces biznesowy (7 kroków)
+
 1. Pozyskanie leada
 2. Kontakt telefoniczny
 3. Wizyta w sklepie
@@ -142,10 +149,12 @@ CRM_Lab6/
 7. Newsletter (manualny)
 
 ### Role
+
 - **Przedstawiciel handlowy (PH)**: Widzi tylko swoich klientów
 - **Kierownik**: Widzi wszystko + raporty
 
 ### Ekrany (minimum 8-9)
+
 1. Login
 2. Dashboard PH
 3. Dashboard Kierownik
@@ -159,6 +168,7 @@ CRM_Lab6/
 ## 🗄️ Model danych (uproszczony)
 
 ### Tabele główne
+
 - `users` - użytkownicy (PH + Kierownik)
 - `leads` - firmy/sklepy (z osobą decyzyjną)
 - `activities` - kontakty telefoniczne (6 typów)
@@ -170,22 +180,25 @@ Szczegóły: `docs/minimal-student/technical-specification-minimal.md` (Krok 2)
 ## ⚙️ Przydatne komendy
 
 ### Rozwój
+
 ```powershell
-deno task dev          # Uruchom dev server
-deno task build        # Build produkcyjny
-deno task preview      # Podgląd buildu
-deno task check        # Sprawdź typy TypeScript
+npm run dev          # Uruchom dev server
+npm run build        # Build produkcyjny
+npm run preview      # Podgląd buildu
+npm run check        # Sprawdź typy TypeScript
 ```
 
 ### Baza danych (Drizzle)
+
 ```powershell
-deno task db:generate  # Generuj migracje
-deno task db:migrate   # Wykonaj migracje
-deno task db:push      # Push bez migracji (dev)
-deno task db:studio    # Drizzle Studio (GUI)
+npm run db:generate  # Generuj migracje
+npm run db:migrate   # Wykonaj migracje
+npm run db:push      # Push bez migracji (dev)
+npm run db:studio    # Drizzle Studio (GUI)
 ```
 
 ### Docker (PostgreSQL)
+
 ```powershell
 docker-compose up -d         # Uruchom w tle
 docker-compose stop          # Zatrzymaj
@@ -195,6 +208,7 @@ docker-compose down -v       # Usuń kontener + dane
 ```
 
 ### PostgreSQL (terminal)
+
 ```powershell
 docker exec -it crm-postgres psql -U crm_user -d crm_db
 ```
@@ -213,9 +227,11 @@ docker exec -it crm-postgres psql -U crm_user -d crm_db
 ## ⏱️ Timeline (2 tygodnie)
 
 **Tydzień 1:**
+
 - Setup + CRUD leadów + kontakty telefoniczne
 
 **Tydzień 2:**
+
 - Wizyty + raporty + uprawnienia + testy
 
 ## 📝 Kontekst projektu

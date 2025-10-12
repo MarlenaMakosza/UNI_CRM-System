@@ -3,31 +3,36 @@
 ## Informacje o studencie/projekcie
 
 ### 1. Umiejętności techniczne
+
 - **TypeScript:** bazowa znajomość
 - **Svelte/SvelteKit:** nie pierwszy projekt (ma doświadczenie)
 - **Czas na projekt:** 2 tygodnie (preferowany)
 
 ### 2. Środowisko deweloperskie
+
 - **System operacyjny:** Windows
 - **IDE:** VS Code
 - **PostgreSQL:** Docker Compose (nie lokalnie)
-- **Wymagane:** Instrukcje instalacji wszystkiego (Deno, Docker, etc.)
+- **Wymagane:** Instrukcje instalacji wszystkiego (Nodejs, Docker, etc.)
 
 ### 3. Deployment
-- **Środowisko:** Lokalnie (nie Deno Deploy)
+
+- **Środowisko:** Lokalnie
 - **Konteneryzacja:** Docker Compose (preferowane)
 - **PostgreSQL:** Docker container
 
 ### 4. Zakres pracy
+
 - **Sprawozdanie:** NIE robić (student określi później co chce)
 - **Implementacja:** Do określenia później przez studenta
 - **Contracts (umowy):** Do ustalenia
 - **Ograniczenia:** Brak
 
 ### 5. Co przygotować
+
 - ✅ Docker Compose dla PostgreSQL
-- ✅ Instrukcje instalacji (Deno, Docker, VS Code extensions)
-- ✅ Setup projektu (deno.json, drizzle, tailwind)
+- ✅ Instrukcje instalacji (Nodejs, Docker, VS Code extensions)
+- ✅ Setup projektu (Nodejs, drizzle, tailwind)
 - ✅ **KROK 1 - Diagramy PlantUML** (6 diagramów: proces, role, ERD, use cases, sequence)
 - ⏳ Kod implementacji (czeka na decyzję studenta)
 - ❌ Sprawozdanie (nie robić)
@@ -35,7 +40,8 @@
 ## Decyzje techniczne
 
 ### Stack (potwierdzony)
-- Deno 2.0+
+
+- Nodejs
 - SvelteKit 2.0+
 - PostgreSQL 15+ (Docker)
 - Drizzle ORM
@@ -43,6 +49,7 @@
 - Lucia Auth
 
 ### Struktura projektu
+
 - Repo: `C:\Users\Lenerystia\Source\CRM_Lab6\`
 - Docs: `docs/minimal-student/` (requirements + technical spec)
 - Kod: `src/` (do utworzenia)

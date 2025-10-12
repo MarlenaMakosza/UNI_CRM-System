@@ -1,4 +1,4 @@
-import { pgTable, serial, varchar, timestamp, decimal, text, date, check } from "drizzle-orm/pg-core";
+import { pgTable, serial, integer, varchar, timestamp, decimal, text, date, check } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 // Users table (PH + Manager)
@@ -24,7 +24,7 @@ export const leads = pgTable("leads", {
   contactPerson: varchar("contact_person", { length: 255 }).notNull(), // osoba decyzyjna
   leadSource: varchar("lead_source", { length: 100 }).notNull(), // Internet/Prasa/etc
   status: varchar("status", { length: 20 }).notNull().default("NEW"), // NEW/QUALIFIED/ACTIVE/INACTIVE
-  assignedTo: serial("assigned_to").references(() => users.id),
+  assignedTo: integer("assigned_to").references(() => users.id),
   totalRevenue: decimal("total_revenue", { precision: 10, scale: 2 }).default("0"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => ({
@@ -35,8 +35,8 @@ export const leads = pgTable("leads", {
 // Activities table (phone contacts)
 export const activities = pgTable("activities", {
   id: serial("id").primaryKey(),
-  leadId: serial("lead_id").references(() => leads.id, { onDelete: "cascade" }).notNull(),
-  userId: serial("user_id").references(() => users.id).notNull(),
+  leadId: integer("lead_id").references(() => leads.id, { onDelete: "cascade" }).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
   activityDate: date("activity_date").notNull(),
   contactPersonName: varchar("contact_person_name", { length: 255 }),
   outcome: varchar("outcome", { length: 50 }).notNull(), // NO_ANSWER/MEETING_SET/etc
@@ -47,8 +47,8 @@ export const activities = pgTable("activities", {
 // Visits table
 export const visits = pgTable("visits", {
   id: serial("id").primaryKey(),
-  leadId: serial("lead_id").references(() => leads.id, { onDelete: "cascade" }).notNull(),
-  userId: serial("user_id").references(() => users.id).notNull(),
+  leadId: integer("lead_id").references(() => leads.id, { onDelete: "cascade" }).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
   scheduledAt: timestamp("scheduled_at").notNull(),
   address: varchar("address", { length: 255 }).notNull(),
   status: varchar("status", { length: 20 }).notNull().default("PLANNED"), // PLANNED/DONE/CANCELLED/NO_SHOW
@@ -60,8 +60,8 @@ export const visits = pgTable("visits", {
 // Contracts table (optional)
 export const contracts = pgTable("contracts", {
   id: serial("id").primaryKey(),
-  leadId: serial("lead_id").references(() => leads.id, { onDelete: "cascade" }).notNull(),
-  userId: serial("user_id").references(() => users.id).notNull(),
+  leadId: integer("lead_id").references(() => leads.id, { onDelete: "cascade" }).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
   signedAt: date("signed_at").notNull(),
   products: text("products"),
   terms: text("terms"),
@@ -72,7 +72,7 @@ export const contracts = pgTable("contracts", {
 // Lucia sessions table
 export const sessions = pgTable("sessions", {
   id: varchar("id", { length: 255 }).primaryKey(),
-  userId: serial("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
   expiresAt: timestamp("expires_at").notNull(),
 });
 

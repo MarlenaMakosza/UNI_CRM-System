@@ -14,6 +14,7 @@
 ## 📋 KROK 1: Weryfikacja diagramów PlantUML
 
 ### ✅ Co zostało zrobione:
+
 - [x] `diagrams/01-process-full.puml` - Proces pełny (7 kroków)
 - [x] `diagrams/02-process-minimal.puml` - Proces minimalny (MVP)
 - [x] `diagrams/03-roles-permissions.puml` - Role i uprawnienia
@@ -25,6 +26,7 @@
 ### 🔍 Co sprawdzić jutro:
 
 #### 1.1. Diagram aktywności (01-process-full.puml)
+
 - [ ] **Czy zawiera wszystkie 7 kroków z PDF (strona 3-4, Załącznik nr 1)?**
   - Pozyskanie leada (źródła: Internet/Prasa/Książki/Spisy)
   - Kontakt telefoniczny (typy wyników)
@@ -51,6 +53,7 @@
 ---
 
 #### 1.2. Diagram minimalny (02-process-minimal.puml)
+
 - [ ] **Czy uproszczenia są sensowne dla 2 tygodni?**
   - Oferta jako typ kontaktu (nie osobna tabela) - OK?
   - Umowa opcjonalna lub tylko status - OK?
@@ -68,6 +71,7 @@
 ---
 
 #### 1.3. Model danych (04-data-model.puml)
+
 - [ ] **Czy ERD zawiera wszystkie wymagane pola z PDF?**
   - `leads.contact_person` (osoba decyzyjna) ✓
   - `leads.lead_source` (Internet/Prasa/...) ✓
@@ -93,16 +97,19 @@
 ## 📋 KROK 2: Weryfikacja modelu bazy danych
 
 ### ✅ Co zostało zrobione:
+
 - [x] ERD w PlantUML (diagram 04)
 - [x] Opis tabel w `docs/minimal-student/technical-specification-minimal.md` (sekcja "Krok 2")
 
 ### 🔍 Co sprawdzić jutro:
 
 #### 2.1. Tabela users
+
 - [ ] Czy zawiera pola: `role` (PH/MANAGER), `territory` (Poznań/Wrocław/Szczecin)?
 - [ ] Czy `username` jest UNIQUE?
 
 #### 2.2. Tabela leads
+
 - [ ] **WAŻNE:** Czy ma wszystkie pola wymagane z PDF?
   ```sql
   contact_person VARCHAR(255)  -- Osoba decyzyjna!
@@ -112,6 +119,7 @@
 - [ ] Czy CONSTRAINT sprawdza `phone OR email NOT NULL`?
 
 #### 2.3. Tabela activities
+
 - [ ] Czy `outcome` ma 6 wartości?
   - NO_ANSWER
   - MEETING_SET
@@ -121,10 +129,12 @@
   - POST_DELIVERY_CHECK
 
 #### 2.4. Tabela visits
+
 - [ ] Czy ma pole `competitor_prices TEXT`? (z PDF!)
 - [ ] Czy `status` ma 4 wartości (PLANNED/DONE/CANCELLED/NO_SHOW)?
 
 **Akcja jeśli problem:**
+
 1. Popraw ERD w `04-data-model.puml`
 2. Popraw opis w `technical-specification-minimal.md`
 3. **PÓŹNIEJ:** Popraw Drizzle schema w `src/lib/server/db/schema.ts`
@@ -134,22 +144,26 @@
 ## 📋 KROK 3: Weryfikacja uzasadnienia technologii
 
 ### ✅ Co zostało zrobione:
+
 - [x] Sekcja "Krok 3" w `docs/minimal-student/technical-specification-minimal.md`
-- [x] Porównanie 4 stacków: Deno+SvelteKit, Django, PHP+Laravel, Node.js+Express
+- [x] Porównanie 4 stacków: Node.js+SvelteKit, Django, PHP+Laravel, Node.js+Express
 
 ### 🔍 Co sprawdzić jutro:
 
 #### 3.1. Czy uzasadnienie jest przekonujące?
-- [ ] **Deno + SvelteKit** - wybrane
-  - Plusy: TypeScript end-to-end, szybkie prototypowanie, jeden język
-  - Minusy: świeża technologia, mniej materiałów edukacyjnych
+
+- [ ] **Node.js + SvelteKit** - wybrane
+  - Plusy: TypeScript end-to-end, szybkie prototypowanie, stabilna technologia, jeden język, duża społeczność
+  - Minusy: wymaga konfiguracji bundlera (Vite)
   - **Czy to przekona wykładowcę?**
 
 #### 3.2. Czy porównanie jest rzetelne?
-- [ ] Czy Django/PHP/Node.js mają fair comparison?
+
+- [ ] Czy Django/PHP/Express.js mają fair comparison?
 - [ ] Czy wspomniano o doświadczeniu studenta (Svelte nie pierwszy raz)?
 
 #### 3.3. Czy pasuje do profilu studenta?
+
 - [ ] Bazowa znajomość TypeScript ✓
 - [ ] Doświadczenie z SvelteKit ✓
 - [ ] 2 tygodnie na projekt ✓
@@ -161,12 +175,14 @@
 ## 📋 KROK 4: Weryfikacja strategii testowania
 
 ### ✅ Co zostało zrobione:
+
 - [x] Sekcja "Krok 4" w `docs/minimal-student/technical-specification-minimal.md`
 - [x] Strategia: głównie manual testing + 3-5 unit testów
 
 ### 🔍 Co sprawdzić jutro:
 
 #### 4.1. Czy strategia jest realistyczna dla 2 tygodni?
+
 - [ ] **Manual testing checklist** - OK dla studenta?
 - [ ] **3-5 unit testów** - wystarczająco dla MVP?
   - Walidacja telefonu
@@ -176,6 +192,7 @@
   - Filtrowanie leadów per PH
 
 #### 4.2. Czy pokrywa kluczowe funkcjonalności?
+
 - [ ] Dodanie leada (walidacje z PDF)
 - [ ] Rejestracja kontaktu telefonicznego (główny ekran!)
 - [ ] Planowanie wizyty
@@ -195,6 +212,7 @@ Instrukcja nie wymaga tego kroku jako osobnego punktu. Przejdź do Kroku 6.
 ## 📋 KROK 6: Weryfikacja instrukcji obsługi
 
 ### ✅ Co zostało przygotowane:
+
 - [x] Sekcja w `docs/minimal-student/requirements-minimal.md` (linie 244-272)
 - [x] Diagram sekwencji dla głównego ekranu: `06-sequence-phone-contact.puml`
 - [x] Opis formularza (pola, wyniki, przepływ)
@@ -202,12 +220,14 @@ Instrukcja nie wymaga tego kroku jako osobnego punktu. Przejdź do Kroku 6.
 ### 🔍 Co sprawdzić jutro:
 
 #### 6.1. Czy zgodne z instrukcją (strona 2, punkt 6)?
+
 > "Instrukcję wykonać należy tylko dla **ekranu/ekranów wprowadzania danych podczas przeprowadzania rozmowy telefonicznej** przez przedstawiciela handlowego."
 
 - [ ] **Czy instrukcja dotyczy TYLKO ekranu kontaktu telefonicznego?** ✓
 - [ ] **Czy ma screenshots?** ❌ (TODO: zrobić po implementacji!)
 
 #### 6.2. Czy instrukcja zawiera wszystkie elementy?
+
 - [ ] **Kontekst:** PH dzwoni do klienta z listy leadów
 - [ ] **Kroki:**
   1. Otworzenie listy leadów
@@ -223,7 +243,9 @@ Instrukcja nie wymaga tego kroku jako osobnego punktu. Przejdź do Kroku 6.
 - [ ] **Screenshot:** [TODO]
 
 #### 6.3. Czy jest zrozumiała dla użytkownika bez IT?
+
 Z PDF (strona 4):
+
 > "Nie posiada wykształcenia informatycznego"
 
 - [ ] **Czy język jest prosty?** (bez żargonu IT)
@@ -231,6 +253,7 @@ Z PDF (strona 4):
 - [ ] **Czy są tooltips/podpowiedzi?**
 
 **Akcja jeśli problem:**
+
 1. Popraw sekcję w `requirements-minimal.md`
 2. **PO IMPLEMENTACJI:** Zrób screenshots i dodaj do instrukcji
 
@@ -241,6 +264,7 @@ Z PDF (strona 4):
 ### 1. Czy wszystkie wymagania z PDF są uwzględnione?
 
 **Z Załącznika nr 1 (strona 3-4):**
+
 - [x] Osoba decyzyjna (lead.contact_person)
 - [x] Źródło leada (lead.lead_source: Internet/Prasa/Książki/Spisy/Polecenie/Inne)
 - [x] Kontakty telefoniczne (activities.outcome: 6 typów)
@@ -252,6 +276,7 @@ Z PDF (strona 4):
 - [x] Newsletter miesięczny (manualny)
 
 **Z instrukcji (strona 4):**
+
 - [x] Raporty Kierownika:
   - Liczba wizyt per PH
   - Liczba telefonów per PH
@@ -260,6 +285,7 @@ Z PDF (strona 4):
   - [opcjonalnie] Obroty per klient
 
 **Z instrukcji (strona 4, punkt 5):**
+
 - [x] Walidacja telefonu (9-15 cyfr)
 - [x] Walidacja email (format)
 - [x] Co najmniej 1 kanał (phone OR email)
@@ -269,11 +295,13 @@ Z PDF (strona 4):
 ### 2. Czy implementacja jest realistyczna dla 2 tygodni?
 
 **Tydzień 1:**
-- Setup środowiska (Docker, Deno, VS Code) ✅ GOTOWE
+
+- Setup środowiska (Docker, Node.js, VS Code) ✅ GOTOWE
 - CRUD leadów (formularz + lista + walidacje) - ~3 dni
 - Kontakty telefoniczne (główny ekran!) - ~2 dni
 
 **Tydzień 2:**
+
 - Wizyty (harmonogram + wyniki) - ~2 dni
 - Raporty Kierownika - ~2 dni
 - Uprawnienia (PH vs Kierownik) - ~1 dzień
@@ -286,6 +314,7 @@ Z PDF (strona 4):
 ### 3. Czy coś ważnego zostało pominięte?
 
 **Sprawdź:**
+
 - [ ] Czy wszystkie 7 kroków z PDF są w diagramach?
 - [ ] Czy model danych obsługuje wszystkie funkcje?
 - [ ] Czy uprawnienia są poprawnie zaprojektowane?
@@ -296,6 +325,7 @@ Z PDF (strona 4):
 ## 📂 GDZIE SZUKAĆ ODPOWIEDZI
 
 ### Dokumenty źródłowe:
+
 1. **PDF zadania:** `lab-materials/Laboratorium 6 Budowa systemu CRM.pdf`
    - Strona 2: Instrukcje (6 kroków)
    - Strona 3-4: Załącznik nr 1 (proces firmy X)
@@ -318,6 +348,7 @@ Z PDF (strona 4):
    - Pliki `.png` - wygenerowane obrazy
 
 ### Kontekst projektu:
+
 - `.claude/project-context.md` - poziom studenta, środowisko, decyzje
 
 ---
@@ -325,11 +356,13 @@ Z PDF (strona 4):
 ## ✅ AKCJE PO WERYFIKACJI
 
 ### Jeśli wszystko OK:
+
 1. [ ] Zaznacz wszystkie checkboxy powyżej
 2. [ ] Przejdź do implementacji (lub poczekaj na decyzję studenta)
 3. [ ] Ten plik możesz przenieść do `docs/` jako `WERYFIKACJA-ZAKOŃCZONA.md`
 
 ### Jeśli znalazłeś problemy:
+
 1. [ ] Wypisz je w sekcji poniżej
 2. [ ] Popraw pliki (diagramy/dokumentacja)
 3. [ ] Regeneruj PNG jeśli edytowałeś `.puml`
@@ -340,18 +373,21 @@ Z PDF (strona 4):
 ## 📝 PROBLEMY ZNALEZIONE (wypełnij jutro)
 
 ### Problem 1:
+
 **Co:**
 **Gdzie:** (plik + linia)
 **Jak poprawić:**
 **Status:** [ ] Do zrobienia / [ ] W trakcie / [ ] Naprawione
 
 ### Problem 2:
+
 **Co:**
 **Gdzie:**
 **Jak poprawić:**
 **Status:**
 
 ### Problem 3:
+
 **Co:**
 **Gdzie:**
 **Jak poprawić:**
@@ -361,18 +397,20 @@ Z PDF (strona 4):
 
 ## 🎉 PODSUMOWANIE (wypełnij jutro po weryfikacji)
 
-**Data weryfikacji:** _______________
-**Czas weryfikacji:** _______________
+**Data weryfikacji:** ******\_\_\_******
+**Czas weryfikacji:** ******\_\_\_******
 
 **Status:**
+
 - [ ] ✅ Wszystko zgodne z instrukcją - można przejść do implementacji
 - [ ] ⚠️ Drobne poprawki do zrobienia (lista powyżej)
 - [ ] ❌ Duże zmiany potrzebne (lista powyżej)
 
 **Następny krok:**
+
 - [ ] Implementacja struktury projektu SvelteKit
 - [ ] Schemat bazy danych (Drizzle)
-- [ ] Inne: _______________
+- [ ] Inne: ******\_\_\_******
 
 **Notatki:**
 _Miejsce na Twoje przemyślenia po prześpieniu się z pomysłami..._
@@ -381,7 +419,7 @@ _Miejsce na Twoje przemyślenia po prześpieniu się z pomysłami..._
 
 **Powodzenia! 🚀**
 
-*"Najlepsze pomysły przychodzą po prześpieniu się z problemem."*
+_"Najlepsze pomysły przychodzą po prześpieniu się z problemem."_
 
 ---
 

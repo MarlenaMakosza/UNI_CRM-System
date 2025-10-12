@@ -167,7 +167,7 @@ CREATE INDEX idx_visits_scheduled ON visits(scheduled_at);
 
 ### 3.1. Wybrana technologia
 
-**Stack:** Deno + SvelteKit + PostgreSQL + Drizzle ORM + DaisyUI
+**Stack:** Node.js + SvelteKit + PostgreSQL + Drizzle ORM + DaisyUI
 
 ### 3.2. Uzasadnienie (dla projektu studenckiego)
 
@@ -176,8 +176,8 @@ CREATE INDEX idx_visits_scheduled ON visits(scheduled_at);
 | **Jeden język** | TypeScript (front+back) | Łatwiej się uczyć, współdzielenie typów |
 | **Szybkie prototypowanie** | SvelteKit | File-based routing, SSR, forms + actions |
 | **Mało boilerplate** | Svelte | Mniej kodu niż React/Vue |
-| **Darmowy hosting** | Deno Deploy + Neon.tech | 100k req/miesiąc free + PostgreSQL free |
-| **Bezpieczeństwo** | Deno permissions | Explicit --allow-net, --allow-read |
+| **Darmowy hosting** | Vercel/Netlify + Neon.tech | Darmowy tier + PostgreSQL free |
+| **Ekosystem** | npm | Największa baza pakietów, stabilny |
 | **UI gotowe** | DaisyUI (Tailwind) | Komponenty bez pisania CSS |
 | **ORM prosty** | Drizzle | Lżejszy niż Prisma, SQL-like |
 
@@ -185,25 +185,25 @@ CREATE INDEX idx_visits_scheduled ON visits(scheduled_at);
 
 | Technologia | Zalety | Wady | Czy wybrać? |
 |-------------|--------|------|-------------|
-| **Deno + SvelteKit** | ✅ TypeScript native<br>✅ Jeden projekt<br>✅ Darmowy hosting<br>✅ Mało kodu | ⚠️ Młodszy ekosystem | ✅ **TAK** |
+| **Node.js + SvelteKit** | ✅ TypeScript native<br>✅ Jeden projekt<br>✅ Darmowy hosting<br>✅ Stabilny ekosystem<br>✅ Dużo pakietów | ⚠️ Wymaga bundlera (Vite) | ✅ **TAK** |
 | Django + PostgreSQL | ✅ Admin panel za darmo<br>✅ Dużo bibliotek | ❌ Python + JS = 2 języki<br>❌ Więcej setupu | ❌ NIE |
-| PHP + MySQL | ✅ Łatwy hosting<br>✅ Dużo tutoriali | ❌ Stary stack<br>❌ Mniej przyjemny | ❌ NIE |
+| PHP + Laravel + MySQL | ✅ Łatwy hosting<br>✅ Dużo tutoriali | ❌ Stary stack<br>❌ Mniej przyjemny | ❌ NIE |
 | Node.js + Express | ✅ Popularny<br>✅ Dużo pakietów | ❌ Trzeba budować od zera<br>❌ Brak structure | ❌ NIE |
 
 ### 3.4. Stack technologiczny (szczegóły)
 
 **Backend + Frontend (jeden projekt SvelteKit):**
 ```
-- Deno 2.0+
+- Node.js 20.x+ (LTS)
 - SvelteKit 2.0+
-- PostgreSQL 15+ (Neon.tech free tier)
+- PostgreSQL 15+ (lokalne lub Neon.tech free tier)
 - Drizzle ORM
 - Lucia Auth (autentykacja session-based)
 ```
 
 **UI:**
 ```
-- Svelte 5 (runes API)
+- Svelte 4.x
 - DaisyUI 4.0+ (komponenty Tailwind)
 - Lucide Icons
 - (Opcjonalnie) Chart.js - jeśli raporty z wykresami
@@ -211,8 +211,9 @@ CREATE INDEX idx_visits_scheduled ON visits(scheduled_at);
 
 **Deployment:**
 ```
-- Deno Deploy (backend + frontend)
+- Vercel/Netlify (backend + frontend)
 - PostgreSQL: Neon.tech (free tier: 0.5 GB)
+- Alternatywnie: uruchomienie lokalne
 ```
 
 ## 4. Plan testowania (Krok 4)
@@ -264,32 +265,36 @@ CREATE INDEX idx_visits_scheduled ON visits(scheduled_at);
 ```typescript
 // src/lib/server/validators.test.ts
 
-import { assertEquals } from "https://deno.land/std/assert/mod.ts";
-import { validatePhone, validateEmail } from "./validators.ts";
+import { describe, it, expect } from 'vitest';
+import { validatePhone, validateEmail } from './validators';
 
-Deno.test("Walidacja telefonu - poprawny", () => {
-  assertEquals(validatePhone("123456789"), true);
-  assertEquals(validatePhone("123 456 789"), true);
+describe('Walidacja telefonu', () => {
+  it('akceptuje poprawny telefon', () => {
+    expect(validatePhone('123456789')).toBe(true);
+    expect(validatePhone('123 456 789')).toBe(true);
+  });
+
+  it('odrzuca niepoprawny telefon', () => {
+    expect(validatePhone('123')).toBe(false); // za krótki
+    expect(validatePhone('abc123456')).toBe(false); // litery
+  });
 });
 
-Deno.test("Walidacja telefonu - niepoprawny", () => {
-  assertEquals(validatePhone("123"), false); // za krótki
-  assertEquals(validatePhone("abc123456"), false); // litery
-});
+describe('Walidacja email', () => {
+  it('akceptuje poprawny email', () => {
+    expect(validateEmail('test@example.com')).toBe(true);
+  });
 
-Deno.test("Walidacja email - poprawny", () => {
-  assertEquals(validateEmail("test@example.com"), true);
-});
-
-Deno.test("Walidacja email - niepoprawny", () => {
-  assertEquals(validateEmail("invalid"), false);
-  assertEquals(validateEmail("test@"), false);
+  it('odrzuca niepoprawny email', () => {
+    expect(validateEmail('invalid')).toBe(false);
+    expect(validateEmail('test@')).toBe(false);
+  });
 });
 ```
 
 **Uruchomienie:**
 ```bash
-deno test --allow-env --allow-read
+npm test
 ```
 
 #### 4.1.3. Testy E2E (opcjonalnie - jeśli czas)
@@ -326,15 +331,15 @@ test('Pełny flow: dodanie leada → kontakt → wizyta', async ({ page }) => {
 | Typ testu | Narzędzie | Konfiguracja | Priorytet |
 |-----------|-----------|--------------|-----------|
 | **Testy manualne** | Checklist w Excelu | - | ⭐⭐⭐ (najważniejsze) |
-| **Unit Tests** | Deno test | `deno test` | ⭐⭐ (3-5 testów wystarczy) |
-| **E2E Tests** | Playwright | `deno run -A npm:playwright test` | ⭐ (opcjonalnie) |
+| **Unit Tests** | Vitest | `npm test` | ⭐⭐ (3-5 testów wystarczy) |
+| **E2E Tests** | Playwright | `npm run test:e2e` | ⭐ (opcjonalnie) |
 
 ### 4.3. Dokumentacja testów (do sprawozdania)
 
 **Co załączyć do sprawozdania:**
 1. ✅ Checklist testów manualnych (Excel/Markdown)
 2. ✅ Zrzuty ekranu z każdego testu (pass/fail)
-3. ✅ Wynik `deno test` (screenshot terminala)
+3. ✅ Wynik `npm test` (screenshot terminala)
 4. ✅ Opis znalezionych błędów + jak naprawiono
 
 ## 5. Architektura systemu (uproszczona)
@@ -395,7 +400,8 @@ crm-mvp/
 │   └── e2e/ (opcjonalnie)
 │       └── lead-flow.spec.ts
 ├── drizzle.config.ts                 # Drizzle config
-├── deno.json                         # Deno config + tasks
+├── package.json                      # npm dependencies + scripts
+├── vite.config.ts                    # Vite config
 ├── tailwind.config.js
 └── README.md
 ```
@@ -516,8 +522,8 @@ crm-mvp/
 ### Tydzień 1: Setup + CRUD Leadów + Kontakty
 
 **Dzień 1-2: Setup projektu**
-- [ ] Deno + SvelteKit init
-- [ ] PostgreSQL (Neon.tech) + Drizzle ORM
+- [ ] Node.js + SvelteKit init
+- [ ] PostgreSQL (lokalne/Neon.tech) + Drizzle ORM
 - [ ] Tabele: users, leads, activities, visits
 - [ ] Lucia Auth (login/logout)
 
@@ -599,19 +605,19 @@ crm-mvp/
 
 ### 7.2. Techniczne
 
-✅ Aplikacja uruchamia się lokalnie: `deno task dev`
-✅ Migracje działają: `deno task db:push`
-✅ Testy przechodzą: `deno test`
-✅ Kod sformatowany: `deno fmt`
+✅ Aplikacja uruchamia się lokalnie: `npm run dev`
+✅ Migracje działają: `npm run db:push`
+✅ Testy przechodzą: `npm test`
+✅ Kod sformatowany: `npm run format` (Prettier)
 
 ## 8. Ryzyka i mitygacja
 
 | Ryzyko | Prawdopodobieństwo | Mitygacja |
 |--------|-------------------|-----------|
 | Za mało czasu | Średnie | Wyciąć tabele contracts (opcjonalna) |
-| Problemy z Deno Deploy | Niskie | Pokazać lokalnie + screenshots |
+| Problemy z deploymentem | Niskie | Pokazać lokalnie + screenshots |
 | Auth nie działa | Niskie | Użyć prostego session (bez Lucia) |
-| Student nie zna TypeScript | Średnie | Tutorial + ChatGPT |
+| Student nie zna TypeScript | Średnie | Tutorial + dokumentacja |
 
 ---
 

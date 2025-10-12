@@ -9,41 +9,36 @@
 
 ---
 
-## Krok 1: Instalacja Deno
+## Krok 1: Instalacja Node.js
 
-### 1.1. Pobierz i zainstaluj Deno
+### 1.1. Pobierz i zainstaluj Node.js
 
-Otwórz **PowerShell** jako administrator i uruchom:
+Pobierz instalator z oficjalnej strony:
+https://nodejs.org/
+
+Zalecana wersja: **LTS (Long Term Support)** - aktualnie Node.js 20.x lub nowszy
+
+### 1.2. Zainstaluj Node.js
+
+1. Uruchom pobrany plik `.msi`
+2. Postępuj zgodnie z krokami instalatora
+3. **WAŻNE**: Zaznacz opcję "Automatically install the necessary tools" (jeśli dostępna)
+4. Po instalacji uruchom ponownie terminal
+
+### 1.3. Sprawdź instalację
+
+Otwórz **PowerShell** i sprawdź wersje:
 
 ```powershell
-irm https://deno.land/install.ps1 | iex
+node --version
+npm --version
 ```
 
-### 1.2. Sprawdź instalację
-
-Po zakończeniu instalacji, zamknij i otwórz ponownie terminal, a następnie sprawdź wersję:
-
-```powershell
-deno --version
+Powinieneś zobaczyć:
 ```
-
-Powinieneś zobaczyć coś w stylu:
+v20.x.x (lub nowszy)
+10.x.x (lub nowszy)
 ```
-deno 2.0.x
-v8 12.x
-typescript 5.x
-```
-
-### 1.3. Dodaj Deno do PATH (jeśli nie działa)
-
-Jeśli komenda `deno` nie jest rozpoznawana:
-
-1. Otwórz **Zmienne środowiskowe** (System Properties → Advanced → Environment Variables)
-2. W sekcji **User variables** dodaj do **Path**:
-   ```
-   C:\Users\%USERNAME%\.deno\bin
-   ```
-3. Uruchom ponownie terminal
 
 ---
 
@@ -99,14 +94,13 @@ https://code.visualstudio.com/
 
 Otwórz VS Code i zainstaluj następujące rozszerzenia:
 
-1. **Deno** (`denoland.vscode-deno`)
+1. **Svelte for VS Code** (`svelte.svelte-vscode`)
    - Otwórz Extensions (Ctrl+Shift+X)
-   - Wyszukaj "Deno"
-   - Kliknij "Install"
-
-2. **Svelte for VS Code** (`svelte.svelte-vscode`)
    - Wyszukaj "Svelte for VS Code"
    - Kliknij "Install"
+
+2. **ESLint** (`dbaeumer.vscode-eslint`) - opcjonalne
+   - Linting kodu JavaScript/TypeScript
 
 3. **PostgreSQL** (`ckolkman.vscode-postgres`) - opcjonalne
    - Do przeglądania bazy danych w VS Code
@@ -198,19 +192,19 @@ AUTH_SECRET=aBcD1234eFgH5678iJkL9012mNoPqRsT
 ### 6.1. Zainstaluj zależności
 
 ```powershell
-deno install
+npm install
 ```
 
 ### 6.2. Uruchom migracje bazy danych
 
 ```powershell
-deno task db:migrate
+npm run db:migrate
 ```
 
 ### 6.3. Uruchom aplikację w trybie deweloperskim
 
 ```powershell
-deno task dev
+npm run dev
 ```
 
 Aplikacja powinna być dostępna pod adresem:
@@ -225,8 +219,11 @@ http://localhost:5173
 Sprawdź, czy wszystko działa:
 
 ```powershell
-# Sprawdź Deno
-deno --version
+# Sprawdź Node.js
+node --version
+
+# Sprawdź npm
+npm --version
 
 # Sprawdź Docker
 docker --version
@@ -305,28 +302,31 @@ docker exec -it crm-postgres psql -U crm_user -d crm_db
      - "5433:5432"  # Zmień 5432 na 5433
    ```
 
-### Problem: Deno nie jest rozpoznawane
+### Problem: Node.js nie jest rozpoznawany
 
 **Rozwiązanie**:
 1. Sprawdź PATH:
    ```powershell
-   $env:Path -split ';' | Select-String deno
+   $env:Path -split ';' | Select-String node
    ```
-2. Jeśli nie ma, dodaj ręcznie (patrz Krok 1.3)
+2. Jeśli nie ma, przeinstaluj Node.js z zaznaczoną opcją "Add to PATH"
 3. Uruchom ponownie terminal
 
-### Problem: VS Code nie widzi Deno
+### Problem: npm install kończy się błędem
 
 **Rozwiązanie**:
-1. Otwórz Command Palette (Ctrl+Shift+P)
-2. Wpisz: "Deno: Initialize Workspace Configuration"
-3. W pliku `.vscode/settings.json` powinno być:
-   ```json
-   {
-     "deno.enable": true,
-     "deno.lint": true,
-     "deno.unstable": false
-   }
+1. Wyczyść cache npm:
+   ```powershell
+   npm cache clean --force
+   ```
+2. Usuń folder node_modules i package-lock.json:
+   ```powershell
+   rm -r node_modules
+   rm package-lock.json
+   ```
+3. Zainstaluj ponownie:
+   ```powershell
+   npm install
    ```
 
 ---
@@ -334,7 +334,8 @@ docker exec -it crm-postgres psql -U crm_user -d crm_db
 ## Kontakt i pomoc
 
 **Dokumentacja:**
-- Deno: https://docs.deno.com/
+- Node.js: https://nodejs.org/docs/
+- npm: https://docs.npmjs.com/
 - SvelteKit: https://svelte.dev/docs/kit/introduction
 - Docker: https://docs.docker.com/
 - PostgreSQL: https://www.postgresql.org/docs/

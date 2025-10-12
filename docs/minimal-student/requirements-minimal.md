@@ -308,13 +308,14 @@ Z punktu 6 instrukcji:
 
 ## 11. Technologie (wybrane)
 
-**Stack:** Deno + SvelteKit + PostgreSQL + Drizzle ORM
+**Stack:** Node.js + SvelteKit + PostgreSQL + Drizzle ORM
 
 **Uzasadnienie:**
 - TypeScript (jeden język front+back)
 - SvelteKit (szybkie prototypowanie)
 - PostgreSQL (wystarczająco proste + relacyjne)
-- Darmowy hosting (Deno Deploy + Neon.tech)
+- Stabilny ekosystem (npm)
+- Darmowy hosting (Vercel/Netlify + Neon.tech)
 
 ## 12. Czas realizacji
 
