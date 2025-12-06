@@ -75,21 +75,20 @@ CREATE TABLE umowa (
   id              SERIAL PRIMARY KEY,
   klient_id       INTEGER NOT NULL REFERENCES klient(id) ON DELETE CASCADE,
   typ_id          INTEGER NOT NULL REFERENCES typ_umowy(id),
-  produkt_id      INTEGER NOT NULL REFERENCES produkt(id),
   przedstawiciel_id INTEGER NOT NULL REFERENCES przedstawiciel_handlowy(id),
-
-
-  status          VARCHAR(50) NOT NULL,  -- np. 'negocjacja', 'aktywna', 'zakończona'
+  
+  status          VARCHAR(50) NOT NULL,
   data_od         DATE NOT NULL,
   data_do         DATE,
   created_at      TIMESTAMP NOT NULL DEFAULT NOW(),
+  -- wartosc_umowy można obliczyć z pozycji, ale zostawmy dla cache
   wartosc_umowy   NUMERIC(14,2) NOT NULL,
 
   CONSTRAINT fk_umowa_klient FOREIGN KEY (klient_id) REFERENCES klient(id),
   CONSTRAINT fk_umowa_typ FOREIGN KEY (typ_id) REFERENCES typ_umowy(id),
-  CONSTRAINT fk_umowa_produkt FOREIGN KEY (produkt_id) REFERENCES produkt(id),
   CONSTRAINT fk_umowa_przedstawiciel FOREIGN KEY (przedstawiciel_id) REFERENCES przedstawiciel_handlowy(id)
 );
+
 
 CREATE TABLE zdarzenie (
   id                 SERIAL PRIMARY KEY,
@@ -115,6 +114,21 @@ CREATE TABLE zdarzenie (
   CONSTRAINT fk_zdarzenie_umowa FOREIGN KEY (umowa_id) REFERENCES umowa(id)
 );
 
+CREATE TABLE pozycja_umowy (
+  id         SERIAL PRIMARY KEY,
+  umowa_id   INTEGER NOT NULL REFERENCES umowa(id) ON DELETE CASCADE,
+  produkt_id INTEGER NOT NULL REFERENCES produkt(id),
+  ilosc      NUMERIC(10,2) NOT NULL, -- może być 0.5kg, 100kg, itd.
+  jednostka  VARCHAR(20) NOT NULL, -- 'kg', 'szt', 'opakowanie'
+  cena_jednostkowa NUMERIC(12,2) NOT NULL, -- cena w momencie podpisania umowy
+  wartosc    NUMERIC(14,2) GENERATED ALWAYS AS (ilosc * cena_jednostkowa) STORED,
+  
+  CONSTRAINT fk_pozycja_umowa FOREIGN KEY (umowa_id) REFERENCES umowa(id),
+  CONSTRAINT fk_pozycja_produkt FOREIGN KEY (produkt_id) REFERENCES produkt(id),
+  CONSTRAINT check_ilosc_positive CHECK (ilosc > 0)
+);
+
+
 -- Indeksy dla wydajności
 CREATE INDEX idx_adres_miejscowosc ON adres(miejscowosc);
 CREATE INDEX idx_adres_kod ON adres(kod_pocztowy);
@@ -125,3 +139,5 @@ CREATE INDEX idx_zdarzenie_przedstawiciel ON zdarzenie(przedstawiciel_id, data_p
 CREATE INDEX idx_zdarzenie_klient ON zdarzenie(klient_id);
 CREATE INDEX idx_umowa_klient ON umowa(klient_id);
 CREATE INDEX idx_umowa_przedstawiciel ON umowa(przedstawiciel_id);
+CREATE INDEX idx_pozycja_umowa ON pozycja_umowy(umowa_id);
+CREATE INDEX idx_pozycja_produkt ON pozycja_umowy(produkt_id);
