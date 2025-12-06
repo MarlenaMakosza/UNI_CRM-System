@@ -1,7 +1,7 @@
 {
   "tasks": {
     "dev": "deno run --allow-net --allow-env --watch backend/src/main.ts",
-    "seed": "deno run --allow-net --allow-env backend/src/seed.ts",
+    "seed": "deno run --allow-net --allow-env db/seed.ts",
     "lint": "deno lint",
     "lint:fix": "deno lint --fix"
   },
