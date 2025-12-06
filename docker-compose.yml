@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    env_file: ".env"
+    volumes:
+      - db_data:/var/lib/postgresql
+      # inicjalizacja schematu przy pierwszym starcie
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+volumes:
+  db_data:
