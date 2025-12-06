@@ -1,12 +1,14 @@
 {
   "tasks": {
     "dev": "deno run --allow-net --allow-env --watch backend/src/main.ts",
+    "health": "deno run --allow-net --allow-env --watch backend/src/health.ts",
     "seed": "deno run --allow-net --allow-env db/seed.ts",
     "lint": "deno lint",
     "lint:fix": "deno lint --fix"
   },
   "imports": {
-    "@std/assert": "jsr:@std/assert@1"
+    "@std/assert": "jsr:@std/assert@1",
+    "oak": "https://deno.land/x/oak@v12.6.0/mod.ts"
   },
   "compilerOptions": {
     "strict": true
