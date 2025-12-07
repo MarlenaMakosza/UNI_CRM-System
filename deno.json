@@ -2,6 +2,7 @@
   "tasks": {
     "dev": "deno run --allow-net --allow-env --watch backend/src/main.ts",
     "health": "deno run --allow-net --allow-env --watch backend/src/health.ts",
+    "clients": "deno run --allow-net --allow-env --watch backend/src/routes/clients.ts",
     "seed": "deno run --allow-net --allow-env db/seed.ts",
     "lint": "deno lint",
     "lint:fix": "deno lint --fix"

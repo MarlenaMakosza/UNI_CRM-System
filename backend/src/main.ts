@@ -1,14 +1,34 @@
-import { sql } from "../../db/db.ts";
+import { Application, Router} from "oak";
+import { clientsRouter } from "./routes/clients.ts";
 
+const app = new Application();
 
-export function add(a: number, b: number): number {
-  return a + b;
-}
+// proste logowanie + obsługa błędów
+app.use(async (ctx, next) => {
+  try {
+    console.log(`${ctx.request.method} ${ctx.request.url.pathname}`);
+    await next();
+  } catch (err) {
+    console.error("Unhandled error:", err);
+    ctx.response.status = 500;
+    ctx.response.body = { error: "Internal server error" };
+  }
+});
 
-// Learn more at https://docs.deno.com/runtime/manual/examples/module_metadata#concepts
-console.log("Add 2 + 3 =", add(2, 3));
+const router = new Router();
 
-const result = await sql`
-  SELECT ID, IMIE FROM KLIENT;
-`;
-console.log(result);
+// health-check: GET /health
+router.get("/health", (ctx) => {
+  ctx.response.body = { status: "ok" };
+});
+
+app.use(router.routes());
+app.use(router.allowedMethods());
+
+// nasze API klientów
+app.use(clientsRouter.routes());
+app.use(clientsRouter.allowedMethods());
+
+const PORT = Number(Deno.env.get("PORT") ?? "8080");
+console.log(`API listening at http://localhost:${PORT}`);
+await app.listen({ port: PORT });
