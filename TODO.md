@@ -1,3 +1,9 @@
+# Dopracować clients
+
+* Typy
+* ten typ ClientListItem czy jest potrzebny, jeśli jest (może sięokaże, że jak pełne zrobie wszędzie to się przyda)
+*
+
 ## 🎯 Co system ma umieć z opisu
 
 Z treści zadania wynika, że system musi pozwalać na:
