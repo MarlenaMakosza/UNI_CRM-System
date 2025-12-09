@@ -353,10 +353,10 @@ clientsRouter.patch("/:id", async (ctx) => {
 
 // DELETE /api/clients  – usunięcie
 clientsRouter.delete("/:id", async (ctx) => {
-  const id = Number(ctx.params.id);
-  validateId(id);
-
   try {
+    const id = Number(ctx.params.id);
+    validateId(id);
+
     const result = await sql`
       DELETE FROM klient WHERE id = ${id}
       RETURNING id
