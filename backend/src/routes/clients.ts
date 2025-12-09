@@ -97,14 +97,7 @@ clientsRouter.get("/:id", async (ctx) => {
     ctx.response.body = result;
     ctx.response.status = 200;
   } catch (error) {
-    if (error instanceof Error && error.message === "Invalid ID") {
-      ctx.response.status = 400;
-      ctx.response.body = { error: "Invalid ID" };
-    } else {
-      console.error("Error:", error);
-      ctx.response.status = 500;
-      ctx.response.body = { error: "Failed to fetch client" };
-    }
+    handleError(ctx, error);
   }
 });
 
@@ -215,9 +208,7 @@ clientsRouter.post("/", async (ctx) => {
     ctx.response.body = clientRows[0];
     ctx.response.status = 201;
   } catch (error) {
-    console.error("Error creating client:", error);
-    ctx.response.status = 500;
-    ctx.response.body = { error: "Failed to create client" };
+    handleError(ctx, error);
   }
 });
 
@@ -363,17 +354,8 @@ clientsRouter.patch("/:id", async (ctx) => {
 
     ctx.response.body = updatedClientRows[0];
     ctx.response.status = 200;
-  } catch (err) {
-    const error = err as Error;
-
-    if (error.message === "INVALID_ID") {
-      ctx.response.status = 400;
-      ctx.response.body = { error: "Invalid ID" };
-    } else {
-      console.error("Error updating client:", error);
-      ctx.response.status = 500;
-      ctx.response.body = { error: "Failed to update client" };
-    }
+  } catch (error) {
+    handleError(ctx, error);
   }
 });
 
@@ -396,19 +378,51 @@ clientsRouter.delete("/:id", async (ctx) => {
 
     ctx.response.status = 204;
   } catch (error) {
-    if (error instanceof Error && error.message === "Invalid ID") {
-      ctx.response.status = 400;
-      ctx.response.body = { error: "Invalid ID" };
-    } else {
-      console.error("Error:", error);
-      ctx.response.status = 500;
-      ctx.response.body = { error: "Failed to fetch client" };
-    }
+    handleError(ctx, error);
   }
 });
 
-function validateId(id: number) {
+// ===== HELPER FUNCTIONS =====
+
+function validateId(id: number): void {
   if (!Number.isInteger(id) || id <= 0) {
     throw new Error("Invalid ID");
+  }
+}
+
+async function getStatusId(status_kod: string): Promise<number | null> {
+  const statusRows = await sql`
+    SELECT id FROM status_klienta
+    WHERE kod = ${status_kod}
+    LIMIT 1
+  `;
+  return statusRows.length > 0 ? statusRows[0].id : null;
+}
+
+async function checkNipExists(
+  nip: string,
+  excludeId?: number,
+): Promise<boolean> {
+  if (excludeId) {
+    const result = await sql`
+      SELECT id FROM klient WHERE nip = ${nip} AND id != ${excludeId} LIMIT 1
+    `;
+    return result.length > 0;
+  }
+
+  const result = await sql`
+    SELECT id FROM klient WHERE nip = ${nip} LIMIT 1
+  `;
+  return result.length > 0;
+}
+
+function handleError(ctx: Context, error: unknown): void {
+  if (error instanceof Error && error.message === "Invalid ID") {
+    ctx.response.status = 400;
+    ctx.response.body = { error: "Invalid ID" };
+  } else {
+    console.error("Error:", error);
+    ctx.response.status = 500;
+    ctx.response.body = { error: "Internal server error" };
   }
 }
