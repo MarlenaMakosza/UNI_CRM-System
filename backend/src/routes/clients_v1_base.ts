@@ -4,7 +4,7 @@ import {
   CreateClientRequest,
   UpdateClientRequest,
 } from "../Requests/CreateClientRequest.ts";
-import { ClientDetail, ClientListItem } from "../Types/clients.ts";
+import { ClientDetail, ClientListItem } from "../types/clients.ts";
 
 export const clientsRouter = new Router({ prefix: "/api/clients" });
 
