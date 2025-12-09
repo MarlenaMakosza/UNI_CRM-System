@@ -303,11 +303,22 @@ clientsRouter.patch("/:id", async (ctx) => {
     const current = rows[0];
 
     // 2) Wyciągamy z body to, co ewentualnie przyszło
+    const {
+      nip,
+      nazwa_firmy,
+      imie,
+      nazwisko,
+      stanowisko,
+      email,
+      telefon,
+      status_kod,
+      adres,
+    } = data;
 
     // ✅ WALIDACJA: Jeśli zmienia NIP, sprawdź duplikat
-    if (data.nip && data.nip !== current.nip) {
+    if (nip && nip !== current.nip) {
       const existingClient = await sql`
-        SELECT id FROM klient WHERE nip = ${data.nip} AND id != ${id} LIMIT 1
+        SELECT id FROM klient WHERE nip = ${nip} AND id != ${id} LIMIT 1
       `;
       if (existingClient.length > 0) {
         ctx.response.status = 409;
@@ -318,10 +329,10 @@ clientsRouter.patch("/:id", async (ctx) => {
 
     // 3) Ustalenie nowego statusu (jeśli podano status_kod)
     let statusId = current.status_klienta_id;
-    if (typeof data.status_kod === "string") {
+    if (typeof status_kod === "string") {
       const statusRows = await sql`
         SELECT id FROM status_klienta
-        WHERE kod = ${data.status_kod}
+        WHERE kod = ${status_kod}
         LIMIT 1
       `;
       if (statusRows.length === 0) {
@@ -334,23 +345,23 @@ clientsRouter.patch("/:id", async (ctx) => {
 
     // 4) Zmergowane dane adresu
     const mergedAddress = {
-      ulica: data.adres?.ulica ?? current.ulica,
-      numer_budynku: data.adres?.numer_budynku ?? current.numer_budynku,
-      numer_lokalu: data.adres?.numer_lokalu ?? current.numer_lokalu,
-      kod_pocztowy: data.adres?.kod_pocztowy ?? current.kod_pocztowy,
-      miejscowosc: data.adres?.miejscowosc ?? current.miejscowosc,
-      wojewodztwo: data.adres?.wojewodztwo ?? current.wojewodztwo,
+      ulica: adres?.ulica ?? current.ulica,
+      numer_budynku: adres?.numer_budynku ?? current.numer_budynku,
+      numer_lokalu: adres?.numer_lokalu ?? current.numer_lokalu,
+      kod_pocztowy: adres?.kod_pocztowy ?? current.kod_pocztowy,
+      miejscowosc: adres?.miejscowosc ?? current.miejscowosc,
+      wojewodztwo: adres?.wojewodztwo ?? current.wojewodztwo,
     };
 
     // 5) Zmergowane dane klienta
     const mergedClient = {
-      nip: data.nip ?? current.nip,
-      nazwa_firmy: data.nazwa_firmy ?? current.nazwa_firmy,
-      imie: data.imie ?? current.imie,
-      nazwisko: data.nazwisko ?? current.nazwisko,
-      stanowisko: data.stanowisko ?? current.stanowisko,
-      email: data.email ?? current.email,
-      telefon: data.telefon ?? current.telefon,
+      nip: nip ?? current.nip,
+      nazwa_firmy: nazwa_firmy ?? current.nazwa_firmy,
+      imie: imie ?? current.imie,
+      nazwisko: nazwisko ?? current.nazwisko,
+      stanowisko: stanowisko ?? current.stanowisko,
+      email: email ?? current.email,
+      telefon: telefon ?? current.telefon,
     };
 
     // 6) UPDATE adres
