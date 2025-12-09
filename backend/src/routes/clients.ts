@@ -7,40 +7,6 @@ import {
 
 export const clientsRouter = new Router({ prefix: "/api/clients" });
 
-// ===== TYPY =====
-type ClientListItem = {
-  id: number;
-  nip: string;
-  nazwa_firmy: string;
-  email: string;
-  telefon: string | null;
-  miejscowosc: string;
-  kod_pocztowy: string;
-  status_kod: string;
-};
-
-type Address = {
-  ulica: string;
-  numer_budynku: string;
-  numer_lokalu: string | null;
-  kod_pocztowy: string;
-  miejscowosc: string;
-  wojewodztwo: string;
-};
-
-type ClientDetail = {
-  id: number;
-  nip: string;
-  nazwa_firmy: string;
-  imie: string;
-  nazwisko: string;
-  stanowisko: string | null;
-  email: string;
-  telefon: string | null;
-  status_kod: string;
-  adres: Address;
-};
-
 // GET /api/clients  – lista klientów
 clientsRouter.get("/", async (ctx) => {
   try {
