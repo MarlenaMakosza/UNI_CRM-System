@@ -12,20 +12,20 @@ export const clientsRouter = new Router({ prefix: "/api/clients" });
 clientsRouter.get("/", async (ctx) => {
   try {
     const clients = await sql<ClientListItem[]>`
-    SELECT
-      k.id,
-      k.nip,
-      k.nazwa_firmy,
-      k.email,
-      k.telefon,
-      a.miejscowosc,
-      a.kod_pocztowy,
-      s.kod AS status_kod
-    FROM klient k
-    JOIN adres a ON k.adres_id = a.id
-    JOIN status_klienta s ON k.status_klienta_id = s.id
-    ORDER BY k.created_at DESC
-  `;
+      SELECT
+        k.id,
+        k.nip,
+        k.nazwa_firmy,
+        k.email,
+        k.telefon,
+        a.miejscowosc,
+        a.kod_pocztowy,
+        s.kod AS status_kod
+      FROM klient k
+      JOIN adres a ON k.adres_id = a.id
+      JOIN status_klienta s ON k.status_klienta_id = s.id
+      ORDER BY k.created_at DESC
+    `;
 
     ctx.response.body = clients;
     ctx.response.status = 200;
