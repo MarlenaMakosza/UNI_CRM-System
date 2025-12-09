@@ -152,41 +152,41 @@ clientsRouter.post("/", async (ctx) => {
 
     // Wstaw adres
     const adresRows = await sql`
-    INSERT INTO adres (
-      ulica, numer_budynku, numer_lokalu,
-      kod_pocztowy, miejscowosc, wojewodztwo
-    )
-    VALUES (
-      ${data.adres.ulica ?? null},
-      ${data.adres.numer_budynku},
-      ${data.adres.numer_lokalu ?? null},
-      ${data.adres.kod_pocztowy},
-      ${data.adres.miejscowosc},
-      ${data.adres.wojewodztwo ?? null}
-    )
-    RETURNING id
-  `;
+      INSERT INTO adres (
+        ulica, numer_budynku, numer_lokalu,
+        kod_pocztowy, miejscowosc, wojewodztwo
+      )
+      VALUES (
+        ${data.adres.ulica ?? null},
+        ${data.adres.numer_budynku},
+        ${data.adres.numer_lokalu ?? null},
+        ${data.adres.kod_pocztowy},
+        ${data.adres.miejscowosc},
+        ${data.adres.wojewodztwo ?? null}
+      )
+      RETURNING id
+    `;
     const adresId = adresRows[0].id;
 
-    // 3) klient
+    // Wstaw klienta
     const clientRows = await sql`
-    INSERT INTO klient (
-      nip, nazwa_firmy, imie, nazwisko, stanowisko,
-      email, telefon, adres_id, status_klienta_id
-    )
-    VALUES (
-      ${data.nip},
-      ${data.nazwa_firmy},
-      ${data.imie ?? null},
-      ${data.nazwisko ?? null},
-      ${data.stanowisko ?? null},
-      ${data.email},
-      ${data.telefon ?? null},
-      ${adresId},
-      ${statusId}
-    )
-    RETURNING *
-  `;
+      INSERT INTO klient (
+        nip, nazwa_firmy, imie, nazwisko, stanowisko,
+        email, telefon, adres_id, status_klienta_id
+      )
+      VALUES (
+        ${data.nip},
+        ${data.nazwa_firmy},
+        ${data.imie ?? null},
+        ${data.nazwisko ?? null},
+        ${data.stanowisko ?? null},
+        ${data.email},
+        ${data.telefon ?? null},
+        ${adresId},
+        ${statusId}
+      )
+      RETURNING *
+    `;
 
     ctx.response.body = clientRows[0];
     ctx.response.status = 201;
