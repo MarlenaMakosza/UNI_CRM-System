@@ -1,5 +1,5 @@
-import { Application, Router} from "oak";
-import { clientsRouter } from "./routes/clients.ts";
+import { Application, Router } from "oak";
+import { clientsRouter } from "./routes/clients_v4_Controller.ts";
 import { healthcheck } from "./routes/health.ts";
 
 const app = new Application();
@@ -30,5 +30,5 @@ app.use(healthcheck.allowedMethods());
 const PORT = Number(Deno.env.get("PORT") ?? "8080");
 console.log(`API listening at http://localhost:${PORT}`);
 console.log(`Check health there -> http://localhost:${PORT}/api/health`);
-console.log(`Check clients there -? http://localhost:${PORT}/api/clients`)
+console.log(`Check clients there -? http://localhost:${PORT}/api/clients`);
 await app.listen({ port: PORT });
