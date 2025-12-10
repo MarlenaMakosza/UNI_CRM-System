@@ -2,10 +2,8 @@ import { sql } from "db";
 import { ClientDetail, ClientListItem } from "../types/clients.ts";
 import * as Dto from "../dto/dto.ts";
 
-// ===== QUERIES =====
-
-export async function getAllClients(): Promise<ClientListItem[]> {
-  return await sql<ClientListItem[]>`
+export function getAllClients(): Promise<ClientListItem[]> {
+  return sql<ClientListItem[]>`
     SELECT
       k.id, k.nip, k.nazwa_firmy, k.email, k.telefon,
       a.miejscowosc, a.kod_pocztowy, s.kod AS status_kod
@@ -16,6 +14,7 @@ export async function getAllClients(): Promise<ClientListItem[]> {
   `;
 }
 
+// Wywalić null? Jak?
 export async function getClientById(id: number): Promise<ClientDetail | null> {
   const raw = await sql`
     SELECT
@@ -31,6 +30,7 @@ export async function getClientById(id: number): Promise<ClientDetail | null> {
   `;
 
   if (raw.length === 0) {
+    // TODO ZMIEŃ NULLA NA COŚ Z SENSEM
     return null;
   }
 

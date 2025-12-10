@@ -39,6 +39,7 @@ export type UpdateClientData = {
   status_klienta_id: number;
 };
 
+//TODO typy łączone może?
 export type ClientWithAddress = {
   id: number;
   nip: string;
