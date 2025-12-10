@@ -1,9 +1,11 @@
 import { sql } from "db";
-import { ClientDetail, ClientListItem } from "../types/clients.ts";
 import * as Dto from "../dto/dto.ts";
 
-export function getAllClients(): Promise<ClientListItem[]> {
-  return sql<ClientListItem[]>`
+import { Address, Client } from "../types/index.ts";
+import { ClientNotFoundError } from "../utils/errorHandler.ts";
+
+export function getAllClients(): Promise<Client[]> {
+  return sql<Client[]>`
     SELECT
       k.id, k.nip, k.nazwa_firmy, k.email, k.telefon,
       a.miejscowosc, a.kod_pocztowy, s.kod AS status_kod
@@ -14,14 +16,13 @@ export function getAllClients(): Promise<ClientListItem[]> {
   `;
 }
 
-// Wywalić null? Jak?
-export async function getClientById(id: number): Promise<ClientDetail | null> {
+export async function getClientById(id: number): Promise<Client> {
   const raw = await sql`
     SELECT
       k.id, k.nip, k.nazwa_firmy, k.imie, k.nazwisko, k.stanowisko,
-      k.email, k.telefon, s.kod AS status_kod,
+      k.email, k.telefon, k.created_at, s.kod AS status_kod,
       a.ulica, a.numer_budynku, a.numer_lokalu,
-      a.kod_pocztowy, a.miejscowosc, a.wojewodztwo
+      a.kod_pocztowy, a.miejscowosc, a.wojewodztwo, a.id AS adres_id
     FROM klient k
     JOIN adres a ON k.adres_id = a.id
     JOIN status_klienta s ON k.status_klienta_id = s.id
@@ -30,34 +31,37 @@ export async function getClientById(id: number): Promise<ClientDetail | null> {
   `;
 
   if (raw.length === 0) {
-    // TODO ZMIEŃ NULLA NA COŚ Z SENSEM
-    return null;
+    throw new ClientNotFoundError(id);
   }
 
-  const row = raw[0];
-  return {
-    id: row.id,
-    nip: row.nip,
-    nazwa_firmy: row.nazwa_firmy,
-    imie: row.imie,
-    nazwisko: row.nazwisko,
-    stanowisko: row.stanowisko,
-    email: row.email,
-    telefon: row.telefon,
-    status_kod: row.status_kod,
+  const rawClient = raw[0];
+  console.log(rawClient);
+  const client = {
+    id: rawClient.id,
+    nip: rawClient.nip,
+    nazwa_firmy: rawClient.nazwa_firmy,
+    imie: rawClient.imie,
+    nazwisko: rawClient.nazwisko,
+    stanowisko: rawClient.stanowisko,
+    email: rawClient.email,
+    telefon: rawClient.telefon,
+    status_kod: rawClient.status_kod,
+    created_at: rawClient.created_at,
     adres: {
-      ulica: row.ulica,
-      numer_budynku: row.numer_budynku,
-      numer_lokalu: row.numer_lokalu,
-      kod_pocztowy: row.kod_pocztowy,
-      miejscowosc: row.miejscowosc,
-      wojewodztwo: row.wojewodztwo,
+      id: rawClient.adres_id,
+      ulica: rawClient.ulica,
+      numer_budynku: rawClient.numer_budynku,
+      numer_lokalu: rawClient.numer_lokalu,
+      kod_pocztowy: rawClient.kod_pocztowy,
+      miejscowosc: rawClient.miejscowosc,
+      wojewodztwo: rawClient.wojewodztwo,
     },
   };
+  return client;
 }
 
 export async function createAddress(
-  adres: Dto.CreateAddressData,
+  adres: Address,
 ): Promise<number> {
   const adresRows = await sql`
     INSERT INTO adres (
@@ -65,12 +69,12 @@ export async function createAddress(
       kod_pocztowy, miejscowosc, wojewodztwo
     )
     VALUES (
-      ${adres.ulica ?? null},
+      ${adres.ulica},
       ${adres.numer_budynku},
       ${adres.numer_lokalu ?? null},
       ${adres.kod_pocztowy},
       ${adres.miejscowosc},
-      ${adres.wojewodztwo ?? null}
+      ${adres.wojewodztwo}
     )
     RETURNING id
   `;
