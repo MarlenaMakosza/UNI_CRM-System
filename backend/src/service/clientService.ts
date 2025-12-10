@@ -51,6 +51,7 @@ export async function updateExistingClient(
   id: number,
   data: UpdateClientRequest,
 ): Promise<ClientRow | null> {
+  //wtf przecież to zwykłe getById się nada... które będzie miało też status_id...
   const current = await clientRepo.getClientWithAddress(id);
   if (!current) {
     return null;
@@ -87,6 +88,7 @@ export async function updateExistingClient(
     status_klienta_id: statusId,
   };
 
+  //tu zastosować magic z .then?
   await clientRepo.updateAddress(current.adres_id, mergedAddress);
   const updatedClient = await clientRepo.updateClient(id, mergedClient);
 

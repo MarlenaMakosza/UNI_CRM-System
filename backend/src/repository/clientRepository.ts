@@ -4,6 +4,10 @@ import * as Dto from "../dto/dto.ts";
 import { Address, Client } from "../types/index.ts";
 import { ClientNotFoundError } from "../utils/errorHandler.ts";
 
+/**
+ * Pobierz listę wszystkich klientów
+ * @returns {Promise<Client[]>} - lista wszystkich klientów
+ */
 export function getAllClients(): Promise<Client[]> {
   return sql<Client[]>`
     SELECT
@@ -16,6 +20,12 @@ export function getAllClients(): Promise<Client[]> {
   `;
 }
 
+/**
+ * Pobierz klienta po jego ID
+ * @param {number} id - ID klienta
+ * @returns {Promise<Client>} - Klient o podanym ID lub null, jeśli klient nie istnieje
+ * @throws {ClientNotFoundError} - jeśli klient nie istnieje
+ */
 export async function getClientById(id: number): Promise<Client> {
   const raw = await sql`
     SELECT
@@ -60,6 +70,11 @@ export async function getClientById(id: number): Promise<Client> {
   return client;
 }
 
+/**
+ * Tworzy nowy rekord w tabeli `adres` z danymi wartościami
+ * @param {Address} adres - obiekt z danymi wartościami
+ * @returns {Promise<number>} - ID nowo utworzonego rekordu
+ */
 export async function createAddress(
   adres: Address,
 ): Promise<number> {
@@ -81,6 +96,11 @@ export async function createAddress(
   return adresRows[0].id;
 }
 
+/**
+ * Tworzy nowy rekord w tabeli `klient` z danymi wartościami
+ * @param {Dto.CreateClientData} client - obiekt z danymi wartościami
+ * @returns {Promise<Dto.ClientRow>} - nowo utworzony rekord
+ */
 export async function createClient(
   client: Dto.CreateClientData,
 ): Promise<Dto.ClientRow> {
