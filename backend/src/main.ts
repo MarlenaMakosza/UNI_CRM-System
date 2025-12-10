@@ -1,5 +1,5 @@
 import { Application, Router } from "oak";
-import { clientsRouter } from "./routes/clients_v4_Controller.ts";
+import { clientsRouter } from "./routes/clientsController.ts";
 import { healthcheck } from "./routes/health.ts";
 
 const app = new Application();
