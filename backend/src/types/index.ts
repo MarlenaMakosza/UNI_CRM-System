@@ -3,14 +3,7 @@
 // ============================================================================
 
 // Domain
-export type { Address, ClientBase, NewClient, Client } from "./domain.ts";
-
-// Requests
-export type { CreateClientRequest, UpdateClientRequest } from "./requests.ts";
-export { toEmptyString } from "./requests.ts";
-
-// Responses
-export type { ClientListResponse, ClientDetailResponse } from "./responses.ts";
+export type { Address, Client, ClientBase, NewClient } from "./domain.ts";
 
 // Utils
-export { nullToEmpty, undefinedToEmpty, isEmpty } from "./utils.ts";
+export { isEmpty, nullToEmpty, undefinedToEmpty } from "./utils.ts";

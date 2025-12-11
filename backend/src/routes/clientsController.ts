@@ -44,7 +44,8 @@ clientsRouter.post("/", async (ctx) => {
     const body = ctx.request.body({ type: "json" });
     const data = await body.value;
 
-    const newClient = await clientService.createNewClient(data);
+    const newClient = await clientService.createClient(data);
+    console.log("Client created successfully");
 
     ctx.response.body = newClient;
     ctx.response.status = 201;
@@ -62,7 +63,7 @@ clientsRouter.patch("/:id", async (ctx) => {
     const body = ctx.request.body({ type: "json" });
     const data = await body.value;
 
-    const updatedClient = await clientService.updateExistingClient(id, data);
+    const updatedClient = await clientService.updateClient(id, data);
 
     if (!updatedClient) {
       ctx.response.status = 404;

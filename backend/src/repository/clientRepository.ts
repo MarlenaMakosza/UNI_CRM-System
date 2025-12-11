@@ -1,5 +1,4 @@
 import { sql } from "db";
-import * as Dto from "../dto/dto.ts";
 
 import { Address, Client, NewClient } from "../types/index.ts";
 import { ClientNotFoundError } from "../utils/errorHandler.ts";
@@ -45,8 +44,7 @@ export async function getClientById(id: number): Promise<Client> {
   }
 
   const rawClient = raw[0];
-  console.log(rawClient);
-  const client = {
+  const client: Client = {
     id: rawClient.id,
     nip: rawClient.nip,
     nazwa_firmy: rawClient.nazwa_firmy,
@@ -86,13 +84,17 @@ export async function createAddress(
     VALUES (
       ${adres.ulica},
       ${adres.numer_budynku},
-      ${adres.numer_lokalu ?? null},
+      ${adres.numer_lokalu ?? ""},
       ${adres.kod_pocztowy},
       ${adres.miejscowosc},
       ${adres.wojewodztwo}
     )
     RETURNING id
   `;
+  if (adresRows.length === 0) {
+    throw new Error("Failed to create address");
+  }
+
   return adresRows[0].id;
 }
 
@@ -122,52 +124,36 @@ export async function createClient(
     )
     RETURNING id
   `;
+  if (clientRows.length === 0) {
+    throw new Error("Failed to create client");
+  }
   return clientRows[0].id;
 }
 
-export async function getClientWithAddress(
-  id: number,
-): Promise<Client> {
-  const rows = await sql<Client[]>`
-    SELECT
-      k.id, k.nip, k.nazwa_firmy, k.imie, k.nazwisko, k.stanowisko,
-      k.email, k.telefon, k.status_klienta_id, k.adres_id,
-      a.ulica, a.numer_budynku, a.numer_lokalu,
-      a.kod_pocztowy, a.miejscowosc, a.wojewodztwo
-    FROM klient k
-    JOIN adres a ON k.adres_id = a.id
-    WHERE k.id = ${id}
-    LIMIT 1
-  `;
+export async function updateAddress(adres: Address): Promise<void> {
+  const result = await sql`
+     UPDATE adres
+     SET
+       ulica = ${adres.ulica},
+       numer_budynku = ${adres.numer_budynku},
+       numer_lokalu = ${adres.numer_lokalu ?? ""},
+       kod_pocztowy = ${adres.kod_pocztowy},
+       miejscowosc = ${adres.miejscowosc},
+       wojewodztwo = ${adres.wojewodztwo}
+     WHERE id = ${adres.id}
+     RETURNING id
+   `;
 
-  if (rows.length === 0) {
-    throw new ClientNotFoundError(id);
+  if (result.length === 0) {
+    throw new Error(`Address with id ${adres.id} not found`);
   }
-  return rows[0];
-}
-
-export async function updateAddress(
-  adresId: number,
-  adres: Dto.UpdateAddressData,
-): Promise<void> {
-  await sql`
-    UPDATE adres
-    SET
-      ulica = ${adres.ulica},
-      numer_budynku = ${adres.numer_budynku},
-      numer_lokalu = ${adres.numer_lokalu},
-      kod_pocztowy = ${adres.kod_pocztowy},
-      miejscowosc = ${adres.miejscowosc},
-      wojewodztwo = ${adres.wojewodztwo}
-    WHERE id = ${adresId}
-  `;
 }
 
 export async function updateClient(
   id: number,
-  client: Dto.UpdateClientData,
-): Promise<Dto.ClientRow> {
-  const updatedClientRows = await sql<Dto.ClientRow[]>`
+  client: NewClient,
+): Promise<void> {
+  const result = await sql<NewClient[]>`
     UPDATE klient
     SET
       nip = ${client.nip},
@@ -179,15 +165,53 @@ export async function updateClient(
       telefon = ${client.telefon},
       status_klienta_id = ${client.status_klienta_id}
     WHERE id = ${id}
-    RETURNING *
+    RETURNING id
   `;
-  return updatedClientRows[0];
+  if (result.length === 0) {
+    throw new Error(`Client with id ${id} not found`);
+  }
 }
 
 export async function deleteClient(id: number): Promise<boolean> {
   const result = await sql`
     DELETE FROM klient WHERE id = ${id}
     RETURNING id
+  `;
+
+  if (result.length === 0) {
+    throw new ClientNotFoundError(id);
+  }
+
+  return true;
+}
+
+export async function getStatusId(status_kod: string): Promise<number> {
+  const statusRows = await sql`
+    SELECT id FROM status_klienta
+    WHERE kod = ${status_kod}
+    LIMIT 1
+  `;
+  if (statusRows.length === 0) {
+    throw new Error(`Status with code '${status_kod}' not found`);
+  }
+
+  return statusRows[0].id;
+}
+
+// Sprawdź czy NIP już istnieje
+export async function checkNipExists(
+  nip: string,
+  excludeId?: number,
+): Promise<boolean> {
+  if (excludeId) {
+    const result = await sql`
+      SELECT id FROM klient WHERE nip = ${nip} AND id != ${excludeId} LIMIT 1
+    `;
+    return result.length > 0;
+  }
+
+  const result = await sql`
+    SELECT id FROM klient WHERE nip = ${nip} LIMIT 1
   `;
   return result.length > 0;
 }

@@ -1,8 +1,7 @@
 import * as clientRepo from "../repository/clientRepository.ts";
 
-import { Client, NewClient } from "../types/index.ts";
-import { getStatusId } from "../utils/database.ts";
-import { validateCreateClient } from "../utils/validation.ts";
+import { Address, Client, NewClient } from "../types/index.ts";
+import { validateClient } from "../utils/validation.ts";
 
 export function listAllClients(): Promise<Client[]> {
   return clientRepo.getAllClients();
@@ -14,12 +13,12 @@ export function getClientDetails(
   return clientRepo.getClientById(id);
 }
 
-export async function createNewClient(
+export async function createClient(
   request: Client,
 ): Promise<Client> {
-  validateCreateClient(request);
+  validateClient(request);
 
-  const statusId: number = await getStatusId(request.status_kod);
+  const statusId: number = await clientRepo.getStatusId(request.status_kod);
   const adresId: number = await clientRepo.createAddress(request.adres);
 
   const newClientData: NewClient = {
@@ -36,54 +35,47 @@ export async function createNewClient(
 
   const createdClientId: number = await clientRepo.createClient(newClientData);
 
-  // Pobierz pełny obiekt Client z JOIN
   return await clientRepo.getClientById(createdClientId);
 }
 
-// export async function updateExistingClient(
-//   id: number,
-//   data: Client,
-// ): Promise<Client> {
-//   //wtf przecież to zwykłe getById się nada... które będzie miało też status_id...
-//   const current = await clientRepo.getClientWithAddress(id);
+export async function updateClient(
+  id: number,
+  newData: Client,
+): Promise<Client> {
+  const oldData = await clientRepo.getClientById(id);
 
-//   await validateClientForUpdate(data, current.nip, id);
+  validateClient(newData);
 
-//   let statusId = current.status_klienta_id;
-//   if (data.status_kod) {
-//     const newStatusId = await getStatusId(data.status_kod);
-//     if (!newStatusId) {
-//       throw new Error("Status not found");
-//     }
-//     statusId = newStatusId;
-//   }
+  const statusId: number = await clientRepo.getStatusId(newData.status_kod);
 
-//   const mergedAddress = {
-//     ulica: data.adres?.ulica ?? current.ulica,
-//     numer_budynku: data.adres?.numer_budynku ?? current.numer_budynku,
-//     numer_lokalu: data.adres?.numer_lokalu ?? current.numer_lokalu,
-//     kod_pocztowy: data.adres?.kod_pocztowy ?? current.kod_pocztowy,
-//     miejscowosc: data.adres?.miejscowosc ?? current.miejscowosc,
-//     wojewodztwo: data.adres?.wojewodztwo ?? current.wojewodztwo,
-//   };
+  const mergedAddress: Address = {
+    id: oldData.adres.id,
+    ulica: newData.adres.ulica ?? oldData.adres.ulica,
+    numer_budynku: newData.adres.numer_budynku ??
+      oldData.adres.numer_budynku,
+    numer_lokalu: newData.adres.numer_lokalu ?? oldData.adres.numer_lokalu,
+    kod_pocztowy: newData.adres.kod_pocztowy ?? oldData.adres.kod_pocztowy,
+    miejscowosc: newData.adres.miejscowosc ?? oldData.adres.miejscowosc,
+    wojewodztwo: newData.adres.wojewodztwo ?? oldData.adres.wojewodztwo,
+  };
 
-//   const mergedClient = {
-//     nip: data.nip ?? current.nip,
-//     nazwa_firmy: data.nazwa_firmy ?? current.nazwa_firmy,
-//     imie: data.imie ?? current.imie,
-//     nazwisko: data.nazwisko ?? current.nazwisko,
-//     stanowisko: data.stanowisko ?? current.stanowisko,
-//     email: data.email ?? current.email,
-//     telefon: data.telefon ?? current.telefon,
-//     status_klienta_id: statusId,
-//   };
+  const mergedClient: NewClient = {
+    nip: newData.nip ?? oldData.nip,
+    nazwa_firmy: newData.nazwa_firmy ?? oldData.nazwa_firmy,
+    imie: newData.imie ?? oldData.imie,
+    nazwisko: newData.nazwisko ?? oldData.nazwisko,
+    stanowisko: newData.stanowisko ?? oldData.stanowisko,
+    email: newData.email ?? oldData.email,
+    telefon: newData.telefon ?? oldData.telefon,
+    adres_id: oldData.adres.id,
+    status_klienta_id: statusId,
+  };
 
-//   //tu zastosować magic z .then?
-//   await clientRepo.updateAddress(current.adres_id, mergedAddress);
-//   const updatedClient = await clientRepo.updateClient(id, mergedClient);
+  await clientRepo.updateAddress(mergedAddress);
+  await clientRepo.updateClient(id, mergedClient);
 
-//   return updatedClient;
-// }
+  return await clientRepo.getClientById(id);
+}
 
 export async function removeClient(id: number): Promise<boolean> {
   return await clientRepo.deleteClient(id);

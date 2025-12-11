@@ -1,4 +1,4 @@
-import { sql } from "db";
+import { checkNipExists, getStatusId } from "../repository/clientRepository.ts";
 import { Client } from "../types/index.ts";
 
 // Custom error class
@@ -16,32 +16,14 @@ export function validateId(id: number): void {
   }
 }
 
-// Sprawdź czy NIP już istnieje
-async function checkNipExists(
-  nip: string,
-  excludeId?: number,
-): Promise<boolean> {
-  if (excludeId) {
-    const result = await sql`
-      SELECT id FROM klient WHERE nip = ${nip} AND id != ${excludeId} LIMIT 1
-    `;
-    return result.length > 0;
-  }
-
-  const result = await sql`
-    SELECT id FROM klient WHERE nip = ${nip} LIMIT 1
-  `;
-  return result.length > 0;
-}
-
-// Pobierz status_id po kodzie
-async function getStatusId(status_kod: string): Promise<number> {
-  const statusRows = await sql`
-    SELECT id FROM status_klienta
-    WHERE kod = ${status_kod}
-    LIMIT 1
-  `;
-  return statusRows.length > 0 ? statusRows[0].id : 0;
+// Walidacja formatów dla CreateClientRequest
+export async function validateClient(data: Client): Promise<void> {
+  validateRequiredFields(data);
+  validateNipFormat(data.nip);
+  validateEmailFormat(data.email);
+  validatePostalCodeFormat(data.adres.kod_pocztowy);
+  await validateNipNotDuplicated(data.nip);
+  await validateStatusExists(data.status_kod);
 }
 
 // Sprawdź czy wszystkie wymagane pola są wypełnione
@@ -75,16 +57,6 @@ function validatePostalCodeFormat(kod_pocztowy: string): void {
   }
 }
 
-// Walidacja formatów dla CreateClientRequest
-export function validateCreateClient(data: Client): void {
-  validateRequiredFields(data);
-  validateNipFormat(data.nip);
-  validateEmailFormat(data.email);
-  validatePostalCodeFormat(data.adres.kod_pocztowy);
-  validateNipNotDuplicated(data.nip);
-  validateStatusExists(data.status_kod);
-}
-
 // Sprawdź czy NIP nie jest zduplikowany
 async function validateNipNotDuplicated(
   nip: string,
@@ -100,46 +72,5 @@ async function validateStatusExists(status_kod: string): Promise<void> {
   const statusId = await getStatusId(status_kod);
   if (!statusId) {
     throw new ValidationError("Unknown status_kod");
-  }
-}
-
-// Walidacja dla tworzenia klienta (POST)
-export async function validateClientForCreation(
-  data: Client,
-): Promise<void> {
-  // Walidacja formatów
-  validateCreateClient(data);
-
-  // Sprawdź duplikat NIP
-  await validateNipNotDuplicated(data.nip);
-
-  // Sprawdź czy status istnieje
-  await validateStatusExists(data.status_kod);
-}
-
-// Walidacja dla aktualizacji klienta (PATCH)
-export async function validateClientForUpdate(
-  data: Client,
-  currentNip: string,
-  clientId: number,
-): Promise<void> {
-  // Sprawdź czy body nie jest pusty
-  if (!data || Object.keys(data).length === 0) {
-    throw new ValidationError("Empty body");
-  }
-
-  // Jeśli zmienia NIP, sprawdź duplikat
-  if (data.nip && data.nip !== currentNip) {
-    if (await checkNipExists(data.nip, clientId)) {
-      throw new ValidationError("Client with this NIP already exists", 409);
-    }
-  }
-
-  // Jeśli podano status, sprawdź czy istnieje
-  if (data.status_kod) {
-    const statusId = await getStatusId(data.status_kod);
-    if (!statusId) {
-      throw new ValidationError("Unknown status_kod");
-    }
   }
 }
