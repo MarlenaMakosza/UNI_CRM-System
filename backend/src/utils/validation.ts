@@ -26,6 +26,13 @@ export async function validateClient(data: Client): Promise<void> {
   await validateStatusExists(data.status_kod);
 }
 
+export async function validateUpdateClient(data: Client): Promise<void> {
+  validateRequiredFields(data);
+  validateEmailFormat(data.email);
+  validatePostalCodeFormat(data.adres.kod_pocztowy);
+  await validateStatusExists(data.status_kod);
+}
+
 // Sprawdź czy wszystkie wymagane pola są wypełnione
 function validateRequiredFields(data: Client): void {
   if (

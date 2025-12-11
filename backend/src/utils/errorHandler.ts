@@ -1,5 +1,5 @@
 import { Context } from "oak";
-import { ValidationError } from "../utils/validation.ts";
+import { ValidationError } from "./validation.ts";
 
 export function handleError(ctx: Context, error: unknown): void {
   if (error instanceof ClientNotFoundError) {
@@ -19,7 +19,7 @@ export function handleError(ctx: Context, error: unknown): void {
     ctx.response.body = { error: "Invalid ID" };
     return;
   }
-  console.error("Error:", error);
+  console.error("Unhandled error type:", error);
   ctx.response.status = 500;
   ctx.response.body = { error: "Internal server error" };
 }
