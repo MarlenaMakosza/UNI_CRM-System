@@ -3,7 +3,7 @@
 // ============================================================================
 
 // Domain
-export type { Address, ClientBase, Client } from "./domain.ts";
+export type { Address, ClientBase, NewClient, Client } from "./domain.ts";
 
 // Requests
 export type { CreateClientRequest, UpdateClientRequest } from "./requests.ts";

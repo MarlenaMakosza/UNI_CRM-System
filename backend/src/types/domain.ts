@@ -17,11 +17,9 @@ export type Address = {
 };
 
 /**
- * Klient - tabela `klient`
- * Zamiast null używamy pustego stringa ""
+ * Wspólne pola klienta (podstawowe dane biznesowe)
  */
 export type ClientBase = {
-  id: number;
   nip: string;
   nazwa_firmy: string;
   imie: string;
@@ -29,15 +27,22 @@ export type ClientBase = {
   stanowisko: string;
   email: string;
   telefon: string;
-  adres_id: number;
-  status_klienta_id: number;
-  created_at: Date;
 };
 
 /**
- * Klient z pełnym adresem (z JOIN)
+ * Nowy klient (do utworzenia w bazie)
  */
-export type Client = Omit<ClientBase, "adres_id" | "status_klienta_id"> & {
+export type NewClient = ClientBase & {
+  adres_id: number;
+  status_klienta_id: number;
+};
+
+/**
+ * Klient - pełny obiekt z danymi
+ */
+export type Client = ClientBase & {
+  id: number;
   adres: Address;
-  status_kod: string; // z tabeli status_klienta
+  status_kod: string;
+  created_at: Date;
 };

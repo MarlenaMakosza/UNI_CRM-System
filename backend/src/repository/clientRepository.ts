@@ -1,7 +1,7 @@
 import { sql } from "db";
 import * as Dto from "../dto/dto.ts";
 
-import { Address, Client } from "../types/index.ts";
+import { Address, Client, NewClient } from "../types/index.ts";
 import { ClientNotFoundError } from "../utils/errorHandler.ts";
 
 /**
@@ -97,14 +97,14 @@ export async function createAddress(
 }
 
 /**
- * Tworzy nowy rekord w tabeli `klient` z danymi wartościami
- * @param {Dto.CreateClientData} client - obiekt z danymi wartościami
- * @returns {Promise<Dto.ClientRow>} - nowo utworzony rekord
+ * Tworzy nowy rekord w tabeli `klient`
+ * @param {NewClient} client - dane nowego klienta
+ * @returns {Promise<number>} - ID utworzonego klienta
  */
 export async function createClient(
-  client: Dto.CreateClientData,
-): Promise<Dto.ClientRow> {
-  const clientRows = await sql<Dto.ClientRow[]>`
+  client: NewClient,
+): Promise<number> {
+  const clientRows = await sql<{ id: number }[]>`
     INSERT INTO klient (
       nip, nazwa_firmy, imie, nazwisko, stanowisko,
       email, telefon, adres_id, status_klienta_id
@@ -112,23 +112,23 @@ export async function createClient(
     VALUES (
       ${client.nip},
       ${client.nazwa_firmy},
-      ${client.imie ?? null},
-      ${client.nazwisko ?? null},
-      ${client.stanowisko ?? null},
+      ${client.imie},
+      ${client.nazwisko},
+      ${client.stanowisko},
       ${client.email},
-      ${client.telefon ?? null},
+      ${client.telefon},
       ${client.adres_id},
       ${client.status_klienta_id}
     )
-    RETURNING *
+    RETURNING id
   `;
-  return clientRows[0];
+  return clientRows[0].id;
 }
 
 export async function getClientWithAddress(
   id: number,
-): Promise<Dto.ClientWithAddress | null> {
-  const rows = await sql<Dto.ClientWithAddress[]>`
+): Promise<Client> {
+  const rows = await sql<Client[]>`
     SELECT
       k.id, k.nip, k.nazwa_firmy, k.imie, k.nazwisko, k.stanowisko,
       k.email, k.telefon, k.status_klienta_id, k.adres_id,
@@ -140,7 +140,10 @@ export async function getClientWithAddress(
     LIMIT 1
   `;
 
-  return rows.length > 0 ? rows[0] : null;
+  if (rows.length === 0) {
+    throw new ClientNotFoundError(id);
+  }
+  return rows[0];
 }
 
 export async function updateAddress(
