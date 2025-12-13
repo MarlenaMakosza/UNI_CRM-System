@@ -26,7 +26,7 @@ CREATE TABLE klient (
   nazwisko    VARCHAR(100) NOT NULL,
   stanowisko  VARCHAR(100) NOT NULL,
   email       VARCHAR(255) NOT NULL,
-  telefon     VARCHAR(30),
+  telefon     VARCHAR(30) NOT NULL,
   adres_id    INTEGER NOT NULL REFERENCES adres(id),
   status_klienta_id   INTEGER NOT NULL REFERENCES status_klienta(id),
   created_at  TIMESTAMP NOT NULL DEFAULT NOW(),
