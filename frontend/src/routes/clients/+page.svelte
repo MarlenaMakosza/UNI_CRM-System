@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
   import { type ClientSummary } from "../../lib/types/domain";
 
   let clients = $state<ClientSummary[]>([]);
@@ -19,6 +20,10 @@
       loading = false;
     }
   });
+
+  function openClient(clientId: number) {
+    goto(`/clients/${clientId}`);
+  }
 </script>
 
 <div class="container">
@@ -31,7 +36,13 @@
   {:else}
     <div class="clients-list">
       {#each clients as client}
-        <div class="client-card">
+        <div
+          class="client-card"
+          onclick={() => openClient(client.id)}
+          role="button"
+          tabindex="0"
+          onkeydown={(e) => e.key === "Enter" && openClient(client.id)}
+        >
           <h3>{client.company_data.nazwa_firmy}</h3>
           <p><strong>NIP:</strong> {client.company_data.nip}</p>
           <p>
@@ -71,6 +82,18 @@
     padding: 1.5rem;
     background: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .client-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    border-color: #2c5282;
+  }
+
+  .client-card:active {
+    transform: translateY(0);
   }
 
   .client-card h3 {
