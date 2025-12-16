@@ -1,38 +1,9 @@
 
 Opis procesu kontaktów z kontrahentami w firmie X.
 
-Firma  X  funkcjonuje  na  rynku  od  5  lat.  Swoją  siedzibę  ma  w  Zielonej  Górze.  Osiąga przychody  ze  sprzedaży  hurtowej  warzyw,  owoców,  itp.,  które  skupuje  od  rolników indywidualnych  (żywność  ekologiczna)  oraz  od  dużych  firm  (gospodarstwa  rolne  i  farmy drobiu).  Odbiorcami  firmy  X  są  zarówno  małe  sklepy  (teraz  jest  ich  25)  jak  i  3  duże  sieci sprzedaży dyskontowej. Obecnie firma chce poszerzyć swój rynek zbytu poprzez znalezienie większej  liczby  klientów  w  postaci  małych  sklepików  znajdujących  się  w  dużych aglomeracjach miejskich tj. w Poznaniu, Szczecinie, Wrocławiu (docelowo ma ich być około 200),  gdzie  zamierza  dostarczać  swoje  produkty.  W  tym  celu  chce  zakupić  system  który będzie  jej  umożliwiał  zorganizowanie  procesu  kontaktów  z  potencjalnymi  klientami  oraz intensyfikację  kontaktów  z  już  posiadanymi  klientami.  W  firmie  pracuje  obecnie  3
-przedstawicieli  handlowych.  Każdy  z  nich  działa  na  obszarze  jednej  miejscowości  np.  w
-Poznaniu.  Dotychczas  kontakty  z  potencjalnymi  klientami  odbywały  się  w  następujący
-sposób:
-Przedstawiciel  handlowy  na  podstawie  dostępnych  źródeł  (Internet,  prasa,  książki
-branżowe, spisy firm) pozyskiwał informację o istniejących firmach sprzedających produkty
-spożywcze i wprowadzał o nich informacje do bazy danych. Zawsze starał się także uzyskać
-informacje  o  tym,  kim  jest  osoba  decyzyjna,  która  podejmuje  wiążące  dla  danego  sklepu
-(decyzje  dotyczące  zakupów  od  konkretnych  dostawców),  następnie  próbował  wykonać
-telefon  do  tych  osób  i  umówić  się  z  nimi  na  spotkanie  w  celu  przedstawienia  oferty  firmy.
-Czasem zdarzało się, że już w trakcie rozmowy dokonywane było zamówienie na określony
-towar, jednak najczęściej przedstawiciel jechał na umówioną w trakcie rozmowy telefonicznej
-wizytę  do  danego  sklepiku.  Na  każdy  dzień  sporządzany  był  harmonogram,  w  którym
-widniały  adresy  firm  z  którymi  się  umówił  na  spotkanie  w  raz  z  godziną  planowanego
-spotkania.  Po  każdej  wizycie  w  sklepie  wprowadzane  były  informacje  o  efektach
-przeprowadzonych  rozmów.  Także  przedstawiciel  handlowy  starał  się  zanotować  ceny
-produktów  sprzedawanych  w  tym  sklepie,  po  to  aby  móc  później  przedstawić  własną
-korzystniejszą  ofertę.  Kilka  dni  po  wizycie,  jeżeli  nie  doszło  do  zawarcia  umowy  podczas
-spotkania  przedstawiciel  handlowy  dzwonił  jeszcze  raz  to  klienta  i  próbował  przedstawić
-korzystną ofertę (na podstawie informacji o cenach które pozyskał). Jeżeli umowa na dostawę
-określonych produktów została podpisana dzwonił w dzień po pierwszej dostawie produktów,
-żeby upewnić się że z dostarczonym towarem jest wszystko „ok” oraz czy nie są potrzebne
-inne produkty. Na postawie posiadanej bazy danych adresów e-mail raz w miesiącu wysyłany
-był do klientów newsletter z informacjami o najnowszych promocjach na określone produkty
-(było to proste zestawienie w postaci tekstowej typu produkt i jego cena).
-Szef firmy X często analizował do tej pory pracę swoich przedstawicieli i przekazywał
-im uwagi ustnie. Teraz chciałby móc mieć wgląd w ich pracę w nowym systemie. Interesują
-go szczególnie zestawienia dotyczące liczby odbytych wizyt, liczba zawartych umów, kwota
-zawartych  umów,  liczba  wykonanych  telefonów  oraz  zestawienie  planowanych  wizyt  dla
-każdego z przedstawicieli. Bardzo ważnym zestawieniem są dla szefa dotychczasowe obroty
-firmy  X  z  danym  kontrahentem  (najlepiej  jakby  była  możliwość  zestawienia  obrotów  na
-poszczególne  miesiące).  Zarówno  szef  firmy  jak  i  przedstawiciele  handlowi,  to  osoby  nie
-posiadające  wykształcenia  informatycznego,  dlatego  oczekują  że  nowe  rozwiązanie  będzie
-proste  w  obsłudze  i  będą  mieli  dostęp  do  wszystkich  potrzebnych  im  informacji  bez
-konieczności ich długiego szukania w systemie.
+Firma  X  funkcjonuje  na  rynku  od  5  lat.  Swoją  siedzibę  ma  w  Zielonej  Górze.  Osiąga przychody  ze  sprzedaży  hurtowej  warzyw,  owoców,  itp.,  które  skupuje  od  rolników indywidualnych  (żywność  ekologiczna)  oraz  od  dużych  firm  (gospodarstwa  rolne  i  farmy drobiu).  Odbiorcami  firmy  X  są  zarówno  małe  sklepy  (teraz  jest  ich  25)  jak  i  3  duże  sieci sprzedaży dyskontowej. Obecnie firma chce poszerzyć swój rynek zbytu poprzez znalezienie większej  liczby  klientów  w  postaci  małych  sklepików  znajdujących  się  w  dużych aglomeracjach miejskich tj. w Poznaniu, Szczecinie, Wrocławiu (docelowo ma ich być około 200),  gdzie  zamierza  dostarczać  swoje  produkty.  W  tym  celu  chce  zakupić  system  który będzie  jej  umożliwiał  zorganizowanie  procesu  kontaktów  z  potencjalnymi  klientami  oraz intensyfikację  kontaktów  z  już  posiadanymi  klientami.  W  firmie  pracuje  obecnie  3 przedstawicieli  handlowych.  Każdy  z  nich  działa  na  obszarze  jednej  miejscowości  np.  w Poznaniu.  Dotychczas  kontakty  z  potencjalnymi  klientami  odbywały  się  w  następujący sposób:
+
+Przedstawiciel  handlowy  na  podstawie  dostępnych  źródeł  (Internet,  prasa,  książki branżowe, spisy firm) pozyskiwał informację o istniejących firmach sprzedających produkty spożywcze i wprowadzał o nich informacje do bazy danych. Zawsze starał się także uzyskać informacje  o  tym,  kim  jest  osoba  decyzyjna,  która  podejmuje  wiążące  dla  danego  sklepu (decyzje  dotyczące  zakupów  od  konkretnych  dostawców),  następnie  próbował  wykonać telefon  do  tych  osób  i  umówić  się  z  nimi  na  spotkanie  w  celu  przedstawienia  oferty  firmy.
+Czasem zdarzało się, że już w trakcie rozmowy dokonywane było zamówienie na określony towar, jednak najczęściej przedstawiciel jechał na umówioną w trakcie rozmowy telefonicznej wizytę  do  danego  sklepiku.  Na  każdy  dzień  sporządzany  był  harmonogram,  w  którym widniały  adresy  firm  z  którymi  się  umówił  na  spotkanie  w  raz  z  godziną  planowanego spotkania.  Po  każdej  wizycie  w  sklepie  wprowadzane  były  informacje  o  efektach przeprowadzonych  rozmów.  Także  przedstawiciel  handlowy  starał  się  zanotować  ceny produktów  sprzedawanych  w  tym  sklepie,  po  to  aby  móc  później  przedstawić  własną korzystniejszą  ofertę.  Kilka  dni  po  wizycie,  jeżeli  nie  doszło  do  zawarcia  umowy  podczas spotkania  przedstawiciel  handlowy  dzwonił  jeszcze  raz  to  klienta  i  próbował  przedstawić korzystną ofertę (na podstawie informacji o cenach które pozyskał). Jeżeli umowa na dostawę określonych produktów została podpisana dzwonił w dzień po pierwszej dostawie produktów, żeby upewnić się że z dostarczonym towarem jest wszystko „ok” oraz czy nie są potrzebne inne produkty. Na postawie posiadanej bazy danych adresów e-mail raz w miesiącu wysyłany był do klientów newsletter z informacjami o najnowszych promocjach na określone produkty (było to proste zestawienie w postaci tekstowej typu produkt i jego cena).
+
+Szef firmy X często analizował do tej pory pracę swoich przedstawicieli i przekazywał im uwagi ustnie. Teraz chciałby móc mieć wgląd w ich pracę w nowym systemie. Interesują go szczególnie zestawienia dotyczące liczby odbytych wizyt, liczba zawartych umów, kwota zawartych  umów,  liczba  wykonanych  telefonów  oraz  zestawienie  planowanych  wizyt  dla każdego z przedstawicieli. Bardzo ważnym zestawieniem są dla szefa dotychczasowe obroty firmy  X  z  danym  kontrahentem  (najlepiej  jakby  była  możliwość  zestawienia  obrotów  na poszczególne  miesiące).  Zarówno  szef  firmy  jak  i  przedstawiciele  handlowi,  to  osoby  nie posiadające  wykształcenia  informatycznego,  dlatego  oczekują  że  nowe  rozwiązanie  będzie proste  w  obsłudze  i  będą  mieli  dostęp  do  wszystkich  potrzebnych  im  informacji  bez konieczności ich długiego szukania w systemie.
