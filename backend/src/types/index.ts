@@ -9,7 +9,7 @@ export type {
   ClientMetadata as NewClient,
   ClientSummary,
   StatusKlienta,
-} from "./domain.ts";
+} from "./clients.ts";
 
 // Database
 export type {
