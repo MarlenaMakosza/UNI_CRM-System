@@ -4,12 +4,7 @@ import {
   dbClientToClientSummary,
 } from "../mappers/clientMapper.ts";
 
-import { Client, ClientSummary } from "../types/domain.ts";
-// import {
-//   validateClient,
-//   validateUpdateClient,
-//   ValidationError,
-// } from "../utils/validation.ts";
+import { Client, ClientSummary } from "../types/index.ts";
 
 export async function listClients(): Promise<ClientSummary[]> {
   const dbClients = await clientRepo.getAllClients();

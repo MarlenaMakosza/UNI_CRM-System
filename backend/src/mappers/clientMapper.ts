@@ -10,11 +10,8 @@ import {
   ContactData,
   ContactPerson,
   StatusKlienta,
-} from "../types/domain.ts";
-import {
-  DbClientDetails,
-  DbClientSummaryRow,
-} from "../types/database.ts";
+} from "../types/index.ts";
+import { DbClientDetails, DbClientSummaryRow } from "../types/database.ts";
 import { nullToEmpty } from "../types/utils.ts";
 
 /**

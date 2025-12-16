@@ -5,9 +5,13 @@
 // Domain
 export type {
   Address,
+  AddressSummary,
   Client,
-  ClientMetadata as NewClient,
+  ClientMetadata,
   ClientSummary,
+  CompanyData,
+  ContactData,
+  ContactPerson,
   StatusKlienta,
 } from "./clients.ts";
 
