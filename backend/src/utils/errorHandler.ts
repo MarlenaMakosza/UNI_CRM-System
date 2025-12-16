@@ -31,8 +31,15 @@ export class DatabaseError extends Error {
 // ============================================================================
 
 /**
- * Główny handler błędów - mapuje błędy na odpowiednie HTTP response
- * Type-safe - używa instanceof zamiast porównywania stringów
+ * Handles errors in the application.
+ * If the error is a ClientNotFoundError, sets the status to 404 and the body to an ErrorResponse with the error message.
+ * If the error is a ValidationError, sets the status to the error's statusCode and the body to an ErrorResponse with the error message.
+ * If the error is an InvalidInputError, sets the status to 400 and the body to an ErrorResponse with the error message.
+ * If the error is a DatabaseError, sets the status to 500 and the body to an ErrorResponse with the error message and details.
+ * If the error is not recognized, sets the status to 500 and the body to an ErrorResponse with the error message "Internal server error".
+ * Logs the error to the console.
+ * @param {Context} ctx - The context of the request.
+ * @param {unknown} error - The error to handle.
  */
 export function handleError(ctx: Context, error: unknown): void {
   // 404 - Client nie istnieje

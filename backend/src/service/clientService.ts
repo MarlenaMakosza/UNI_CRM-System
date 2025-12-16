@@ -7,17 +7,21 @@ import {
 import { Client, ClientSummary } from "../types/index.ts";
 import { validateId } from "../utils/validation.ts";
 
+
 /**
  * Pobierz listę wszystkich klientów
+ * @returns {Promise<ClientSummary[]>} - lista wszystkich klientów
  */
 export async function listClients(): Promise<ClientSummary[]> {
   const dbClients = await clientRepo.getAllClients();
   return dbClients.map(dbClientToClientSummary);
 }
 
+
 /**
- * Pobierz szczegóły klienta po ID
- * Waliduje ID przed wykonaniem zapytania do bazy
+ * Pobierz pełne dane klienta o podanym ID
+ * @param {number} id - ID klienta
+ * @returns {Promise<Client>} - pełne dane klienta
  * @throws {InvalidInputError} gdy ID jest niepoprawne
  * @throws {ClientNotFoundError} gdy klient nie istnieje
  */

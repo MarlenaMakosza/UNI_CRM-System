@@ -4,7 +4,7 @@ CREATE TABLE adres (
   id SERIAL PRIMARY KEY,
   ulica VARCHAR(200) NOT NULL,
   numer_budynku VARCHAR(20) NOT NULL,
-  numer_lokalu VARCHAR(20),
+  numer_lokalu VARCHAR(20) NOT NULL DEFAULT '',
   kod_pocztowy CHAR(6) NOT NULL,
   miejscowosc VARCHAR(100) NOT NULL,
   wojewodztwo VARCHAR(50) NOT NULL,

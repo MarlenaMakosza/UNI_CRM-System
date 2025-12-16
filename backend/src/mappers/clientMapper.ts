@@ -1,5 +1,3 @@
-// Mapper do konwersji między typami bazy danych a typami domenowymi
-
 import {
   Address,
   AddressSummary,
@@ -12,10 +10,12 @@ import {
   StatusKlienta,
 } from "../types/index.ts";
 import { DbClientDetails, DbClientSummaryRow } from "../types/database.ts";
-import { nullToEmpty } from "../types/utils.ts";
 
 /**
- * Konwertuje surowy rekord z bazy (DbClientListItem) na domenowy ClientSummary
+ * Konwertuje surowy rekord z bazy (DbClientSummaryRow) na uproszczony
+ * strukturę ClientSummary
+ * @param dbClient - surowa rekord z bazy
+ * @returns ClientSummary - uproszczona struktura
  */
 export function dbClientToClientSummary(
   dbClient: DbClientSummaryRow,
@@ -44,7 +44,9 @@ export function dbClientToClientSummary(
 }
 
 /**
- * Konwertuje surowy rekord z bazy (DbClientDetails) na domenowy Client
+ * Konwertuje surowy rekord z bazy (DbClientDetails) na strukturę Client
+ * @param dbClient - surowa rekord z bazy
+ * @returns Client - uproszczona struktura
  */
 export function dbClientDetailsToClient(dbClient: DbClientDetails): Client {
   const clientMetadata: ClientMetadata = {
@@ -53,27 +55,27 @@ export function dbClientDetailsToClient(dbClient: DbClientDetails): Client {
   };
 
   const contactPerson: ContactPerson = {
-    imie: nullToEmpty(dbClient.imie),
-    nazwisko: nullToEmpty(dbClient.nazwisko),
-    stanowisko: nullToEmpty(dbClient.stanowisko),
+    imie: dbClient.imie,
+    nazwisko: dbClient.nazwisko,
+    stanowisko: dbClient.stanowisko,
     contact_data: {
-      email: nullToEmpty(dbClient.email),
-      telefon: nullToEmpty(dbClient.telefon),
+      email: dbClient.email,
+      telefon: dbClient.telefon,
     },
   };
 
   const companyData: CompanyData = {
-    nip: nullToEmpty(dbClient.nip),
-    nazwa_firmy: nullToEmpty(dbClient.nazwa_firmy),
+    nip: dbClient.nip,
+    nazwa_firmy: dbClient.nazwa_firmy,
   };
 
   const adres: Address = {
-    ulica: nullToEmpty(dbClient.ulica),
-    numer_budynku: nullToEmpty(dbClient.numer_budynku),
-    numer_lokalu: nullToEmpty(dbClient.numer_lokalu),
-    kod_pocztowy: nullToEmpty(dbClient.kod_pocztowy),
-    miejscowosc: nullToEmpty(dbClient.miejscowosc),
-    wojewodztwo: nullToEmpty(dbClient.wojewodztwo),
+    ulica: dbClient.ulica,
+    numer_budynku: dbClient.numer_budynku,
+    numer_lokalu: dbClient.numer_lokalu,
+    kod_pocztowy: dbClient.kod_pocztowy,
+    miejscowosc: dbClient.miejscowosc,
+    wojewodztwo: dbClient.wojewodztwo,
   };
 
   return {
