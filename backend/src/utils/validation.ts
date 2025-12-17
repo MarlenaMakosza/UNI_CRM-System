@@ -1,4 +1,4 @@
-import { CreateClientRequest } from "../types/index.ts";
+import { CreateClient } from "../types/index.ts";
 import { checkNipExists, getStatusId } from "../repository/clientRepository.ts";
 
 // ============================================================================
@@ -46,7 +46,7 @@ export function validateId(id: number): void {
  * @throws {ValidationError} gdy dane są niepoprawne
  */
 export async function validateCreateClient(
-  data: CreateClientRequest,
+  data: CreateClient,
 ): Promise<void> {
   validateRequiredFields(data);
   validateNipFormat(data.company_data.nip);
@@ -60,7 +60,7 @@ export async function validateCreateClient(
  * Sprawdź czy wszystkie wymagane pola są wypełnione
  * Dla zagnieżdżonej struktury CreateClientRequest
  */
-function validateRequiredFields(data: CreateClientRequest): void {
+function validateRequiredFields(data: CreateClient): void {
   // Sprawdź główne obiekty
   if (!data.contact_person || !data.company_data || !data.adres || !data.status_kod) {
     throw new ValidationError("Missing required top-level fields");
