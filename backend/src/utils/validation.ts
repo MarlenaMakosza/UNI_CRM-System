@@ -1,4 +1,4 @@
-import { CreateClient } from "../types/index.ts";
+import { CreateClient, UpdateClient } from "../types/index.ts";
 import { checkNipExists, getStatusId } from "../repository/clientRepository.ts";
 
 // ============================================================================
@@ -147,5 +147,64 @@ async function validateStatusExists(status_kod: string): Promise<void> {
   const statusId = await getStatusId(status_kod);
   if (!statusId) {
     throw new ValidationError("Unknown status_kod");
+  }
+}
+
+/**
+ * Walidacja dla częściowej aktualizacji klienta (PATCH)
+ * Waliduje tylko te pola które zostały przekazane w request
+ * @throws {ValidationError} gdy dane są niepoprawne
+ */
+export async function validateUpdateClient(
+  data: UpdateClient,
+  currentNip: string,
+  clientId: number,
+): Promise<void> {
+  // Sprawdź czy NIP nie został zmieniony (nie można zmienić NIP)
+  // NIP jest immutable - jeśli podano i jest inny niż obecny, odrzuć
+  if (data.company_data?.nip && data.company_data.nip !== currentNip) {
+    throw new ValidationError("NIP cannot be changed", 400);
+  }
+
+  // Waliduj format email jeśli został podany
+  if (data.contact_person?.contact_data?.email) {
+    validateEmailFormat(data.contact_person.contact_data.email);
+  }
+
+  // Waliduj format kodu pocztowego jeśli został podany
+  if (data.adres?.kod_pocztowy) {
+    validatePostalCodeFormat(data.adres.kod_pocztowy);
+  }
+
+  // Sprawdź czy status istnieje jeśli został podany
+  if (data.status_kod) {
+    await validateStatusExists(data.status_kod);
+  }
+
+  // Sprawdź czy nazwa firmy nie jest pusta jeśli została podana
+  if (data.company_data?.nazwa_firmy !== undefined && data.company_data.nazwa_firmy.trim() === "") {
+    throw new ValidationError("company_data.nazwa_firmy cannot be empty");
+  }
+
+  // Sprawdź czy pola contact_person nie są puste jeśli zostały podane
+  if (data.contact_person?.imie !== undefined && data.contact_person.imie.trim() === "") {
+    throw new ValidationError("contact_person.imie cannot be empty");
+  }
+  if (data.contact_person?.nazwisko !== undefined && data.contact_person.nazwisko.trim() === "") {
+    throw new ValidationError("contact_person.nazwisko cannot be empty");
+  }
+  if (data.contact_person?.stanowisko !== undefined && data.contact_person.stanowisko.trim() === "") {
+    throw new ValidationError("contact_person.stanowisko cannot be empty");
+  }
+  if (data.contact_person?.contact_data?.telefon !== undefined && data.contact_person.contact_data.telefon.trim() === "") {
+    throw new ValidationError("contact_person.contact_data.telefon cannot be empty");
+  }
+
+  // Sprawdź czy pola adresu nie są puste jeśli zostały podane
+  const addressFields = ["ulica", "numer_budynku", "kod_pocztowy", "miejscowosc", "wojewodztwo"] as const;
+  for (const field of addressFields) {
+    if (data.adres?.[field] !== undefined && data.adres[field]!.trim() === "") {
+      throw new ValidationError(`adres.${field} cannot be empty`);
+    }
   }
 }

@@ -46,46 +46,18 @@ clientsRouter.post("/", async (ctx) => {
   }
 });
 
-// // PATCH /api/clients/:id – aktualizacja klienta
-// clientsRouter.patch("/:id", async (ctx) => {
-//   try {
-//     const id = Number(ctx.params.id);
-//     validateId(id);
+// PATCH /api/clients/:id – częściowa aktualizacja klienta
+clientsRouter.patch("/:id", async (ctx) => {
+  try {
+    const id = Number(ctx.params.id);
+    const body = ctx.request.body({ type: "json" });
+    const data = await body.value;
 
-//     const body = ctx.request.body({ type: "json" });
-//     const data = await body.value;
+    const updatedClient = await clientService.updateClient(id, data);
 
-//     const updatedClient = await clientService.updateClient(id, data);
-
-//     if (!updatedClient) {
-//       ctx.response.status = 404;
-//       ctx.response.body = { error: "Client not found" };
-//       return;
-//     }
-
-//     ctx.response.body = updatedClient;
-//     ctx.response.status = 200;
-//   } catch (error) {
-//     handleError(ctx, error);
-//   }
-// });
-
-// // DELETE /api/clients/:id – usunięcie
-// clientsRouter.delete("/:id", async (ctx) => {
-//   try {
-//     const id = Number(ctx.params.id);
-//     validateId(id);
-
-//     const deleted = await clientService.removeClient(id);
-
-//     if (!deleted) {
-//       ctx.response.status = 404;
-//       ctx.response.body = { error: "Client not found" };
-//       return;
-//     }
-
-//     ctx.response.status = 204;
-//   } catch (error) {
-//     handleError(ctx, error);
-//   }
-// });
+    ctx.response.body = updatedClient;
+    ctx.response.status = 200;
+  } catch (error) {
+    handleError(ctx, error);
+  }
+});

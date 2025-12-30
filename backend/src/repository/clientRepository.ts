@@ -114,60 +114,64 @@ export async function createClient(
   return clientRows[0].id;
 }
 
-// export async function updateAddress(adres: Address): Promise<void> {
-//   const result = await sql`
-//      UPDATE adres
-//      SET
-//        ulica = ${adres.ulica},
-//        numer_budynku = ${adres.numer_budynku},
-//        numer_lokalu = ${adres.numer_lokalu ?? ""},
-//        kod_pocztowy = ${adres.kod_pocztowy},
-//        miejscowosc = ${adres.miejscowosc},
-//        wojewodztwo = ${adres.wojewodztwo}
-//      WHERE id = ${adres.id}
-//      RETURNING id
-//    `;
-//
-//   if (result.length === 0) {
-//     throw new Error(`Address with id ${adres.id} not found`);
-//   }
-// }
-//
-// export async function updateClient(
-//   id: number,
-//   client: NewClient,
-// ): Promise<void> {
-//   const result = await sql<NewClient[]>`
-//     UPDATE klient
-//     SET
-//       nip = ${client.nip},
-//       nazwa_firmy = ${client.nazwa_firmy},
-//       imie = ${client.imie},
-//       nazwisko = ${client.nazwisko},
-//       stanowisko = ${client.stanowisko},
-//       email = ${client.email},
-//       telefon = ${client.telefon},
-//       status_klienta_id = ${client.status_klienta_id}
-//     WHERE id = ${id}
-//     RETURNING id
-//   `;
-//   if (result.length === 0) {
-//     throw new Error(`Client with id ${id} not found`);
-//   }
-// }
-//
-// export async function deleteClient(id: number): Promise<boolean> {
-//   const result = await sql`
-//     DELETE FROM klient WHERE id = ${id}
-//     RETURNING id
-//   `;
-//
-//   if (result.length === 0) {
-//     throw new ClientNotFoundError(id);
-//   }
-//
-//   return true;
-// }
+/**
+ * Aktualizuje adres o podanym ID
+ * @param {number} id - ID adresu do aktualizacji
+ * @param {NewAddress} adres - nowe dane adresu
+ * @returns {Promise<void>}
+ * @throws {Error} jeśli adres nie istnieje
+ */
+export async function updateAddress(
+  id: number,
+  adres: NewAddress,
+): Promise<void> {
+  const result = await sql`
+     UPDATE adres
+     SET
+       ulica = ${adres.ulica},
+       numer_budynku = ${adres.numer_budynku},
+       numer_lokalu = ${adres.numer_lokalu},
+       kod_pocztowy = ${adres.kod_pocztowy},
+       miejscowosc = ${adres.miejscowosc},
+       wojewodztwo = ${adres.wojewodztwo}
+     WHERE id = ${id}
+     RETURNING id
+   `;
+
+  if (result.length === 0) {
+    throw new Error(`Address with id ${id} not found`);
+  }
+}
+
+/**
+ * Aktualizuje klienta o podanym ID
+ * @param {number} id - ID klienta do aktualizacji
+ * @param {NewClient} client - nowe dane klienta
+ * @returns {Promise<void>}
+ * @throws {Error} jeśli klient nie istnieje
+ */
+export async function updateClient(
+  id: number,
+  client: NewClient,
+): Promise<void> {
+  const result = await sql<{ id: number }[]>`
+    UPDATE klient
+    SET
+      nip = ${client.nip},
+      nazwa_firmy = ${client.nazwa_firmy},
+      imie = ${client.imie},
+      nazwisko = ${client.nazwisko},
+      stanowisko = ${client.stanowisko},
+      email = ${client.email},
+      telefon = ${client.telefon},
+      status_klienta_id = ${client.status_klienta_id}
+    WHERE id = ${id}
+    RETURNING id
+  `;
+  if (result.length === 0) {
+    throw new ClientNotFoundError(id);
+  }
+}
 
 export async function getStatusId(status_kod: string): Promise<number> {
   const statusRows = await sql`

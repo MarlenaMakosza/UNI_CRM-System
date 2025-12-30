@@ -6,9 +6,19 @@ import {
   dbClientToClientSummary,
 } from "../mappers/clientMapper.ts";
 
-import { Client, ClientSummary, CreateClient } from "../types/index.ts";
-import { validateId } from "../utils/validation.ts";
-import { validateCreateClient } from "../utils/validation.ts";
+import {
+  Client,
+  ClientSummary,
+  CreateClient,
+  NewAddress,
+  NewClient,
+  UpdateClient,
+} from "../types/index.ts";
+import {
+  validateCreateClient,
+  validateId,
+  validateUpdateClient,
+} from "../utils/validation.ts";
 
 /**
  * Pobierz listę wszystkich klientów
@@ -62,66 +72,71 @@ export async function createClient(
   return dbClientDetailsToClient(dbClient);
 }
 
-// export async function updateClient(
-//   id: number,
-//   newData: Partial<Client>,
-// ): Promise<Client> {
-//   const oldData = await clientRepo.getClientById(id);
+/**
+ * Częściowa aktualizacja klienta (PATCH)
+ * @param {number} id - ID klienta do aktualizacji
+ * @param {UpdateClient} updateData - częściowe dane do aktualizacji
+ * @returns {Promise<Client>} - zaktualizowany klient
+ * @throws {InvalidInputError} gdy ID jest niepoprawne
+ * @throws {ClientNotFoundError} gdy klient nie istnieje
+ * @throws {ValidationError} gdy dane są niepoprawne
+ */
+export async function updateClient(
+  id: number,
+  updateData: UpdateClient,
+): Promise<Client> {
+  // 1. Waliduj ID
+  validateId(id);
 
-//   // Merge danych przed walidacją
-//   const mergedAddress: Address = {
-//     id: oldData.adres.id,
-//     ulica: newData.adres?.ulica ?? oldData.adres.ulica,
-//     numer_budynku: newData.adres?.numer_budynku ?? oldData.adres.numer_budynku,
-//     numer_lokalu: newData.adres?.numer_lokalu ?? oldData.adres.numer_lokalu,
-//     kod_pocztowy: newData.adres?.kod_pocztowy ?? oldData.adres.kod_pocztowy,
-//     miejscowosc: newData.adres?.miejscowosc ?? oldData.adres.miejscowosc,
-//     wojewodztwo: newData.adres?.wojewodztwo ?? oldData.adres.wojewodztwo,
-//   };
+  // 2. Pobierz obecnego klienta z bazy (DbClientDetails - surowe dane)
+  const dbClient = await clientRepo.getClientById(id);
 
-//   const mergedClientData: Client = {
-//     id: oldData.id,
-//     nip: oldData.nip,
-//     nazwa_firmy: newData.nazwa_firmy ?? oldData.nazwa_firmy,
-//     imie: newData.imie ?? oldData.imie,
-//     nazwisko: newData.nazwisko ?? oldData.nazwisko,
-//     stanowisko: newData.stanowisko ?? oldData.stanowisko,
-//     email: newData.email ?? oldData.email,
-//     telefon: newData.telefon ?? oldData.telefon,
-//     created_at: oldData.created_at,
-//     status_kod: newData.status_kod ?? oldData.status_kod,
-//     adres: mergedAddress,
-//   };
+  // 3. Waliduj update request (sprawdź formaty, NIP nie zmieniony, etc.)
+  await validateUpdateClient(updateData, dbClient.nip, id);
 
-//   if (newData.nip && newData.nip !== oldData.nip) {
-//     throw new ValidationError("NIP cannot be changed", 400);
-//   }
+  // 4. Zmerguj dane adresu jeśli zostały przesłane
+  const mergedAddress: NewAddress = {
+    ulica: updateData.adres?.ulica ?? dbClient.ulica,
+    numer_budynku: updateData.adres?.numer_budynku ?? dbClient.numer_budynku,
+    numer_lokalu: (updateData.adres?.numer_lokalu ?? dbClient.numer_lokalu) || "",
+    kod_pocztowy: updateData.adres?.kod_pocztowy ?? dbClient.kod_pocztowy,
+    miejscowosc: updateData.adres?.miejscowosc ?? dbClient.miejscowosc,
+    wojewodztwo: updateData.adres?.wojewodztwo ?? dbClient.wojewodztwo,
+  };
 
-//   // Waliduj POŁĄCZONE dane (wszystkie pola wypełnione)
-//   await validateUpdateClient(mergedClientData);
+  // 5. Pobierz status_klienta_id (jeśli status się zmienił)
+  const statusId: number = updateData.status_kod
+    ? await clientRepo.getStatusId(updateData.status_kod)
+    : await clientRepo.getStatusId(dbClient.status_kod);
 
-//   const statusId: number = await clientRepo.getStatusId(
-//     mergedClientData.status_kod,
-//   );
+  // 6. Zmerguj dane klienta
+  const mergedClient: NewClient = {
+    nip: dbClient.nip, // NIP nie może się zmienić
+    nazwa_firmy: updateData.company_data?.nazwa_firmy ?? dbClient.nazwa_firmy,
+    imie: updateData.contact_person?.imie ?? dbClient.imie,
+    nazwisko: updateData.contact_person?.nazwisko ?? dbClient.nazwisko,
+    stanowisko: updateData.contact_person?.stanowisko ?? dbClient.stanowisko,
+    email: updateData.contact_person?.contact_data?.email ?? dbClient.email,
+    telefon: updateData.contact_person?.contact_data?.telefon ??
+      dbClient.telefon,
+    adres_id: dbClient.adres_id,
+    status_klienta_id: statusId,
+  };
 
-//   const mergedClient: NewClient = {
-//     nip: mergedClientData.nip,
-//     nazwa_firmy: mergedClientData.nazwa_firmy,
-//     imie: mergedClientData.imie,
-//     nazwisko: mergedClientData.nazwisko,
-//     stanowisko: mergedClientData.stanowisko,
-//     email: mergedClientData.email,
-//     telefon: mergedClientData.telefon,
-//     adres_id: oldData.adres.id,
-//     status_klienta_id: statusId,
-//   };
+  // 7. Zaktualizuj adres jeśli jakieś pola adresu zostały przesłane
+  if (updateData.adres) {
+    await clientRepo.updateAddress(dbClient.adres_id, mergedAddress);
+  }
 
-//   await clientRepo.updateAddress(mergedAddress);
-//   await clientRepo.updateClient(id, mergedClient);
+  // 8. Zaktualizuj klienta jeśli jakieś pola klienta zostały przesłane
+  const shouldUpdateClient = updateData.company_data ||
+    updateData.contact_person || updateData.status_kod;
 
-//   return await clientRepo.getClientById(id);
-// }
+  if (shouldUpdateClient) {
+    await clientRepo.updateClient(id, mergedClient);
+  }
 
-// export async function removeClient(id: number): Promise<boolean> {
-//   return await clientRepo.deleteClient(id);
-// }
+  // 9. Pobierz zaktualizowanego klienta i zmapuj na domenowy typ Client
+  const updatedDbClient = await clientRepo.getClientById(id);
+  return dbClientDetailsToClient(updatedDbClient);
+}

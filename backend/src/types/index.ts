@@ -14,6 +14,7 @@ export type {
   ContactPerson,
   CreateClient,
   StatusKlienta,
+  UpdateClient,
 } from "./clients.ts";
 
 // Database

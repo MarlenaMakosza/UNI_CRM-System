@@ -62,3 +62,33 @@ export type CreateClient = {
   adres: Address;
   status_kod: StatusKlienta;
 };
+
+/**
+ * Request dla częściowej aktualizacji klienta (PATCH)
+ * Wszystkie pola opcjonalne - wysyłaj tylko te które chcesz zmienić
+ * NIP nie może być zmieniony (jest w company_data ale będzie walidowane w service)
+ */
+export type UpdateClient = {
+  contact_person?: {
+    imie?: string;
+    nazwisko?: string;
+    stanowisko?: string;
+    contact_data?: {
+      email?: string;
+      telefon?: string;
+    };
+  };
+  company_data?: {
+    nip?: string; // NIP nie powinien być zmieniany - walidacja w service
+    nazwa_firmy?: string;
+  };
+  adres?: {
+    ulica?: string;
+    numer_budynku?: string;
+    numer_lokalu?: string;
+    kod_pocztowy?: string;
+    miejscowosc?: string;
+    wojewodztwo?: string;
+  };
+  status_kod?: StatusKlienta;
+};
