@@ -61,3 +61,15 @@ clientsRouter.patch("/:id", async (ctx) => {
     handleError(ctx, error);
   }
 });
+
+// DELETE /api/clients/:id – usunięcie klienta
+clientsRouter.delete("/:id", async (ctx) => {
+  try {
+    const id = Number(ctx.params.id);
+    await clientService.removeClient(id);
+
+    ctx.response.status = 204;
+  } catch (error) {
+    handleError(ctx, error);
+  }
+});

@@ -186,6 +186,17 @@ export async function getStatusId(status_kod: string): Promise<number> {
   return statusRows[0].id;
 }
 
+/**
+ * Usuwa klienta o podanym ID z bazy
+ * Operacja jest idempotentna - jeśli klient nie istnieje, nic się nie stanie
+ * @param {number} id - ID klienta do usunięcia
+ * @returns {Promise<void>}
+ * @throws {Error} jeśli klient ma powiązane zdarzenia lub umowy (FK constraint violation)
+ */
+export async function deleteClient(id: number): Promise<void> {
+  await sql`DELETE FROM klient WHERE id = ${id}`;
+}
+
 // Sprawdź czy NIP już istnieje
 export async function checkNipExists(
   nip: string,

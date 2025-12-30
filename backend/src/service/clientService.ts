@@ -140,3 +140,16 @@ export async function updateClient(
   const updatedDbClient = await clientRepo.getClientById(id);
   return dbClientDetailsToClient(updatedDbClient);
 }
+
+/**
+ * Usuwa klienta z systemu
+ * Operacja jest idempotentna - wielokrotne usunięcie tego samego ID nie powoduje błędu
+ * @param {number} id - ID klienta do usunięcia
+ * @returns {Promise<void>}
+ * @throws {InvalidInputError} gdy ID jest niepoprawne
+ * @throws {Error} gdy klient ma powiązane zdarzenia lub umowy (FK constraint)
+ */
+export async function removeClient(id: number): Promise<void> {
+  validateId(id);
+  await clientRepo.deleteClient(id);
+}
