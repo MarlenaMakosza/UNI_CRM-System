@@ -1,21 +1,13 @@
 import * as bcrypt from "bcrypt";
-import { create, getNumericDate, verify } from "djwt";
+import { JWTPayload, jwtVerify, SignJWT } from "jose";
 import { sql } from "db";
 import { JwtPayload, LoginResponse, RolaPracownika } from "../types/index.ts";
 
 const JWT_SECRET_STRING = Deno.env.get("JWT_SECRET") || "super-secret-key-change-in-production";
 const JWT_EXPIRY_HOURS = 24;
 
-// Konwertuj secret string na CryptoKey (wymagane przez djwt v3)
-const encoder = new TextEncoder();
-const keyData = encoder.encode(JWT_SECRET_STRING);
-const JWT_SECRET = await crypto.subtle.importKey(
-  "raw",
-  keyData,
-  { name: "HMAC", hash: "SHA-512" },
-  true,
-  ["sign", "verify"],
-);
+// Konwertuj secret string do Uint8Array (wymagane przez jose)
+const JWT_SECRET = new TextEncoder().encode(JWT_SECRET_STRING);
 
 type DbPrzedstawiciel = {
   id: number;
@@ -70,11 +62,11 @@ export async function login(
     rola: user.rola as RolaPracownika,
   };
 
-  const token = await create(
-    { alg: "HS512", typ: "JWT" },
-    { ...payload, exp: getNumericDate(JWT_EXPIRY_HOURS * 60 * 60) },
-    JWT_SECRET,
-  );
+  const token = await new SignJWT(payload as unknown as JWTPayload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(`${JWT_EXPIRY_HOURS}h`)
+    .sign(JWT_SECRET);
 
   // 5. Zwróć token i dane użytkownika
   return {
@@ -97,7 +89,7 @@ export async function login(
  */
 export async function verifyToken(token: string): Promise<JwtPayload> {
   try {
-    const payload = await verify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, JWT_SECRET);
     return payload as JwtPayload;
   } catch (error) {
     throw new Error("Invalid or expired token");
