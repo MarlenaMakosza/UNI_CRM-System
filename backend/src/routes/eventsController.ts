@@ -1,15 +1,14 @@
 import { Router } from "oak";
 import * as eventService from "../service/eventService.ts";
 import { handleError } from "../utils/errorHandler.ts";
-import { requireAuth } from "../auth/authMiddleware.ts";
 import { AuthUser } from "../types/index.ts";
 
 export const eventsRouter = new Router({ prefix: "/api/events" });
 
 // ===== ENDPOINTS =====
 
-// GET /api/events – lista wydarzeń (wymagane auth, filtrowane po roli)
-eventsRouter.get("/", requireAuth, async (ctx) => {
+// GET /api/events – lista wydarzeń (filtrowane po roli)
+eventsRouter.get("/", async (ctx) => {
   try {
     const user = ctx.state.user as AuthUser;
     const events = await eventService.listEvents(user);
@@ -20,8 +19,8 @@ eventsRouter.get("/", requireAuth, async (ctx) => {
   }
 });
 
-// GET /api/events/:id – pobranie wydarzenia (wymagane auth)
-eventsRouter.get("/:id", requireAuth, async (ctx) => {
+// GET /api/events/:id – pobranie wydarzenia
+eventsRouter.get("/:id", async (ctx) => {
   try {
     const id = Number(ctx.params.id);
     const event = await eventService.getEventDetails(id);
@@ -33,8 +32,8 @@ eventsRouter.get("/:id", requireAuth, async (ctx) => {
   }
 });
 
-// POST /api/events – dodanie wydarzenia (wymagane auth)
-eventsRouter.post("/", requireAuth, async (ctx) => {
+// POST /api/events – dodanie wydarzenia
+eventsRouter.post("/", async (ctx) => {
   try {
     const body = ctx.request.body({ type: "json" });
     const data = await body.value;
@@ -48,8 +47,8 @@ eventsRouter.post("/", requireAuth, async (ctx) => {
   }
 });
 
-// PATCH /api/events/:id – częściowa aktualizacja wydarzenia (wymagane auth)
-eventsRouter.patch("/:id", requireAuth, async (ctx) => {
+// PATCH /api/events/:id – częściowa aktualizacja wydarzenia
+eventsRouter.patch("/:id", async (ctx) => {
   try {
     const id = Number(ctx.params.id);
     const body = ctx.request.body({ type: "json" });
@@ -64,8 +63,8 @@ eventsRouter.patch("/:id", requireAuth, async (ctx) => {
   }
 });
 
-// DELETE /api/events/:id – usunięcie wydarzenia (wymagane auth)
-eventsRouter.delete("/:id", requireAuth, async (ctx) => {
+// DELETE /api/events/:id – usunięcie wydarzenia
+eventsRouter.delete("/:id", async (ctx) => {
   try {
     const id = Number(ctx.params.id);
     await eventService.removeEvent(id);

@@ -4,6 +4,7 @@ import { authRouter } from "./auth/authController.ts";
 import { clientsRouter } from "./routes/clientsController.ts";
 import { eventsRouter } from "./routes/eventsController.ts";
 import { healthcheck } from "./routes/health.ts";
+import { requireAuth } from "./auth/authMiddleware.ts";
 
 const app = new Application();
 
@@ -16,6 +17,18 @@ app.use(oakCors({
 app.use(async (ctx, next) => {
   console.log(`${ctx.request.method} ${ctx.request.url.pathname}`);
   await next();
+});
+
+// GLOBALNY MIDDLEWARE AUTORYZACJI - chroni wszystkie endpointy oprócz publicznych
+app.use(async (ctx, next) => {
+  const publicPaths = ["/api/auth/login", "/api/health"];
+  const isPublic = publicPaths.some((path) => ctx.request.url.pathname.startsWith(path));
+
+  if (isPublic) {
+    await next();
+  } else {
+    await requireAuth(ctx, next);
+  }
 });
 
 const router = new Router();
