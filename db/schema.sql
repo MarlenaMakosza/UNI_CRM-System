@@ -44,11 +44,13 @@ CREATE TABLE przedstawiciel_handlowy (
   id          SERIAL PRIMARY KEY,
   imie        VARCHAR(100) NOT NULL,
   nazwisko    VARCHAR(100) NOT NULL,
-  email       VARCHAR(255) NOT NULL,
+  email       VARCHAR(255) NOT NULL UNIQUE,
   telefon     VARCHAR(30) NOT NULL,
   region_id   INTEGER NOT NULL REFERENCES region(id),
   data_zatrudnienia DATE NOT NULL,
   aktywny     BOOLEAN DEFAULT TRUE,
+  haslo_hash  VARCHAR(255) NOT NULL,
+  rola        VARCHAR(20) NOT NULL DEFAULT 'pracownik' CHECK (rola IN ('pracownik', 'szef')),
 
   CONSTRAINT fk_przedst_region FOREIGN KEY (region_id) REFERENCES region(id)
 );

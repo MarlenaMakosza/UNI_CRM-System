@@ -62,3 +62,49 @@ export type NewClient = {
   adres_id: number; // FK
   status_klienta_id: number; // FK
 };
+
+/**
+ * Surowe dane wydarzenia z listy (getAllEvents)
+ */
+export type DbEventSummaryRow = {
+  id: number;
+  klient_id: number;
+  przedstawiciel_id: number; // dla filtrowania po pracowniku
+  typ_nazwa: string;
+  data_planowana: string; // ISO string z bazy, pusty string jeśli brak
+  status: string;
+  opis: string;
+};
+
+/**
+ * Pełne surowe dane wydarzenia z bazy (getEventById)
+ */
+export type DbEventDetails = {
+  id: number;
+  klient_id: number;
+  przedstawiciel_id: number;
+  typ_id: number;
+  typ_nazwa: string;
+  umowa_id: number; // 0 jeśli brak
+  data_planowana: string; // ISO string, pusty jeśli brak
+  data_realizacji: string; // ISO string, pusty jeśli brak
+  status: string;
+  opis: string;
+  notatki: string;
+  created_at: string; // ISO string
+};
+
+/**
+ * Typ dla wstawiania nowego wydarzenia do bazy
+ */
+export type NewEvent = {
+  klient_id: number;
+  przedstawiciel_id: number;
+  typ_id: number; // FK
+  umowa_id: number; // 0 jeśli brak
+  data_planowana: string; // ISO string, pusty jeśli brak
+  data_realizacji: string; // ISO string, pusty jeśli brak
+  status: string;
+  opis: string;
+  notatki: string;
+};

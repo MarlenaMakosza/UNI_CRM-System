@@ -14,6 +14,7 @@ export async function getAllEvents(): Promise<DbEventSummaryRow[]> {
     SELECT
       z.id,
       z.klient_id,
+      z.przedstawiciel_id,
       tz.nazwa as typ_nazwa,
       COALESCE(z.data_planowana::text, '') as data_planowana,
       z.status,

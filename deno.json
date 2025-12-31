@@ -10,7 +10,9 @@
     "oak": "https://deno.land/x/oak@v12.6.0/mod.ts",
     "oakCors": "https://deno.land/x/cors@v1.2.2/mod.ts",
     "db": "./db/db.ts",
-    "mod": "https://deno.land/std@0.208.0/path/mod.ts"
+    "mod": "https://deno.land/std@0.208.0/path/mod.ts",
+    "bcrypt": "https://deno.land/x/bcrypt@v0.4.1/mod.ts",
+    "djwt": "https://deno.land/x/djwt@v3.0.2/mod.ts"
   },
   "compilerOptions": {
     "strict": true

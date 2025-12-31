@@ -28,11 +28,11 @@ INSERT INTO typ_umowy (nazwa) VALUES
   ('jednorazowa');
 
 -- ===== REGIONY =====
-INSERT INTO region (nazwa, wojewodztwo) VALUES
-  ('Poznań', 'wielkopolskie'),
-  ('Szczecin', 'zachodniopomorskie'),
-  ('Wrocław', 'dolnośląskie'),
-  ('Zielona Góra', 'lubuskie');
+INSERT INTO region (nazwa) VALUES
+  ('Poznań'),
+  ('Szczecin'),
+  ('Wrocław'),
+  ('Zielona Góra');
 
 -- ===== PRODUKTY =====
 INSERT INTO produkt (nazwa, opis, cena) VALUES
@@ -48,10 +48,12 @@ INSERT INTO produkt (nazwa, opis, cena) VALUES
   ('Kurczak ekologiczny', 'Kurczak z farm ekologicznych', 18.00);
 
 -- ===== PRZEDSTAWICIELE HANDLOWI =====
-INSERT INTO przedstawiciel_handlowy (imie, nazwisko, email, telefon, region_id, data_zatrudnienia, aktywny) VALUES
-  ('Jan', 'Kowalski', 'jan.kowalski@firmx.pl', '601234567', 1, '2023-01-15', true),
-  ('Anna', 'Nowak', 'anna.nowak@firmx.pl', '602345678', 2, '2023-02-01', true),
-  ('Piotr', 'Wiśniewski', 'piotr.wisniewski@firmx.pl', '603456789', 3, '2023-03-10', true);
+-- Hasła dla użytkowników (wszystkie: "password123")
+-- Hash wygenerowany przez bcrypt z saltem 10
+INSERT INTO przedstawiciel_handlowy (imie, nazwisko, email, telefon, region_id, data_zatrudnienia, aktywny, haslo_hash, rola) VALUES
+  ('Jan', 'Kowalski', 'jan.kowalski@firmx.pl', '601234567', 1, '2023-01-15', true, '$2a$10$D7HcQe5AFX4r8EkzMZBIruZvH6pMIqiElw7S2HUVF9HLXxG2UJ5f.', 'szef'),
+  ('Anna', 'Nowak', 'anna.nowak@firmx.pl', '602345678', 2, '2023-02-01', true, '$2a$10$D7HcQe5AFX4r8EkzMZBIruZvH6pMIqiElw7S2HUVF9HLXxG2UJ5f.', 'pracownik'),
+  ('Piotr', 'Wiśniewski', 'piotr.wisniewski@firmx.pl', '603456789', 3, '2023-03-10', true, '$2a$10$D7HcQe5AFX4r8EkzMZBIruZvH6pMIqiElw7S2HUVF9HLXxG2UJ5f.', 'pracownik');
 
 -- ===== PRZYKŁADOWI KLIENCI =====
 -- Klient 1 - Sklep "U Janka" w Poznaniu
