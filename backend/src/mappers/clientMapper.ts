@@ -3,7 +3,6 @@ import {
   Client,
   ClientMetadata,
   CompanyData,
-  ContactData,
   ContactPerson,
   CreateClient,
   StatusKlienta,

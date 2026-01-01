@@ -2,7 +2,7 @@
 // API CLIENT - komunikacja z backendem
 // ============================================================================
 
-import type { LoginRequest, LoginResponse } from "../types/auth";
+import type {LoginRequest, LoginResponse} from "../types/auth";
 
 const API_BASE_URL = "http://localhost:8080/api";
 
@@ -38,12 +38,10 @@ async function fetchWithAuth(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const response = await fetch(url, {
+  return await fetch(url, {
     ...options,
     headers,
   });
-
-  return response;
 }
 
 /**

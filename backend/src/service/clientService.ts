@@ -42,7 +42,7 @@ export async function getClientDetails(id: number): Promise<Client> {
 
 /**
  * Tworzy nowego klienta w systemie
- * @param {CreateClientRequest} request - dane nowego klienta (zagnieżdżona struktura)
+ * @param {CreateClient} request - dane nowego klienta (zagnieżdżona struktura)
  * @returns {Promise<Client>} - utworzony klient w pełnej strukturze domenowej
  * @throws {ValidationError} gdy dane są niepoprawne
  */
