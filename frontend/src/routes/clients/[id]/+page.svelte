@@ -2,8 +2,8 @@
   import { onMount } from "svelte";
   import { page } from "$app/stores";
   import { goto } from "$app/navigation";
-  import { type ClientDetails } from "../../../lib/types/domain";
-  import { fetchClientById } from "../../../lib/api/client";
+  import { type ClientDetails } from "$lib";
+  import { fetchClientById } from "$lib";
 
   let client = $state<ClientDetails | null>(null);
   let loading = $state(true);

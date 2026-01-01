@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-  import { type Client } from "../../lib/types/domain";
-  import { fetchClients } from "../../lib/api/client";
+  import { type Client } from "$lib";
+  import { fetchClients } from "$lib";
 
   let clients = $state<Client[]>([]);
   let loading = $state(true);
