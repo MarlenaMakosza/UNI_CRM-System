@@ -36,19 +36,3 @@ export async function requireAuth(ctx: Context, next: Next) {
     ctx.response.body = { error: "Invalid or expired token" };
   }
 }
-
-/**
- * Middleware sprawdzający czy user ma rolę 'szef'
- * Używaj TYLKO PO requireAuth!
- */
-export async function requireSzef(ctx: Context, next: Next) {
-  const user = ctx.state.user as AuthUser | undefined;
-
-  if (!user || user.rola !== "szef") {
-    ctx.response.status = 403;
-    ctx.response.body = { error: "Access denied: only 'szef' can access this resource" };
-    return;
-  }
-
-  await next();
-}

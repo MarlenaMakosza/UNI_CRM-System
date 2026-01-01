@@ -17,20 +17,10 @@ export type {
   UpdateClient,
 } from "./clients.ts";
 
-// Domain - Events
-export type {
-  CreateEvent,
-  Event,
-  EventSummary,
-  StatusZdarzenia,
-  TypZdarzenia,
-  UpdateEvent,
-} from "./events.ts";
-
 // Auth
 export type {
   AuthUser,
-  JwtPayload,
+  CustomJwtPayload,
   LoginRequest,
   LoginResponse,
   RolaPracownika,
@@ -40,11 +30,9 @@ export type {
 export type {
   DbClientDetails,
   DbClientSummaryRow as DbClientSummaryRow,
-  DbEventDetails,
-  DbEventSummaryRow,
   NewAddress,
   NewClient,
-  NewEvent,
+  DbPrzedstawiciel,
 } from "./database.ts";
 
 // Errors

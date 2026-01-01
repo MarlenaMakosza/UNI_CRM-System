@@ -17,22 +17,22 @@ export class ClientNotFoundError extends Error {
 }
 
 /**
- * Błąd gdy wydarzenie nie zostało znalezione w bazie
- */
-export class EventNotFoundError extends Error {
-  constructor(public eventId: number) {
-    super(`Event with id=${eventId} not found`);
-    this.name = "EventNotFoundError";
-  }
-}
-
-/**
  * Błąd bazy danych - używany gdy PostgreSQL zwraca błąd
  */
 export class DatabaseError extends Error {
   constructor(message: string, public originalError?: unknown) {
     super(message);
     this.name = "DatabaseError";
+  }
+}
+
+/**
+ * Błąd autoryzacji - nieprawidłowe dane logowania, nieaktywny użytkownik
+ */
+export class AuthenticationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "AuthenticationError";
   }
 }
 
@@ -61,11 +61,11 @@ export function handleError(ctx: Context, error: unknown): void {
     return;
   }
 
-  // 404 - Event nie istnieje
-  if (error instanceof EventNotFoundError) {
-    ctx.response.status = 404;
+  // 401 - Błąd autoryzacji (nieprawidłowe dane logowania, nieaktywny użytkownik)
+  if (error instanceof AuthenticationError) {
+    ctx.response.status = 401;
     ctx.response.body = {
-      error: `Event with id: ${error.eventId} does not exist`,
+      error: error.message,
     } satisfies ErrorResponse;
     return;
   }

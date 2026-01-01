@@ -11,25 +11,11 @@ authRouter.post("/login", async (ctx) => {
     const body = ctx.request.body({ type: "json" });
     const data: LoginRequest = await body.value;
 
-    // Walidacja
-    if (!data.email || !data.password) {
-      ctx.response.status = 400;
-      ctx.response.body = { error: "Email and password are required" };
-      return;
-    }
-
     const result = await authService.login(data.email, data.password);
 
-    ctx.response.body = result;
     ctx.response.status = 200;
+    ctx.response.body = result;
   } catch (error) {
-    // Obsługa błędów logowania
-    if (error instanceof Error &&
-        (error.message.includes("Invalid") || error.message.includes("inactive"))) {
-      ctx.response.status = 401;
-      ctx.response.body = { error: error.message };
-      return;
-    }
     handleError(ctx, error);
   }
 });

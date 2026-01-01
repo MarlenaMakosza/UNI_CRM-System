@@ -1,3 +1,5 @@
+import { JWTPayload } from "jose";
+
 export type RolaPracownika = "pracownik" | "szef";
 
 /**
@@ -24,12 +26,12 @@ export type LoginResponse = {
 
 /**
  * Dane użytkownika z JWT payload
+ * Rozszerza standardowy JWTPayload z jose o nasze custom pola
  */
-export type JwtPayload = {
+export type CustomJwtPayload = JWTPayload & {
   userId: number;
   email: string;
   rola: RolaPracownika;
-  exp?: number;
 };
 
 /**

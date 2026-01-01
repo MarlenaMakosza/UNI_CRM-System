@@ -1,23 +1,14 @@
 import * as bcrypt from "bcrypt";
-import { JWTPayload, jwtVerify, SignJWT } from "jose";
+import { jwtVerify, SignJWT } from "jose";
 import { sql } from "db";
-import { JwtPayload, LoginResponse, RolaPracownika } from "../types/index.ts";
+import { CustomJwtPayload, LoginResponse, RolaPracownika, DbPrzedstawiciel } from "../types/index.ts";
+import { AuthenticationError } from "../utils/errorHandler.ts";
 
 const JWT_SECRET_STRING = Deno.env.get("JWT_SECRET") || "super-secret-key-change-in-production";
 const JWT_EXPIRY_HOURS = 24;
 
 // Konwertuj secret string do Uint8Array (wymagane przez jose)
 const JWT_SECRET = new TextEncoder().encode(JWT_SECRET_STRING);
-
-type DbPrzedstawiciel = {
-  id: number;
-  imie: string;
-  nazwisko: string;
-  email: string;
-  haslo_hash: string;
-  rola: string;
-  aktywny: boolean;
-};
 
 /**
  * Logowanie użytkownika
@@ -30,7 +21,12 @@ export async function login(
   email: string,
   password: string,
 ): Promise<LoginResponse> {
-  // 1. Pobierz użytkownika z bazy
+  // 1. Walidacja inputu
+  if (!email || !password) {
+    throw new AuthenticationError("Email and password are required");
+  }
+
+  // 2. Pobierz użytkownika z bazy
   const users = await sql<DbPrzedstawiciel[]>`
     SELECT id, imie, nazwisko, email, haslo_hash, rola, aktywny
     FROM przedstawiciel_handlowy
@@ -39,30 +35,30 @@ export async function login(
   `;
 
   if (users.length === 0) {
-    throw new Error("Invalid email or password");
+    throw new AuthenticationError("Invalid email or password");
   }
 
   const user = users[0];
 
-  // 2. Sprawdź czy użytkownik jest aktywny
+  // 3. Sprawdź czy użytkownik jest aktywny
   if (!user.aktywny) {
-    throw new Error("User account is inactive");
+    throw new AuthenticationError("User account is inactive");
   }
 
-  // 3. Porównaj hasło
+  // 4. Porównaj hasło
   const isPasswordValid = await bcrypt.compare(password, user.haslo_hash);
   if (!isPasswordValid) {
-    throw new Error("Invalid email or password");
+    throw new AuthenticationError("Invalid email or password");
   }
 
   // 4. Utwórz JWT token
-  const payload: JwtPayload = {
+  const payload = {
     userId: user.id,
     email: user.email,
     rola: user.rola as RolaPracownika,
   };
 
-  const token = await new SignJWT(payload as unknown as JWTPayload)
+  const token = await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(`${JWT_EXPIRY_HOURS}h`)
@@ -87,10 +83,10 @@ export async function login(
  * @returns Zdekodowany payload
  * @throws Error jeśli token jest nieprawidłowy lub wygasły
  */
-export async function verifyToken(token: string): Promise<JwtPayload> {
+export async function verifyToken(token: string): Promise<CustomJwtPayload> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    return payload as JwtPayload;
+    return payload as CustomJwtPayload;
   } catch (error) {
     throw new Error("Invalid or expired token");
   }
