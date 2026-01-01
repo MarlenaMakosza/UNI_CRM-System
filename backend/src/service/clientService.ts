@@ -2,7 +2,7 @@ import * as clientRepo from "../repository/clientRepository.ts";
 import {
   createClientRequestToNewAddress as mapToNewAddress,
   createClientRequestToNewClient as mapToNewClient,
-  dbClientDetailsToClient,
+  dbClientToClient,
 } from "../mappers/clientMapper.ts";
 
 import {
@@ -24,7 +24,7 @@ import {
  */
 export async function listClients(): Promise<Client[]> {
   const dbClients = await clientRepo.getAllClients();
-  return dbClients.map(dbClientDetailsToClient);
+  return dbClients.map(dbClientToClient);
 }
 
 /**
@@ -37,7 +37,7 @@ export async function listClients(): Promise<Client[]> {
 export async function getClientDetails(id: number): Promise<Client> {
   validateId(id);
   const dbClient = await clientRepo.getClientById(id);
-  return dbClientDetailsToClient(dbClient);
+  return dbClientToClient(dbClient);
 }
 
 /**
@@ -67,7 +67,7 @@ export async function createClient(
   const dbClient = await clientRepo.getClientById(clientId);
 
   // 6. Użyj istniejącego mappera!
-  return dbClientDetailsToClient(dbClient);
+  return dbClientToClient(dbClient);
 }
 
 /**
@@ -136,7 +136,7 @@ export async function updateClient(
 
   // 9. Pobierz zaktualizowanego klienta i zmapuj na domenowy typ Client
   const updatedDbClient = await clientRepo.getClientById(id);
-  return dbClientDetailsToClient(updatedDbClient);
+  return dbClientToClient(updatedDbClient);
 }
 
 /**

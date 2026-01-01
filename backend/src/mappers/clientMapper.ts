@@ -14,11 +14,11 @@ import {
 } from "../types/database.ts";
 
 /**
- * Konwertuje surowy rekord z bazy (DbClientDetails) na strukturę Client
+ * Konwertuje surowy rekord z bazy (DbClient) na strukturę Client
  * @param dbClient - surowa rekord z bazy
  * @returns Client - uproszczona struktura
  */
-export function dbClientDetailsToClient(dbClient: DbClient): Client {
+export function dbClientToClient(dbClient: DbClient): Client {
   const clientMetadata: ClientMetadata = {
     id: dbClient.id,
     created_at: dbClient.created_at.toISOString(),

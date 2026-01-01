@@ -24,12 +24,27 @@ export type {
   RolaPracownika,
 } from "./auth.ts";
 
+// Domain - Events
+export type {
+  CreateEvent,
+  Event,
+  EventDetails,
+  EventMetadata,
+  EventRelations,
+  EventSchedule,
+  StatusZdarzenia,
+  TypZdarzenia,
+  UpdateEvent,
+} from "./events.ts";
+
 // Database
 export type {
   DbClient,
+  DbEvent,
+  DbPrzedstawiciel,
   NewAddress,
   NewClient,
-  DbPrzedstawiciel,
+  NewEvent,
 } from "./database.ts";
 
 // Errors

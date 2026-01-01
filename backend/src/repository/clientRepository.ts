@@ -8,7 +8,7 @@ import {
 import { ClientNotFoundError } from "../utils/errorHandler.ts";
 
 /**
- * Pobierz listę wszystkich klientów (pełne dane)
+ * Pobierz listę wszystkich klientów
  * @returns {Promise<DbClient[]>} - lista wszystkich klientów
  */
 export function getAllClients(): Promise<DbClient[]> {

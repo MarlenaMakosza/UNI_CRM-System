@@ -59,3 +59,36 @@ export type DbPrzedstawiciel = {
   rola: string;
   aktywny: boolean;
 };
+
+/**
+ * Pełne surowe dane wydarzenia z bazy
+ */
+export type DbEvent = {
+  id: number;
+  klient_id: number;
+  przedstawiciel_id: number;
+  typ_id: number;
+  typ_nazwa: string; // JOIN z typ_zdarzenia
+  umowa_id: number; // 0 jeśli NULL w bazie
+  data_planowana: string; // ISO string z bazy, pusty string jeśli NULL
+  data_realizacji: string; // ISO string z bazy, pusty string jeśli NULL
+  status: string;
+  opis: string;
+  notatki: string;
+  created_at: string; // ISO string
+};
+
+/**
+ * Typ dla wstawiania nowego wydarzenia do bazy (bez id i created_at)
+ */
+export type NewEvent = {
+  klient_id: number;
+  przedstawiciel_id: number;
+  typ_id: number; // FK do typ_zdarzenia
+  umowa_id: number; // 0 jeśli brak
+  data_planowana: string; // ISO string, pusty jeśli brak
+  data_realizacji: string; // ISO string, pusty jeśli brak
+  status: string;
+  opis: string;
+  notatki: string;
+};
