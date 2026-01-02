@@ -7,7 +7,7 @@ import {
   DbUpsertEvent,
   Event, UpsertEvent,
 } from "../types/index.ts";
-import { validateId, ValidationError } from "../utils/validation.ts";
+import { validateId, ValidationError } from "../utils/clientValidation.ts";
 import {
   validateUpsertEvent,
 } from "../utils/eventValidation.ts";

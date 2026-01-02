@@ -2,8 +2,8 @@ import { sql } from "db";
 
 import {
   DbClient,
-  NewAddress,
-  NewClient,
+  DbUpsertAddress,
+  DbUpsertClient,
 } from "../types/database.ts";
 import { ClientNotFoundError } from "../utils/errorHandler.ts";
 
@@ -54,11 +54,11 @@ export async function getClientById(id: number): Promise<DbClient> {
 
 /**
  * Tworzy nowy rekord w tabeli `adres`
- * @param {NewAddress} adres - dane nowego adresu
+ * @param {DbUpsertAddress} adres - dane nowego adresu
  * @returns {Promise<number>} - ID nowo utworzonego rekordu
  */
 export async function createAddress(
-  adres: NewAddress,
+  adres: DbUpsertAddress,
 ): Promise<number> {
   const adresRows = await sql<{ id: number }[]>`
     INSERT INTO adres (
@@ -85,11 +85,11 @@ export async function createAddress(
 
 /**
  * Tworzy nowy rekord w tabeli `klient`
- * @param {NewClient} client - dane nowego klienta
+ * @param {DbUpsertClient} client - dane nowego klienta
  * @returns {Promise<number>} - ID utworzonego klienta
  */
 export async function createClient(
-  client: NewClient,
+  client: DbUpsertClient,
 ): Promise<number> {
   const clientRows = await sql<{ id: number }[]>`
     INSERT INTO klient (
@@ -118,13 +118,13 @@ export async function createClient(
 /**
  * Aktualizuje adres o podanym ID
  * @param {number} id - ID adresu do aktualizacji
- * @param {NewAddress} adres - nowe dane adresu
+ * @param {DbUpsertAddress} adres - nowe dane adresu
  * @returns {Promise<void>}
  * @throws {Error} jeśli adres nie istnieje
  */
 export async function updateAddress(
   id: number,
-  adres: NewAddress,
+  adres: DbUpsertAddress,
 ): Promise<void> {
   const result = await sql`
      UPDATE adres
@@ -147,13 +147,13 @@ export async function updateAddress(
 /**
  * Aktualizuje klienta o podanym ID
  * @param {number} id - ID klienta do aktualizacji
- * @param {NewClient} client - nowe dane klienta
+ * @param {DbUpsertClient} client - nowe dane klienta
  * @returns {Promise<void>}
  * @throws {Error} jeśli klient nie istnieje
  */
 export async function updateClient(
   id: number,
-  client: NewClient,
+  client: DbUpsertClient,
 ): Promise<void> {
   const result = await sql<{ id: number }[]>`
     UPDATE klient

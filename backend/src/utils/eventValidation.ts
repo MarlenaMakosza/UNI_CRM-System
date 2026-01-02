@@ -1,5 +1,5 @@
 import {DbUpsertEvent, UpsertEvent} from "../types/index.ts";
-import { ValidationError } from "./validation.ts";
+import { ValidationError } from "./clientValidation.ts";
 
 /**
  * Walidacja dla tworzenia i aktualizacji wydarzenia

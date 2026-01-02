@@ -4,13 +4,13 @@ import {
   ClientMetadata,
   CompanyData,
   ContactPerson,
-  CreateClient,
+  UpsertClient,
   StatusKlienta,
 } from "../types/index.ts";
 import {
   DbClient,
-  NewAddress,
-  NewClient,
+  DbUpsertAddress,
+  DbUpsertClient,
 } from "../types/database.ts";
 
 /**
@@ -18,7 +18,7 @@ import {
  * @param dbClient - surowa rekord z bazy
  * @returns Client - uproszczona struktura
  */
-export function dbClientToClient(dbClient: DbClient): Client {
+export function mapDbClientToClient(dbClient: DbClient): Client {
   const clientMetadata: ClientMetadata = {
     id: dbClient.id,
     created_at: dbClient.created_at.toISOString(),
@@ -58,13 +58,13 @@ export function dbClientToClient(dbClient: DbClient): Client {
 }
 
 /**
- * Mapuje CreateClientRequest na NewAddress dla repository
+ * Mapuje UpsertClient na DbUpsertAddress dla repository
  * @param request - request z zagnieżdżoną strukturą
- * @returns NewAddress - płaska struktura dla INSERT do bazy
+ * @returns DbUpsertAddress - płaska struktura dla INSERT do bazy
  */
-export function createClientRequestToNewAddress(
-  request: CreateClient,
-): NewAddress {
+export function mapUpsertClientToDbUpsertAddress(
+  request: UpsertClient,
+): DbUpsertAddress {
   return {
     ulica: request.adres.ulica,
     numer_budynku: request.adres.numer_budynku,
@@ -76,17 +76,17 @@ export function createClientRequestToNewAddress(
 }
 
 /**
- * Mapuje CreateClientRequest na NewClient dla repository
+ * Mapuje UpsertClient na DbUpsertClient dla repository
  * @param request - request z zagnieżdżoną strukturą
  * @param adresId - ID utworzonego adresu (FK)
  * @param statusId - ID statusu klienta (FK)
- * @returns NewClient - płaska struktura dla INSERT do bazy
+ * @returns DbUpsertClient - płaska struktura dla INSERT do bazy
  */
-export function createClientRequestToNewClient(
-  request: CreateClient,
+export function mapUpsertClientToDbUpsertClient(
+  request: UpsertClient,
   adresId: number,
   statusId: number,
-): NewClient {
+): DbUpsertClient {
   return {
     nip: request.company_data.nip,
     nazwa_firmy: request.company_data.nazwa_firmy,

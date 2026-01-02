@@ -1,6 +1,6 @@
 import { Context } from "oak";
 import { ErrorResponse } from "../types/index.ts";
-import { InvalidInputError, ValidationError } from "./validation.ts";
+import { InvalidInputError, ValidationError } from "./clientValidation.ts";
 
 // ============================================================================
 // CUSTOM ERROR CLASSES
