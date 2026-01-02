@@ -1,7 +1,7 @@
-import { Router } from "oak";
+import {Router} from "oak";
 import * as eventService from "../service/eventService.ts";
-import { handleError } from "../utils/errorHandler.ts";
-import { AuthUser } from "../types/auth.ts";
+import {handleError} from "../utils/errorHandler.ts";
+import {AuthUser} from "../types/auth.ts";
 
 export const eventsRouter = new Router({ prefix: "/api/events" });
 
@@ -15,8 +15,7 @@ eventsRouter.get("/", async (ctx) => {
     // Jeśli szef - pokaż wszystko (undefined = brak filtra)
     const przedstawicielId = user.rola === "pracownik" ? user.id : undefined;
 
-    const events = await eventService.listEvents(przedstawicielId);
-    ctx.response.body = events;
+    ctx.response.body = await eventService.listEvents(przedstawicielId);
     ctx.response.status = 200;
   } catch (error) {
     handleError(ctx, error);
@@ -27,9 +26,7 @@ eventsRouter.get("/", async (ctx) => {
 eventsRouter.get("/:id", async (ctx) => {
   try {
     const id = Number(ctx.params.id);
-    const event = await eventService.getEventDetails(id);
-
-    ctx.response.body = event;
+    ctx.response.body = await eventService.getEventDetails(id);
     ctx.response.status = 200;
   } catch (error) {
     handleError(ctx, error);
@@ -42,9 +39,7 @@ eventsRouter.post("/", async (ctx) => {
     const body = ctx.request.body({ type: "json" });
     const data = await body.value;
 
-    const newEvent = await eventService.createEvent(data);
-
-    ctx.response.body = newEvent;
+    ctx.response.body = await eventService.createEvent(data);
     ctx.response.status = 201;
   } catch (error) {
     handleError(ctx, error);
@@ -58,9 +53,7 @@ eventsRouter.patch("/:id", async (ctx) => {
     const body = ctx.request.body({ type: "json" });
     const data = await body.value;
 
-    const updatedEvent = await eventService.updateEvent(id, data);
-
-    ctx.response.body = updatedEvent;
+    ctx.response.body = await eventService.updateEvent(id, data);
     ctx.response.status = 200;
   } catch (error) {
     handleError(ctx, error);

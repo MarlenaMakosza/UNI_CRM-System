@@ -55,6 +55,12 @@
             >
               Klienci
             </a>
+            <a
+              href="/events"
+              class:active={$page.url.pathname.startsWith("/events")}
+            >
+              Zdarzenia
+            </a>
           </div>
 
           <div class="user-section">

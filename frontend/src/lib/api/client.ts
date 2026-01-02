@@ -120,6 +120,26 @@ export async function fetchEvents(): Promise<any[]> {
 }
 
 /**
+ * fetchEventById - pobierz pojedyncze wydarzenie (z autoryzacją)
+ */
+export async function fetchEventById(id: string | number): Promise<any> {
+  const response = await fetchWithAuth(`${API_BASE_URL}/events/${id}`);
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new ApiError(response.status, response.statusText, "Wydarzenie nie zostało znalezione");
+    }
+    throw new ApiError(
+      response.status,
+      response.statusText,
+      "Nie udało się pobrać wydarzenia",
+    );
+  }
+
+  return await response.json();
+}
+
+/**
  * fetchClients - pobierz klientów (z autoryzacją)
  */
 export async function fetchClients(): Promise<any[]> {
