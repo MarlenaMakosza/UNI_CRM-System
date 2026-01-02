@@ -106,7 +106,7 @@ Core tables:
 - `utils/errorHandler.ts` contains custom error types:
   - `ClientNotFoundError`: Thrown when client doesn't exist
   - `handleError()`: Maps errors to appropriate HTTP status codes
-- `utils/validation.ts`: Validation helpers for IDs and client data
+- `utils/clientValidation.ts`: Validation helpers for IDs and client data
 
 ## Code Patterns
 

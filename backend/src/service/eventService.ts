@@ -1,18 +1,15 @@
 import * as eventRepo from "../repository/eventRepository.ts";
 import {
-  createEventToNewEvent,
-  dbEventToEvent,
+  mapUpsertEventToDbUpsertEvent,
+  mapDbEventToEvent,
 } from "../mappers/eventMapper.ts";
 import {
-  CreateEvent,
-  Event,
-  NewEvent,
-  UpdateEvent,
+  DbUpsertEvent,
+  Event, UpsertEvent,
 } from "../types/index.ts";
-import { validateId, ValidationError } from "../utils/validation.ts";
+import { validateId, ValidationError } from "../utils/clientValidation.ts";
 import {
-  validateCreateEvent,
-  validateUpdateEvent,
+  validateUpsertEvent,
 } from "../utils/eventValidation.ts";
 
 /**
@@ -20,9 +17,10 @@ import {
  * @param {number} [przedstawicielId] - opcjonalny filtr po ID przedstawiciela (dla pracowników)
  * @returns {Promise<Event[]>} - lista wszystkich wydarzeń
  */
+//TODO Niech backend filtruje po przedstawicielu, które wydarzenia ma przekazać
 export async function listEvents(przedstawicielId?: number): Promise<Event[]> {
   const dbEvents = await eventRepo.getAllEvents(przedstawicielId);
-  return dbEvents.map(dbEventToEvent);
+  return dbEvents.map(mapDbEventToEvent);
 }
 
 /**
@@ -35,18 +33,18 @@ export async function listEvents(przedstawicielId?: number): Promise<Event[]> {
 export async function getEventDetails(id: number): Promise<Event> {
   validateId(id);
   const dbEvent = await eventRepo.getEventById(id);
-  return dbEventToEvent(dbEvent);
+  return mapDbEventToEvent(dbEvent);
 }
 
 /**
  * Tworzy nowe wydarzenie w systemie
- * @param {CreateEvent} request - dane nowego wydarzenia
+ * @param {UpsertEvent} request - dane nowego wydarzenia
  * @returns {Promise<Event>} - utworzone wydarzenie
  * @throws {ValidationError} gdy dane są niepoprawne
  */
-export async function createEvent(request: CreateEvent): Promise<Event> {
+export async function createEvent(request: UpsertEvent): Promise<Event> {
   // 1. Walidacja
-  validateCreateEvent(request);
+  validateUpsertEvent(request);
 
   // 2. Pobierz ID typu zdarzenia
   const typId = await eventRepo.getTypZdarzeniaId(request.details.typ_nazwa);
@@ -60,68 +58,53 @@ export async function createEvent(request: CreateEvent): Promise<Event> {
   }
 
   // 3. Mapuj request → NewEvent
-  const newEvent = createEventToNewEvent(request, typId);
+  const newEvent = mapUpsertEventToDbUpsertEvent(request, typId);
 
   // 4. Zapisz w bazie
   const dbEvent = await eventRepo.insertEvent(newEvent);
 
   // 5. Zwróć w strukturze domenowej
-  return dbEventToEvent(dbEvent);
+  return mapDbEventToEvent(dbEvent);
 }
 
 /**
- * Aktualizuje wydarzenie (PATCH - częściowa aktualizacja)
+ * Aktualizuje wydarzenie
  * @param {number} id - ID wydarzenia
- * @param {UpdateEvent} request - pola do aktualizacji
+ * @param {UpsertEvent} request - pełne dane wydarzenia
  * @returns {Promise<Event>} - zaktualizowane wydarzenie
  * @throws {InvalidInputError} gdy ID jest niepoprawne
  * @throws {ValidationError} gdy dane są niepoprawne
  */
 export async function updateEvent(
   id: number,
-  request: UpdateEvent,
+  request: UpsertEvent,
 ): Promise<Event> {
   // 1. Waliduj ID
   validateId(id);
 
-  // 2. Pobierz obecne wydarzenie z bazy
-  const dbEvent = await eventRepo.getEventById(id);
+  // 2. Sprawdź czy wydarzenie istnieje
+  await eventRepo.getEventById(id);
 
-  // 3. Waliduj update request
-  validateUpdateEvent(request);
+  // 3. Waliduj request
+  validateUpsertEvent(request);
 
-  // 4. Pobierz typ_id jeśli typ się zmienił
-  const typId: number = request.details?.typ_nazwa
-    ? await eventRepo.getTypZdarzeniaId(request.details.typ_nazwa)
-    : dbEvent.typ_id;
+  // 4. Pobierz ID typu zdarzenia
+  const typId = await eventRepo.getTypZdarzeniaId(request.details.typ_nazwa);
 
-  // 4a. Waliduj umowa_id jeśli jest podane
-  let umowaId = request.relations?.umowa_id ?? dbEvent.umowa_id;
-  if (request.relations?.umowa_id !== undefined && request.relations.umowa_id > 0) {
+  // 5. Waliduj umowa_id jeśli jest podane
+  if (request.relations.umowa_id !== undefined && request.relations.umowa_id > 0) {
     const exists = await eventRepo.umowaExists(request.relations.umowa_id);
     if (!exists) {
       throw new ValidationError(`Contract with id=${request.relations.umowa_id} not found`);
     }
   }
 
-  // 5. Zmerguj dane wydarzenia
-  const mergedEvent: NewEvent = {
-    klient_id: request.relations?.klient_id ?? dbEvent.klient_id,
-    przedstawiciel_id: request.relations?.przedstawiciel_id ??
-      dbEvent.przedstawiciel_id,
-    typ_id: typId,
-    umowa_id: umowaId,
-    data_planowana: request.schedule?.data_planowana ?? dbEvent.data_planowana,
-    data_realizacji: request.schedule?.data_realizacji ??
-      dbEvent.data_realizacji,
-    status: request.details?.status ?? dbEvent.status,
-    opis: request.details?.opis ?? dbEvent.opis,
-    notatki: request.details?.notatki ?? dbEvent.notatki,
-  };
+  // 6. Mapuj request
+  const newEvent = mapUpsertEventToDbUpsertEvent(request, typId);
 
-  // 6. Zaktualizuj wydarzenie
-  const updatedDbEvent = await eventRepo.updateEvent(id, mergedEvent);
-  return dbEventToEvent(updatedDbEvent);
+  // 7. Zaktualizuj wydarzenie
+  const updatedDbEvent = await eventRepo.updateEvent(id, newEvent);
+  return mapDbEventToEvent(updatedDbEvent);
 }
 
 /**
@@ -132,7 +115,7 @@ export async function updateEvent(
 export async function deleteEvent(id: number): Promise<void> {
   validateId(id);
 
-  // Sprawdź czy istnieje
+  // Sprawdź, czy istnieje
   await eventRepo.getEventById(id);
 
   // Usuń

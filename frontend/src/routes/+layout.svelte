@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { authStore } from "$lib/stores/auth";
 
   let { children } = $props();
@@ -13,7 +13,7 @@
 
   // Sprawdź czy strona wymaga autoryzacji
   $effect(() => {
-    const currentPath = $page.url.pathname;
+    const currentPath = page.url.pathname;
     const publicPaths = ["/login"];
     const isPublicPath = publicPaths.includes(currentPath);
 
@@ -46,18 +46,18 @@
           <h1 class="logo">CRM Firma X</h1>
 
           <div class="nav-links">
-            <a href="/" class:active={$page.url.pathname === "/"}>
+            <a href="/" class:active={page.url.pathname === "/"}>
               Dashboard
             </a>
             <a
               href="/clients"
-              class:active={$page.url.pathname.startsWith("/clients")}
+              class:active={page.url.pathname.startsWith("/clients")}
             >
               Klienci
             </a>
             <a
               href="/events"
-              class:active={$page.url.pathname.startsWith("/events")}
+              class:active={page.url.pathname.startsWith("/events")}
             >
               Zdarzenia
             </a>

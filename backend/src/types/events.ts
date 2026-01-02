@@ -56,7 +56,7 @@ export type Event = {
  * Request dla tworzenia nowego wydarzenia
  * Używa zagnieżdżonej struktury zgodnej z domeną biznesową
  */
-export type CreateEvent = {
+export type UpsertEvent = {
   relations: {
     klient_id: number;
     przedstawiciel_id: number;
@@ -71,27 +71,5 @@ export type CreateEvent = {
   schedule: {
     data_planowana: string; // ISO string - WYMAGANE
     data_realizacji?: string; // ISO string - opcjonalne
-  };
-};
-
-/**
- * Request dla częściowej aktualizacji wydarzenia (PATCH)
- * Wszystkie pola opcjonalne - wysyłaj tylko te które chcesz zmienić
- */
-export type UpdateEvent = {
-  relations?: {
-    klient_id?: number;
-    przedstawiciel_id?: number;
-    umowa_id?: number;
-  };
-  details?: {
-    typ_nazwa?: TypZdarzenia;
-    status?: StatusZdarzenia;
-    opis?: string;
-    notatki?: string;
-  };
-  schedule?: {
-    data_planowana?: string;
-    data_realizacji?: string;
   };
 };

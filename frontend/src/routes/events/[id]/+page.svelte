@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { goto } from "$app/navigation";
   import { type Event } from "$lib";
   import { fetchEventById } from "$lib";
@@ -10,7 +10,13 @@
   let error = $state("");
 
   onMount(async () => {
-    const eventId = $page.params.id;
+    const eventId = page.params.id;
+
+    if (!eventId) {
+      error = "Brak ID eventu w URL";
+      loading = false;
+      return;
+    }
 
     try {
       event = await fetchEventById(eventId);
@@ -26,7 +32,7 @@
   }
 
   function goToEdit() {
-    const eventId = $page.params.id;
+    const eventId = page.params.id;
     goto(`/events/${eventId}/edit`);
   }
 

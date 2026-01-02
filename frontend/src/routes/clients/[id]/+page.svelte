@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { goto } from "$app/navigation";
   import { type ClientDetails } from "$lib";
   import { fetchClientById } from "$lib";
@@ -10,7 +10,13 @@
   let error = $state("");
 
   onMount(async () => {
-    const clientId = $page.params.id;
+    const clientId = page.params.id;
+
+    if (!clientId) {
+      error = "Brak ID klienta w URL";
+      loading = false;
+      return;
+    }
 
     try {
       client = await fetchClientById(clientId);

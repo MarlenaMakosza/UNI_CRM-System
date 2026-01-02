@@ -1,4 +1,4 @@
-import { CreateClient, UpdateClient } from "../types/index.ts";
+import { UpsertClient } from "../types/index.ts";
 import { checkNipExists, getStatusId } from "../repository/clientRepository.ts";
 
 // ============================================================================
@@ -41,26 +41,37 @@ export function validateId(id: number): void {
   }
 }
 
-/**
- * Główna funkcja walidacji dla tworzenia nowego klienta
- * @throws {ValidationError} gdy dane są niepoprawne
- */
-export async function validateCreateClient(
-  data: CreateClient,
-): Promise<void> {
+function baseValidate(data: UpsertClient){
   validateRequiredFields(data);
   validateNipFormat(data.company_data.nip);
   validateEmailFormat(data.contact_person.contact_data.email);
   validatePostalCodeFormat(data.adres.kod_pocztowy);
+}
+
+/**
+ * Główna funkcja walidacji dla tworzenia nowego klienta
+ * @throws {ValidationError} gdy dane są niepoprawne
+ */
+export async function validateUpsertClient(
+  data: UpsertClient,
+): Promise<void> {
+  baseValidate(data);
+  await validateStatusExists(data.status_kod);
   await validateNipNotDuplicated(data.company_data.nip);
+}
+
+export async function validateUpdateClient(
+    data: UpsertClient,
+): Promise<void> {
+  baseValidate(data);
   await validateStatusExists(data.status_kod);
 }
 
 /**
- * Sprawdź czy wszystkie wymagane pola są wypełnione
+ * Sprawdź, czy wszystkie wymagane pola są wypełnione
  * Dla zagnieżdżonej struktury CreateClientRequest
  */
-function validateRequiredFields(data: CreateClient): void {
+function validateRequiredFields(data: UpsertClient): void {
   // Sprawdź główne obiekty
   if (!data.contact_person || !data.company_data || !data.adres || !data.status_kod) {
     throw new ValidationError("Missing required top-level fields");
@@ -147,64 +158,5 @@ async function validateStatusExists(status_kod: string): Promise<void> {
   const statusId = await getStatusId(status_kod);
   if (!statusId) {
     throw new ValidationError("Unknown status_kod");
-  }
-}
-
-/**
- * Walidacja dla częściowej aktualizacji klienta (PATCH)
- * Waliduje tylko te pola które zostały przekazane w request
- * @throws {ValidationError} gdy dane są niepoprawne
- */
-export async function validateUpdateClient(
-  data: UpdateClient,
-  currentNip: string,
-  clientId: number,
-): Promise<void> {
-  // Sprawdź czy NIP nie został zmieniony (nie można zmienić NIP)
-  // NIP jest immutable - jeśli podano i jest inny niż obecny, odrzuć
-  if (data.company_data?.nip && data.company_data.nip !== currentNip) {
-    throw new ValidationError("NIP cannot be changed", 400);
-  }
-
-  // Waliduj format email jeśli został podany
-  if (data.contact_person?.contact_data?.email) {
-    validateEmailFormat(data.contact_person.contact_data.email);
-  }
-
-  // Waliduj format kodu pocztowego jeśli został podany
-  if (data.adres?.kod_pocztowy) {
-    validatePostalCodeFormat(data.adres.kod_pocztowy);
-  }
-
-  // Sprawdź czy status istnieje jeśli został podany
-  if (data.status_kod) {
-    await validateStatusExists(data.status_kod);
-  }
-
-  // Sprawdź czy nazwa firmy nie jest pusta jeśli została podana
-  if (data.company_data?.nazwa_firmy !== undefined && data.company_data.nazwa_firmy.trim() === "") {
-    throw new ValidationError("company_data.nazwa_firmy cannot be empty");
-  }
-
-  // Sprawdź czy pola contact_person nie są puste jeśli zostały podane
-  if (data.contact_person?.imie !== undefined && data.contact_person.imie.trim() === "") {
-    throw new ValidationError("contact_person.imie cannot be empty");
-  }
-  if (data.contact_person?.nazwisko !== undefined && data.contact_person.nazwisko.trim() === "") {
-    throw new ValidationError("contact_person.nazwisko cannot be empty");
-  }
-  if (data.contact_person?.stanowisko !== undefined && data.contact_person.stanowisko.trim() === "") {
-    throw new ValidationError("contact_person.stanowisko cannot be empty");
-  }
-  if (data.contact_person?.contact_data?.telefon !== undefined && data.contact_person.contact_data.telefon.trim() === "") {
-    throw new ValidationError("contact_person.contact_data.telefon cannot be empty");
-  }
-
-  // Sprawdź czy pola adresu nie są puste jeśli zostały podane
-  const addressFields = ["ulica", "numer_budynku", "kod_pocztowy", "miejscowosc", "wojewodztwo"] as const;
-  for (const field of addressFields) {
-    if (data.adres?.[field] !== undefined && data.adres[field]!.trim() === "") {
-      throw new ValidationError(`adres.${field} cannot be empty`);
-    }
   }
 }

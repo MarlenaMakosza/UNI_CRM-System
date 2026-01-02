@@ -10,9 +10,8 @@ export type {
   CompanyData,
   ContactData,
   ContactPerson,
-  CreateClient,
+  UpsertClient,
   StatusKlienta,
-  UpdateClient,
 } from "./clients.ts";
 
 // Auth
@@ -26,7 +25,6 @@ export type {
 
 // Domain - Events
 export type {
-  CreateEvent,
   Event,
   EventDetails,
   EventMetadata,
@@ -34,7 +32,7 @@ export type {
   EventSchedule,
   StatusZdarzenia,
   TypZdarzenia,
-  UpdateEvent,
+  UpsertEvent,
 } from "./events.ts";
 
 // Database
@@ -42,9 +40,9 @@ export type {
   DbClient,
   DbEvent,
   DbPrzedstawiciel,
-  NewAddress,
-  NewClient,
-  NewEvent,
+  DbUpsertAddress,
+  DbUpsertClient,
+  DbUpsertEvent,
 } from "./database.ts";
 
 // Errors

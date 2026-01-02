@@ -10,6 +10,7 @@ TRUNCATE TABLE pozycja_umowy, umowa, zdarzenie, przedstawiciel_handlowy, klient,
 -- ===== STATUSY KLIENTÓW =====
 INSERT INTO status_klienta (kod, nazwa) VALUES
   ('PROSPEKT', 'Potencjalny klient'),
+  ('W TRAKCIE', 'Przestawiciel jest w trakcie negocjacji'),
   ('AKTYWNY', 'Klient aktywny'),
   ('NIEAKTYWNY', 'Klient nieaktywny'),
   ('VIP', 'Klient VIP');

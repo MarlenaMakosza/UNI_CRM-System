@@ -69,65 +69,33 @@
     try {
       const eventId = $page.params.id;
 
-      // Przygotuj dane do aktualizacji (tylko zmienione pola)
-      const updateData: any = {};
-
-      // Relations
-      const relations: any = {};
-      if (klientId && klientId !== String(event?.relations.klient_id)) {
-        relations.klient_id = parseInt(klientId);
-      }
-      if (przedstawicielId && przedstawicielId !== String(event?.relations.przedstawiciel_id)) {
-        relations.przedstawiciel_id = parseInt(przedstawicielId);
-      }
-      if (umowaId && umowaId !== (event?.relations.umowa_id ? String(event.relations.umowa_id) : "")) {
-        relations.umowa_id = parseInt(umowaId);
-      }
-      if (Object.keys(relations).length > 0) {
-        updateData.relations = relations;
-      }
-
-      // Details
-      const details: any = {};
-      if (typNazwa !== event?.details.typ_nazwa) {
-        details.typ_nazwa = typNazwa;
-      }
-      if (status !== event?.details.status) {
-        details.status = status;
-      }
-      if (opis !== event?.details.opis) {
-        details.opis = opis;
-      }
-      if (notatki !== (event?.details.notatki || "")) {
-        details.notatki = notatki;
-      }
-      if (Object.keys(details).length > 0) {
-        updateData.details = details;
-      }
-
-      // Schedule
-      const schedule: any = {};
-      const originalDataPlanowana = event?.schedule.data_planowana ? formatDateForInput(event.schedule.data_planowana) : "";
-      const originalDataRealizacji = event?.schedule.data_realizacji ? formatDateForInput(event.schedule.data_realizacji) : "";
-
-      if (dataPlanowana !== originalDataPlanowana) {
-        schedule.data_planowana = dataPlanowana;
-      }
-      if (dataRealizacji !== originalDataRealizacji) {
-        schedule.data_realizacji = dataRealizacji;
-      }
-      if (Object.keys(schedule).length > 0) {
-        updateData.schedule = schedule;
-      }
-
-      // Jeśli nic się nie zmieniło
-      if (Object.keys(updateData).length === 0) {
-        error = "Nie wprowadzono żadnych zmian";
+      // Walidacja podstawowa
+      if (!klientId || !opis || !dataPlanowana) {
+        error = "Wypełnij wszystkie wymagane pola (Klient ID, Opis i Data planowana)";
         saving = false;
         return;
       }
 
-      await updateEvent(eventId, updateData);
+      // Przygotuj dane zgodnie z typem CreateEvent (wszystkie pola)
+      const eventData = {
+        relations: {
+          klient_id: parseInt(klientId),
+          przedstawiciel_id: parseInt(przedstawicielId),
+          ...(umowaId && { umowa_id: parseInt(umowaId) }),
+        },
+        details: {
+          typ_nazwa: typNazwa,
+          status: status,
+          opis: opis,
+          ...(notatki && { notatki }),
+        },
+        schedule: {
+          data_planowana: dataPlanowana, // Wymagane
+          ...(dataRealizacji && { data_realizacji: dataRealizacji }),
+        },
+      };
+
+      await updateEvent(eventId, eventData);
 
       // Przekieruj do szczegółów wydarzenia
       goto(`/events/${eventId}`);

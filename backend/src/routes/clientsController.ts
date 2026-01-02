@@ -47,7 +47,7 @@ clientsRouter.post("/", async (ctx) => {
 });
 
 // PATCH /api/clients/:id – częściowa aktualizacja klienta
-clientsRouter.patch("/:id", async (ctx) => {
+clientsRouter.put("/:id", async (ctx) => {
   try {
     const id = Number(ctx.params.id);
     const body = ctx.request.body({ type: "json" });

@@ -26,7 +26,7 @@ export type DbClient = {
 /**
  * Typ dla wstawiania nowego adresu do bazy
  */
-export type NewAddress = {
+export type DbUpsertAddress = {
   ulica: string;
   numer_budynku: string;
   numer_lokalu: string; // NOT NULL DEFAULT '' w bazie
@@ -38,7 +38,7 @@ export type NewAddress = {
 /**
  * Typ dla wstawiania nowego klienta do bazy (bez id i created_at)
  */
-export type NewClient = {
+export type DbUpsertClient = {
   nip: string;
   nazwa_firmy: string;
   imie: string;
@@ -81,7 +81,7 @@ export type DbEvent = {
 /**
  * Typ dla wstawiania nowego wydarzenia do bazy (bez id i created_at)
  */
-export type NewEvent = {
+export type DbUpsertEvent = {
   klient_id: number;
   przedstawiciel_id: number;
   typ_id: number; // FK do typ_zdarzenia

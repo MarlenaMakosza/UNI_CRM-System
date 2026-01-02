@@ -1,14 +1,13 @@
 import {
-  CreateEvent,
+  DbUpsertEvent,
   DbEvent,
   Event,
   EventDetails,
   EventMetadata,
   EventRelations,
   EventSchedule,
-  NewEvent,
   StatusZdarzenia,
-  TypZdarzenia,
+  TypZdarzenia, UpsertEvent,
 } from "../types/index.ts";
 
 /**
@@ -16,7 +15,7 @@ import {
  * @param dbEvent - surowe dane z bazy
  * @returns Event - zagnieżdżona struktura domenowa
  */
-export function dbEventToEvent(dbEvent: DbEvent): Event {
+export function mapDbEventToEvent(dbEvent: DbEvent): Event {
   const eventMetadata: EventMetadata = {
     id: dbEvent.id,
     created_at: dbEvent.created_at,
@@ -52,12 +51,12 @@ export function dbEventToEvent(dbEvent: DbEvent): Event {
  * Mapuje CreateEvent na NewEvent dla repository
  * @param request - request z zagnieżdżoną strukturą
  * @param typId - ID typu zdarzenia z bazy (FK)
- * @returns NewEvent - płaska struktura dla INSERT do bazy
+ * @returns DbUpsertEvent - płaska struktura dla INSERT i UPDATE do bazy
  */
-export function createEventToNewEvent(
-  request: CreateEvent,
-  typId: number,
-): NewEvent {
+export function mapUpsertEventToDbUpsertEvent(
+    request: UpsertEvent,
+    typId: number,
+): DbUpsertEvent {
   return {
     klient_id: request.relations.klient_id,
     przedstawiciel_id: request.relations.przedstawiciel_id,

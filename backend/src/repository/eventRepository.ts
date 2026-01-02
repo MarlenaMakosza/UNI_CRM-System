@@ -1,5 +1,5 @@
 import { sql } from "db";
-import { DbEvent, NewEvent } from "../types/database.ts";
+import { DbEvent, DbUpsertEvent } from "../types/database.ts";
 
 /**
  * Pobierz listę wszystkich wydarzeń (pełne dane)
@@ -103,10 +103,10 @@ export async function umowaExists(umowaId: number): Promise<boolean> {
 
 /**
  * Dodaj nowe wydarzenie do bazy
- * @param {NewEvent} event - dane nowego wydarzenia
+ * @param {DbUpsertEvent} event - dane nowego wydarzenia
  * @returns {Promise<DbEvent>} - utworzone wydarzenie
  */
-export async function insertEvent(event: NewEvent): Promise<DbEvent> {
+export async function insertEvent(event: DbUpsertEvent): Promise<DbEvent> {
   // Konwersja pustych stringów na NULL dla timestampów
   const dataPlanowana = event.data_planowana || null;
   const dataRealizacji = event.data_realizacji || null;
@@ -129,12 +129,12 @@ export async function insertEvent(event: NewEvent): Promise<DbEvent> {
 /**
  * Aktualizuj wydarzenie
  * @param {number} id - ID wydarzenia
- * @param {NewEvent} event - pełne dane wydarzenia (już zmergowane)
+ * @param {DbUpsertEvent} event - pełne dane wydarzenia (już zmergowane)
  * @returns {Promise<DbEvent>} - zaktualizowane wydarzenie
  */
 export async function updateEvent(
   id: number,
-  event: NewEvent,
+  event: DbUpsertEvent,
 ): Promise<DbEvent> {
   // Konwersja pustych stringów na NULL dla timestampów
   const dataPlanowana = event.data_planowana || null;

@@ -1,11 +1,11 @@
-import { CreateEvent, UpdateEvent } from "../types/index.ts";
-import { ValidationError } from "./validation.ts";
+import {DbUpsertEvent, UpsertEvent} from "../types/index.ts";
+import { ValidationError } from "./clientValidation.ts";
 
 /**
- * Walidacja dla tworzenia nowego wydarzenia
+ * Walidacja dla tworzenia i aktualizacji wydarzenia
  * @throws {ValidationError} gdy dane są niepoprawne
  */
-export function validateCreateEvent(data: CreateEvent): void {
+export function validateUpsertEvent(data: UpsertEvent): void {
   // Walidacja relations
   if (!data.relations) {
     throw new ValidationError("Missing required field: relations");
@@ -41,51 +41,5 @@ export function validateCreateEvent(data: CreateEvent): void {
 
   if (!data.schedule.data_planowana || data.schedule.data_planowana.trim() === "") {
     throw new ValidationError("Missing or empty field: schedule.data_planowana");
-  }
-}
-
-/**
- * Walidacja dla aktualizacji wydarzenia (PATCH)
- * @throws {ValidationError} gdy dane są niepoprawne
- */
-export function validateUpdateEvent(data: UpdateEvent): void {
-  // Sprawdź czy przynajmniej jedno pole do update
-  const hasRelations = data.relations &&
-    (data.relations.klient_id !== undefined ||
-      data.relations.przedstawiciel_id !== undefined ||
-      data.relations.umowa_id !== undefined);
-
-  const hasDetails = data.details &&
-    (data.details.typ_nazwa !== undefined ||
-      data.details.status !== undefined ||
-      data.details.opis !== undefined ||
-      data.details.notatki !== undefined);
-
-  const hasSchedule = data.schedule &&
-    (data.schedule.data_planowana !== undefined ||
-      data.schedule.data_realizacji !== undefined);
-
-  if (!hasRelations && !hasDetails && !hasSchedule) {
-    throw new ValidationError("No fields to update");
-  }
-
-  // Walidacja wartości jeśli podano
-  if (data.relations?.klient_id !== undefined && data.relations.klient_id <= 0) {
-    throw new ValidationError("Invalid field: relations.klient_id");
-  }
-
-  if (
-    data.relations?.przedstawiciel_id !== undefined &&
-    data.relations.przedstawiciel_id <= 0
-  ) {
-    throw new ValidationError("Invalid field: relations.przedstawiciel_id");
-  }
-
-  if (data.details?.typ_nazwa !== undefined && data.details.typ_nazwa.trim() === "") {
-    throw new ValidationError("Empty field: details.typ_nazwa");
-  }
-
-  if (data.details?.opis !== undefined && data.details.opis.trim() === "") {
-    throw new ValidationError("Empty field: details.opis");
   }
 }

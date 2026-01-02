@@ -45,9 +45,10 @@ eventsRouter.post("/", async (ctx) => {
     handleError(ctx, error);
   }
 });
+// TODO "data_planowana": "2025-01-15 10:00:00", przesuwa o godzinę do tyłu gówno
 
-// PATCH /api/events/:id – aktualizacja wydarzenia
-eventsRouter.patch("/:id", async (ctx) => {
+// PUT /api/events/:id – aktualizacja wydarzenia (pełna zamiana)
+eventsRouter.put("/:id", async (ctx) => {
   try {
     const id = Number(ctx.params.id);
     const body = ctx.request.body({ type: "json" });
