@@ -3,9 +3,29 @@ import { DbEvent, NewEvent } from "../types/database.ts";
 
 /**
  * Pobierz listę wszystkich wydarzeń (pełne dane)
+ * @param {number} [przedstawicielId] - opcjonalny filtr po ID przedstawiciela (dla pracowników)
  * @returns {Promise<DbEvent[]>} - lista wszystkich wydarzeń
  */
-export function getAllEvents(): Promise<DbEvent[]> {
+export function getAllEvents(przedstawicielId?: number): Promise<DbEvent[]> {
+  if (przedstawicielId !== undefined) {
+    // Filtruj wydarzenia tylko dla konkretnego przedstawiciela
+    return sql<DbEvent[]>`
+      SELECT
+        z.id, z.klient_id, z.przedstawiciel_id, z.typ_id, z.umowa_id,
+        COALESCE(z.data_planowana::TEXT, '') AS data_planowana,
+        COALESCE(z.data_realizacji::TEXT, '') AS data_realizacji,
+        z.status, z.opis, z.notatki,
+        z.created_at::TEXT AS created_at,
+        t.nazwa AS typ_nazwa,
+        COALESCE(z.umowa_id, 0) AS umowa_id
+      FROM zdarzenie z
+      JOIN typ_zdarzenia t ON z.typ_id = t.id
+      WHERE z.przedstawiciel_id = ${przedstawicielId}
+      ORDER BY z.id DESC
+    `;
+  }
+
+  // Bez filtra - wszystkie wydarzenia (dla szefa)
   return sql<DbEvent[]>`
     SELECT
       z.id, z.klient_id, z.przedstawiciel_id, z.typ_id, z.umowa_id,

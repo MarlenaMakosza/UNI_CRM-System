@@ -1,13 +1,21 @@
 import { Router } from "oak";
 import * as eventService from "../service/eventService.ts";
 import { handleError } from "../utils/errorHandler.ts";
+import { AuthUser } from "../types/auth.ts";
 
 export const eventsRouter = new Router({ prefix: "/api/events" });
 
 // GET /api/events – lista wydarzeń
+// Pracownicy widzą tylko swoje wydarzenia, szef widzi wszystko
 eventsRouter.get("/", async (ctx) => {
   try {
-    const events = await eventService.listEvents();
+    const user = ctx.state.user as AuthUser;
+
+    // Jeśli pracownik - filtruj po przedstawiciel_id
+    // Jeśli szef - pokaż wszystko (undefined = brak filtra)
+    const przedstawicielId = user.rola === "pracownik" ? user.id : undefined;
+
+    const events = await eventService.listEvents(przedstawicielId);
     ctx.response.body = events;
     ctx.response.status = 200;
   } catch (error) {

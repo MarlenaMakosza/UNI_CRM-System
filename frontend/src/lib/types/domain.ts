@@ -48,3 +48,40 @@ export type Client = {
 
 // Alias dla kompatybilności
 export type ClientDetails = Client;
+
+// ============================================================================
+// WYDARZENIA (EVENTS)
+// ============================================================================
+
+export type StatusZdarzenia = "zaplanowane" | "zrealizowane" | "odwołane";
+export type TypZdarzenia = "telefon" | "wizyta" | "follow-up" | "telefon_po_dostawie" | "newsletter";
+
+export type EventMetadata = {
+  id: number;
+  created_at: string;
+};
+
+export type EventSchedule = {
+  data_planowana: string;
+  data_realizacji: string;
+};
+
+export type EventDetails = {
+  typ_nazwa: TypZdarzenia;
+  status: StatusZdarzenia;
+  opis: string;
+  notatki: string;
+};
+
+export type EventRelations = {
+  klient_id: number;
+  przedstawiciel_id: number;
+  umowa_id: number;
+};
+
+export type Event = {
+  event_metadata: EventMetadata;
+  relations: EventRelations;
+  details: EventDetails;
+  schedule: EventSchedule;
+};

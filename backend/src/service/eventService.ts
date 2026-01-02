@@ -17,10 +17,11 @@ import {
 
 /**
  * Pobierz listę wszystkich wydarzeń
+ * @param {number} [przedstawicielId] - opcjonalny filtr po ID przedstawiciela (dla pracowników)
  * @returns {Promise<Event[]>} - lista wszystkich wydarzeń
  */
-export async function listEvents(): Promise<Event[]> {
-  const dbEvents = await eventRepo.getAllEvents();
+export async function listEvents(przedstawicielId?: number): Promise<Event[]> {
+  const dbEvents = await eventRepo.getAllEvents(przedstawicielId);
   return dbEvents.map(dbEventToEvent);
 }
 
