@@ -69,8 +69,8 @@ export type CreateEvent = {
     notatki?: string;
   };
   schedule: {
-    data_planowana?: string; // ISO string
-    data_realizacji?: string; // ISO string
+    data_planowana: string; // ISO string - WYMAGANE
+    data_realizacji?: string; // ISO string - opcjonalne
   };
 };
 

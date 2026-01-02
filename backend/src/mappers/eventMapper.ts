@@ -63,8 +63,8 @@ export function createEventToNewEvent(
     przedstawiciel_id: request.relations.przedstawiciel_id,
     typ_id: typId,
     umowa_id: request.relations.umowa_id ?? 0,
-    data_planowana: request.schedule.data_planowana ?? "",
-    data_realizacji: request.schedule.data_realizacji ?? "",
+    data_planowana: request.schedule.data_planowana, // Wymagane
+    data_realizacji: request.schedule.data_realizacji ?? "", // Opcjonalne
     status: request.details.status ?? "zaplanowane",
     opis: request.details.opis,
     notatki: request.details.notatki ?? "",

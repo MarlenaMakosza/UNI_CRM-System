@@ -37,6 +37,9 @@ function createAuthStore() {
       try {
         const response = await api.login({ email, password });
 
+        // Zapisz user w localStorage
+        localStorage.setItem("auth_user", JSON.stringify(response.user));
+
         set({
           user: response.user,
           isAuthenticated: true,
@@ -57,6 +60,7 @@ function createAuthStore() {
      */
     logout(): void {
       api.logout();
+      localStorage.removeItem("auth_user");
       set({
         user: null,
         isAuthenticated: false,
@@ -70,17 +74,26 @@ function createAuthStore() {
      */
     init(): void {
       const token = api.getAuthToken();
+      const userJson = localStorage.getItem("auth_user");
 
-      if (token) {
-        // W prawdziwej aplikacji: zweryfikuj token na backendzie
-        // Na razie zakładamy, że token jest prawidłowy
-        // Można by dodać endpoint GET /api/auth/me do weryfikacji
-
-        set({
-          user: null, // TODO: pobierz dane użytkownika z backendu
-          isAuthenticated: true,
-          loading: false,
-        });
+      if (token && userJson) {
+        try {
+          const user = JSON.parse(userJson);
+          set({
+            user: user,
+            isAuthenticated: true,
+            loading: false,
+          });
+        } catch (error) {
+          // Błąd parsowania - wyloguj
+          localStorage.removeItem("auth_user");
+          localStorage.removeItem("auth_token");
+          set({
+            user: null,
+            isAuthenticated: false,
+            loading: false,
+          });
+        }
       } else {
         set({
           user: null,

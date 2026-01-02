@@ -140,6 +140,29 @@ export async function fetchEventById(id: string | number): Promise<any> {
 }
 
 /**
+ * createEvent - utwórz nowe wydarzenie (z autoryzacją)
+ */
+export async function createEvent(eventData: any): Promise<any> {
+  const response = await fetchWithAuth(`${API_BASE_URL}/events`, {
+    method: "POST",
+    body: JSON.stringify(eventData),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({
+      error: "Błąd tworzenia wydarzenia",
+    }));
+    throw new ApiError(
+      response.status,
+      response.statusText,
+      errorData.error || "Nie udało się utworzyć wydarzenia",
+    );
+  }
+
+  return await response.json();
+}
+
+/**
  * fetchClients - pobierz klientów (z autoryzacją)
  */
 export async function fetchClients(): Promise<any[]> {
