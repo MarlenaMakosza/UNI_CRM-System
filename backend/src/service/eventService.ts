@@ -9,7 +9,7 @@ import {
   NewEvent,
   UpdateEvent,
 } from "../types/index.ts";
-import { validateId } from "../utils/validation.ts";
+import { validateId, ValidationError } from "../utils/validation.ts";
 import {
   validateCreateEvent,
   validateUpdateEvent,
@@ -51,6 +51,14 @@ export async function createEvent(request: CreateEvent): Promise<Event> {
   // 2. Pobierz ID typu zdarzenia
   const typId = await eventRepo.getTypZdarzeniaId(request.details.typ_nazwa);
 
+  // 2a. Waliduj umowa_id jeśli jest podane
+  if (request.relations.umowa_id !== undefined && request.relations.umowa_id > 0) {
+    const exists = await eventRepo.umowaExists(request.relations.umowa_id);
+    if (!exists) {
+      throw new ValidationError(`Contract with id=${request.relations.umowa_id} not found`);
+    }
+  }
+
   // 3. Mapuj request → NewEvent
   const newEvent = createEventToNewEvent(request, typId);
 
@@ -87,13 +95,22 @@ export async function updateEvent(
     ? await eventRepo.getTypZdarzeniaId(request.details.typ_nazwa)
     : dbEvent.typ_id;
 
+  // 4a. Waliduj umowa_id jeśli jest podane
+  let umowaId = request.relations?.umowa_id ?? dbEvent.umowa_id;
+  if (request.relations?.umowa_id !== undefined && request.relations.umowa_id > 0) {
+    const exists = await eventRepo.umowaExists(request.relations.umowa_id);
+    if (!exists) {
+      throw new ValidationError(`Contract with id=${request.relations.umowa_id} not found`);
+    }
+  }
+
   // 5. Zmerguj dane wydarzenia
   const mergedEvent: NewEvent = {
     klient_id: request.relations?.klient_id ?? dbEvent.klient_id,
     przedstawiciel_id: request.relations?.przedstawiciel_id ??
       dbEvent.przedstawiciel_id,
     typ_id: typId,
-    umowa_id: request.relations?.umowa_id ?? dbEvent.umowa_id,
+    umowa_id: umowaId,
     data_planowana: request.schedule?.data_planowana ?? dbEvent.data_planowana,
     data_realizacji: request.schedule?.data_realizacji ??
       dbEvent.data_realizacji,

@@ -25,6 +25,11 @@
     goto("/events");
   }
 
+  function goToEdit() {
+    const eventId = $page.params.id;
+    goto(`/events/${eventId}/edit`);
+  }
+
   function formatDate(dateStr: string): string {
     if (!dateStr) return "Brak daty";
     const date = new Date(dateStr);
@@ -63,7 +68,12 @@
 </script>
 
 <div class="container">
-  <button class="back-button" onclick={goBack}>← Powrót do listy</button>
+  <div class="header-buttons">
+    <button class="back-button" onclick={goBack}>← Powrót do listy</button>
+    {#if event}
+      <button class="edit-button" onclick={goToEdit}>✏️ Edytuj</button>
+    {/if}
+  </div>
 
   <h1>Szczegóły Wydarzenia</h1>
 
@@ -182,6 +192,12 @@
     padding: 2rem;
   }
 
+  .header-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
   .back-button {
     background: #4a5568;
     color: white;
@@ -190,11 +206,32 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.9rem;
-    margin-bottom: 1rem;
   }
 
   .back-button:hover {
     background: #2d3748;
+  }
+
+  .edit-button {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .edit-button:hover {
+    background: #5568d3;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+  }
+
+  .edit-button:active {
+    transform: translateY(0);
   }
 
   h1 {

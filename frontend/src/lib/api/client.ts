@@ -163,6 +163,29 @@ export async function createEvent(eventData: any): Promise<any> {
 }
 
 /**
+ * updateEvent - zaktualizuj wydarzenie (z autoryzacją)
+ */
+export async function updateEvent(id: string | number, eventData: any): Promise<any> {
+  const response = await fetchWithAuth(`${API_BASE_URL}/events/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(eventData),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({
+      error: "Błąd aktualizacji wydarzenia",
+    }));
+    throw new ApiError(
+      response.status,
+      response.statusText,
+      errorData.error || "Nie udało się zaktualizować wydarzenia",
+    );
+  }
+
+  return await response.json();
+}
+
+/**
  * fetchClients - pobierz klientów (z autoryzacją)
  */
 export async function fetchClients(): Promise<any[]> {

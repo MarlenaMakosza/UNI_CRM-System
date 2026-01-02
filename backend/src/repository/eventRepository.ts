@@ -89,6 +89,19 @@ export async function getTypZdarzeniaId(typNazwa: string): Promise<number> {
 }
 
 /**
+ * Sprawdź czy umowa istnieje
+ * @param {number} umowaId - ID umowy
+ * @returns {Promise<boolean>} - true jeśli umowa istnieje
+ */
+export async function umowaExists(umowaId: number): Promise<boolean> {
+  const result = await sql<{ id: number }[]>`
+    SELECT id FROM umowa WHERE id = ${umowaId} LIMIT 1
+  `;
+
+  return result.length > 0;
+}
+
+/**
  * Dodaj nowe wydarzenie do bazy
  * @param {NewEvent} event - dane nowego wydarzenia
  * @returns {Promise<DbEvent>} - utworzone wydarzenie
