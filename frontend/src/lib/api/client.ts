@@ -29,13 +29,11 @@ async function fetchWithAuth(
 ): Promise<Response> {
   const token = localStorage.getItem("auth_token");
 
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-    ...options.headers,
-  };
+  const headers = new Headers(options.headers);
+  headers.set("Content-Type", "application/json");
 
   if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
+    headers.set("Authorization", `Bearer ${token}`);
   }
 
   return await fetch(url, {
@@ -71,7 +69,7 @@ export async function login(
 
   const data: LoginResponse = await response.json();
 
-  // Zapisz token w localStorage
+  // Zapisz token w localstorage
   localStorage.setItem("auth_token", data.token);
 
   return data;

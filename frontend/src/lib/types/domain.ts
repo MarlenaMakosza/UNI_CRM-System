@@ -2,7 +2,7 @@
 // ENCJE DOMENOWE - odzwierciedlają strukturę z backendu
 // ============================================================================
 
-export type StatusKlienta = "PROSPEKT" | "AKTYWNY" | "NIEAKTYWNY" | "VIP";
+export type StatusKlienta = "PROSPEKT" | "W TRAKCIE" | "AKTYWNY" | "NIEAKTYWNY" | "VIP";
 
 export type Address = {
   ulica: string;
