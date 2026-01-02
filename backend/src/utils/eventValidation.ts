@@ -34,9 +34,13 @@ export function validateCreateEvent(data: CreateEvent): void {
     throw new ValidationError("Missing or empty field: details.opis");
   }
 
-  // Walidacja schedule (opcjonalne)
+  // Walidacja schedule
   if (!data.schedule) {
     throw new ValidationError("Missing required field: schedule");
+  }
+
+  if (!data.schedule.data_planowana || data.schedule.data_planowana.trim() === "") {
+    throw new ValidationError("Missing or empty field: schedule.data_planowana");
   }
 }
 

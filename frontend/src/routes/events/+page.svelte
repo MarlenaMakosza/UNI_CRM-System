@@ -57,10 +57,17 @@
     };
     return labels[typ] || typ;
   }
+
+  function goToNewEvent() {
+    goto("/events/new");
+  }
 </script>
 
 <div class="container">
-  <h1>Lista Wydarzeń</h1>
+  <div class="header">
+    <h1>Lista Wydarzeń</h1>
+    <button class="add-button" onclick={goToNewEvent}>+ Dodaj wydarzenie</button>
+  </div>
 
   {#if loading}
     <p>Ładowanie...</p>
@@ -118,9 +125,38 @@
     padding: 2rem;
   }
 
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
   h1 {
     color: #333;
-    margin-bottom: 2rem;
+    margin: 0;
+  }
+
+  .add-button {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .add-button:hover {
+    background: #5568d3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+  }
+
+  .add-button:active {
+    transform: translateY(0);
   }
 
   .events-list {
