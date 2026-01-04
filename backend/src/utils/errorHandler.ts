@@ -37,6 +37,16 @@ export class ContractNotFoundError extends Error {
 }
 
 /**
+ * Błąd gdy produkt nie został znaleziony w bazie
+ */
+export class ProductNotFoundError extends Error {
+  constructor(public productId: number) {
+    super(`Product with id=${productId} not found`);
+    this.name = "ProductNotFoundError";
+  }
+}
+
+/**
  * Błąd bazy danych - używany gdy PostgreSQL zwraca błąd
  */
 export class DatabaseError extends Error {
@@ -95,6 +105,15 @@ export function handleError(ctx: Context, error: unknown): void {
     ctx.response.status = 404;
     ctx.response.body = {
       error: `Contract with id: ${error.contractId} does not exist`,
+    } satisfies ErrorResponse;
+    return;
+  }
+
+  // 404 - Product nie istnieje
+  if (error instanceof ProductNotFoundError) {
+    ctx.response.status = 404;
+    ctx.response.body = {
+      error: `Product with id: ${error.productId} does not exist`,
     } satisfies ErrorResponse;
     return;
   }

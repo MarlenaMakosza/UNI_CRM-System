@@ -4,6 +4,8 @@ import { authRouter } from "./auth/authController.ts";
 import { clientsRouter } from "./routes/clientsController.ts";
 import { contractsRouter } from "./routes/contractsController.ts";
 import { eventsRouter } from "./routes/eventsController.ts";
+import { productsRouter } from "./routes/productsController.ts";
+import { reportsRouter } from "./routes/reportsController.ts";
 import { healthcheck } from "./routes/health.ts";
 import { requireAuth } from "./auth/authMiddleware.ts";
 
@@ -45,6 +47,10 @@ app.use(contractsRouter.routes());
 app.use(contractsRouter.allowedMethods());
 app.use(eventsRouter.routes());
 app.use(eventsRouter.allowedMethods());
+app.use(productsRouter.routes());
+app.use(productsRouter.allowedMethods());
+app.use(reportsRouter.routes());
+app.use(reportsRouter.allowedMethods());
 app.use(healthcheck.routes());
 app.use(healthcheck.allowedMethods());
 
@@ -70,4 +76,6 @@ console.log(`Check health there -> http://localhost:${PORT}/api/health`);
 console.log(`Check clients there -> http://localhost:${PORT}/api/clients`);
 console.log(`Check contracts there -> http://localhost:${PORT}/api/contracts`);
 console.log(`Check events there -> http://localhost:${PORT}/api/events`);
+console.log(`Check products there -> http://localhost:${PORT}/api/products`);
+console.log(`Check reports there -> http://localhost:${PORT}/api/reports/rep-activity?rep_id=1&from=2025-01-01&to=2025-12-31`);
 await app.listen({ port: PORT });

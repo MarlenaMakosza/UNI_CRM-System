@@ -4,7 +4,6 @@ import {
   mapDbEventToEvent,
 } from "../mappers/eventMapper.ts";
 import {
-  DbUpsertEvent,
   Event, UpsertEvent,
 } from "../types/index.ts";
 import { validateId, ValidationError } from "../utils/clientValidation.ts";
@@ -114,10 +113,5 @@ export async function updateEvent(
  */
 export async function deleteEvent(id: number): Promise<void> {
   validateId(id);
-
-  // Sprawdź, czy istnieje
-  await eventRepo.getEventById(id);
-
-  // Usuń
   await eventRepo.deleteEvent(id);
 }

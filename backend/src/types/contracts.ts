@@ -118,3 +118,12 @@ export type Product = {
   opis: string;
   cena: number; // NUMERIC(12,2) - cena katalogowa
 };
+
+/**
+ * Request dla tworzenia/aktualizacji produktu
+ */
+export type UpsertProduct = {
+  nazwa: string;
+  opis: string;
+  cena: number;
+};

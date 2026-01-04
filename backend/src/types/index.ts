@@ -65,4 +65,13 @@ export type {
   TypUmowy,
   UpsertContract,
   UpsertContractItem,
+  UpsertProduct,
 } from "./contracts.ts";
+
+// Reports
+export type {
+  AgendaItem,
+  ClientTurnover,
+  RepActivity,
+  RepAgenda,
+} from "./reports.ts";
