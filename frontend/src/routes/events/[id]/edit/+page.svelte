@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { fetchEventById, updateEvent, authStore } from "$lib";
   import type { Event, TypZdarzenia, StatusZdarzenia } from "$lib";
 
@@ -21,10 +21,23 @@
   let error = $state("");
 
   onMount(async () => {
-    const eventId = $page.params.id;
+    const eventId = page.params.id;
+
+
+    if (!eventId) {
+      error = "Brak ID zdarzenia w URL";
+      loading = false;
+      return;
+    }
 
     try {
       event = await fetchEventById(eventId);
+
+      if (!event) {
+        error = "Brak zdarzenia o ID {eventId}";
+        loading = false;
+        return;
+      }
 
       // Wypełnij formularz obecnymi danymi
       klientId = String(event.relations.klient_id);
@@ -61,13 +74,19 @@
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 
-  async function handleSubmit(e: Event) {
+  async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
     saving = true;
     error = "";
 
     try {
-      const eventId = $page.params.id;
+      const eventId = page.params.id;
+
+      if (!eventId) {
+        error = "Brak ID wydarzenia";
+        saving = false;
+        return;
+      }
 
       // Walidacja podstawowa
       if (!klientId || !opis || !dataPlanowana) {
@@ -106,7 +125,7 @@
   }
 
   function handleCancel() {
-    const eventId = $page.params.id;
+    const eventId = page.params.id;
     goto(`/events/${eventId}`);
   }
 </script>
@@ -239,9 +258,6 @@
       </div>
 
       <div class="form-actions">
-        <button type="button" class="button-secondary" onclick={handleCancel}>
-          Anuluj
-        </button>
         <button type="submit" class="button-primary" disabled={saving}>
           {saving ? "Zapisywanie..." : "Zapisz zmiany"}
         </button>
@@ -255,159 +271,5 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
-  }
-
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-  }
-
-  h1 {
-    margin: 0;
-    color: #333;
-  }
-
-  .cancel-button {
-    background: #e2e8f0;
-    color: #4a5568;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-  }
-
-  .cancel-button:hover {
-    background: #cbd5e0;
-  }
-
-  .event-form {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .error-message, .error {
-    background: #fee;
-    color: #c53030;
-    padding: 1rem;
-    border-radius: 4px;
-    margin-bottom: 1.5rem;
-    border-left: 4px solid #e53e3e;
-  }
-
-  .form-section {
-    margin-bottom: 2rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid #eee;
-  }
-
-  .form-section:last-of-type {
-    border-bottom: none;
-  }
-
-  .form-section h2 {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    color: #2c5282;
-    font-size: 1.1rem;
-  }
-
-  .form-group {
-    margin-bottom: 1.5rem;
-  }
-
-  .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #4a5568;
-    font-weight: 600;
-    font-size: 0.9rem;
-  }
-
-  .form-group input[type="number"],
-  .form-group input[type="datetime-local"],
-  .form-group select,
-  .form-group textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #cbd5e0;
-    border-radius: 4px;
-    font-size: 1rem;
-    font-family: inherit;
-    transition: border-color 0.2s;
-  }
-
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-  }
-
-  .form-group textarea {
-    resize: vertical;
-  }
-
-  .info-box {
-    background: #e6f7ff;
-    border-left: 4px solid #1890ff;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    border-radius: 4px;
-  }
-
-  .info-box p {
-    margin: 0;
-    color: #0050b3;
-    font-size: 0.9rem;
-  }
-
-  .form-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid #eee;
-  }
-
-  .button-primary,
-  .button-secondary {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .button-primary {
-    background: #667eea;
-    color: white;
-  }
-
-  .button-primary:hover:not(:disabled) {
-    background: #5568d3;
-  }
-
-  .button-primary:disabled {
-    background: #a0aec0;
-    cursor: not-allowed;
-  }
-
-  .button-secondary {
-    background: #e2e8f0;
-    color: #4a5568;
-  }
-
-  .button-secondary:hover {
-    background: #cbd5e0;
   }
 </style>

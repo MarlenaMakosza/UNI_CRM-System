@@ -4,7 +4,7 @@
 
 import { writable } from "svelte/store";
 import type { User } from "../types/auth";
-import * as api from "../api/client";
+import * as api from "../api/fetching.ts";
 
 /**
  * AuthState - stan autoryzacji
