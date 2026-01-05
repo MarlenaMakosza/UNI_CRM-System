@@ -45,12 +45,25 @@ export type RepAgenda = {
 };
 
 /**
- * Obroty z klientem w miesiącach (opcjonalnie)
+ * Obroty miesięczne klienta
+ */
+export type MonthlyTurnover = {
+  miesiac: string; // format: "YYYY-MM"
+  wartosc: number;
+  liczba_umow: number;
+};
+
+/**
+ * Obroty z klientem w miesiącach
  */
 export type ClientTurnover = {
   klient_id: number;
-  obroty_miesieczne: {
-    miesiac: string; // YYYY-MM
-    suma_wartosci: number;
-  }[];
+  klient_nazwa: string;
+  okres: {
+    od: string; // ISO date
+    do: string; // ISO date
+  };
+  suma_obrotow: number;
+  liczba_umow_ogolem: number;
+  miesiace: MonthlyTurnover[];
 };

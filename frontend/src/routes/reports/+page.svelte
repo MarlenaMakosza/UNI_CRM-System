@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { fetchRepActivity, fetchRepAgenda, authStore } from "$lib";
-  import type { RepActivity, RepAgenda } from "$lib";
+  import { fetchRepActivity, fetchRepAgenda, fetchClientTurnover, fetchClients, authStore } from "$lib";
+  import type { RepActivity, RepAgenda, ClientTurnover, Client } from "$lib";
+  import { onMount } from "svelte";
 
   // Raport aktywności
   let activityRepId = $state("");
@@ -17,11 +18,32 @@
   let agendaLoading = $state(false);
   let agendaError = $state("");
 
+  // Obroty klienta
+  let turnoverClientId = $state("");
+  let turnoverFrom = $state("");
+  let turnoverTo = $state("");
+  let turnoverReport = $state<ClientTurnover | null>(null);
+  let turnoverLoading = $state(false);
+  let turnoverError = $state("");
+  let clients = $state<Client[]>([]);
+  let clientsLoading = $state(true);
+
   // Auto-ustaw przedstawiciel_id dla pracownika
   $effect(() => {
     if ($authStore.user && $authStore.user.rola === "pracownik") {
       activityRepId = String($authStore.user.id);
       agendaRepId = String($authStore.user.id);
+    }
+  });
+
+  // Pobierz listę klientów do selecta
+  onMount(async () => {
+    try {
+      clients = await fetchClients();
+    } catch (err) {
+      console.error("Nie udało się pobrać klientów:", err);
+    } finally {
+      clientsLoading = false;
     }
   });
 
@@ -65,6 +87,38 @@
     } finally {
       agendaLoading = false;
     }
+  }
+
+  async function loadTurnover() {
+    if (!turnoverClientId || !turnoverFrom || !turnoverTo) {
+      turnoverError = "Wypełnij wszystkie pola";
+      return;
+    }
+
+    turnoverLoading = true;
+    turnoverError = "";
+
+    try {
+      turnoverReport = await fetchClientTurnover(
+        Number(turnoverClientId),
+        turnoverFrom,
+        turnoverTo
+      );
+    } catch (err) {
+      turnoverError = err instanceof Error ? err.message : "Nieznany błąd";
+      turnoverReport = null;
+    } finally {
+      turnoverLoading = false;
+    }
+  }
+
+  function formatMonth(monthStr: string): string {
+    const [year, month] = monthStr.split("-");
+    const monthNames = [
+      "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
+      "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"
+    ];
+    return `${monthNames[parseInt(month) - 1]} ${year}`;
   }
 
   function formatMoney(amount: number): string {
@@ -243,6 +297,113 @@
       {/if}
     </div>
   </section>
+
+  <!-- OBROTY KLIENTA -->
+  <section class="report-section">
+    <h2>Obroty klienta</h2>
+
+    <div class="form-card">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="turnoverClientId">Klient</label>
+          {#if clientsLoading}
+            <select id="turnoverClientId" disabled>
+              <option>Ładowanie...</option>
+            </select>
+          {:else}
+            <select id="turnoverClientId" bind:value={turnoverClientId}>
+              <option value="">-- Wybierz klienta --</option>
+              {#each clients as client}
+                <option value={client.client_metadata.id}>
+                  {client.company_data.nazwa_firmy} (NIP: {client.company_data.nip})
+                </option>
+              {/each}
+            </select>
+          {/if}
+        </div>
+
+        <div class="form-group">
+          <label for="turnoverFrom">Od</label>
+          <input type="date" id="turnoverFrom" bind:value={turnoverFrom} />
+        </div>
+
+        <div class="form-group">
+          <label for="turnoverTo">Do</label>
+          <input type="date" id="turnoverTo" bind:value={turnoverTo} />
+        </div>
+
+        <div class="form-group">
+          <button
+            class="btn-primary"
+            onclick={loadTurnover}
+            disabled={turnoverLoading}
+          >
+            {turnoverLoading ? "Ładowanie..." : "Pokaż obroty"}
+          </button>
+        </div>
+      </div>
+
+      {#if turnoverError}
+        <div class="error">{turnoverError}</div>
+      {/if}
+
+      {#if turnoverReport}
+        <div class="turnover-header">
+          <h3>
+            <a href="/clients/{turnoverReport.klient_id}" class="client-link">
+              {turnoverReport.klient_nazwa}
+            </a>
+          </h3>
+          <div class="turnover-summary">
+            <div class="summary-item">
+              <span class="summary-label">Suma obrotów:</span>
+              <span class="summary-value highlight">{formatMoney(turnoverReport.suma_obrotow)}</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">Liczba umów:</span>
+              <span class="summary-value">{turnoverReport.liczba_umow_ogolem}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-period">
+          Okres: <strong>{turnoverReport.okres.od}</strong> do <strong>{turnoverReport.okres.do}</strong>
+        </div>
+
+        {#if turnoverReport.miesiace.length === 0}
+          <p class="no-data">Brak umów w wybranym okresie</p>
+        {:else}
+          <div class="turnover-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Miesiąc</th>
+                  <th class="number">Liczba umów</th>
+                  <th class="number">Wartość</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#each turnoverReport.miesiace as month}
+                  <tr>
+                    <td>{formatMonth(month.miesiac)}</td>
+                    <td class="number">{month.liczba_umow}</td>
+                    <td class="number">{formatMoney(month.wartosc)}</td>
+                  </tr>
+                {/each}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td><strong>Razem</strong></td>
+                  <td class="number"><strong>{turnoverReport.liczba_umow_ogolem}</strong></td>
+                  <td class="number"><strong>{formatMoney(turnoverReport.suma_obrotow)}</strong></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        {/if}
+      {/if}
+    </div>
+  </section>
 </div>
 
 <style>
@@ -393,5 +554,62 @@
     color: #999;
     font-size: 13px;
     margin-top: 5px;
+  }
+
+  /* Obroty klienta */
+  .turnover-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  .turnover-header h3 {
+    margin: 0;
+  }
+
+  .turnover-summary {
+    display: flex;
+    gap: 20px;
+  }
+
+  .summary-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .summary-label {
+    color: #666;
+    font-size: 14px;
+  }
+
+  .summary-value {
+    font-weight: bold;
+    font-size: 18px;
+    color: #2c5282;
+  }
+
+  .summary-value.highlight {
+    color: #667eea;
+    font-size: 22px;
+  }
+
+  .turnover-table {
+    margin-top: 20px;
+  }
+
+  .turnover-table .number {
+    text-align: right;
+  }
+
+  .turnover-table tfoot {
+    background: #f5f5f5;
+  }
+
+  .turnover-table tfoot td {
+    border-top: 2px solid #667eea;
   }
 </style>

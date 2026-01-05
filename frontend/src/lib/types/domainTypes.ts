@@ -186,3 +186,25 @@ export type RepAgenda = {
   data: string;
   zdarzenia: AgendaItem[];
 };
+
+// ============================================================================
+// OBROTY KLIENTA (CLIENT TURNOVER)
+// ============================================================================
+
+export type MonthlyTurnover = {
+  miesiac: string; // format: "2024-01"
+  wartosc: number;
+  liczba_umow: number;
+};
+
+export type ClientTurnover = {
+  klient_id: number;
+  klient_nazwa: string;
+  okres: {
+    od: string;
+    do: string;
+  };
+  suma_obrotow: number;
+  liczba_umow_ogolem: number;
+  miesiace: MonthlyTurnover[];
+};

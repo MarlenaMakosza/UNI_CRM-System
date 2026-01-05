@@ -4,6 +4,7 @@ import { handleError } from "../utils/errorHandler.ts";
 import {
   validateRepActivityParams,
   validateRepAgendaParams,
+  validateClientTurnoverParams,
 } from "../utils/reportsValidation.ts";
 
 export const reportsRouter = new Router({ prefix: "/api/reports" });
@@ -59,6 +60,37 @@ reportsRouter.get("/rep-agenda", async (ctx) => {
 
     ctx.response.status = 200;
     ctx.response.body = agenda;
+  } catch (error) {
+    handleError(ctx, error);
+  }
+});
+
+/**
+ * GET /api/reports/client-turnover
+ * Obroty klienta w podziale na miesiące
+ *
+ * Query params:
+ * - client_id: ID klienta (number)
+ * - from: data od (YYYY-MM-DD)
+ * - to: data do (YYYY-MM-DD)
+ */
+reportsRouter.get("/client-turnover", async (ctx) => {
+  try {
+    const clientId = ctx.request.url.searchParams.get("client_id");
+    const from = ctx.request.url.searchParams.get("from");
+    const to = ctx.request.url.searchParams.get("to");
+
+    // Walidacja parametrów
+    const clientIdNumber = validateClientTurnoverParams(clientId, from, to);
+
+    const report = await reportsService.getClientTurnover(
+      clientIdNumber,
+      from!,
+      to!,
+    );
+
+    ctx.response.status = 200;
+    ctx.response.body = report;
   } catch (error) {
     handleError(ctx, error);
   }

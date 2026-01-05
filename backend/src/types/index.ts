@@ -72,6 +72,7 @@ export type {
 export type {
   AgendaItem,
   ClientTurnover,
+  MonthlyTurnover,
   RepActivity,
   RepAgenda,
 } from "./reports.ts";

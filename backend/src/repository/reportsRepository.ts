@@ -130,3 +130,64 @@ export async function getRepAgendaForDay(
 
   return items;
 }
+
+/**
+ * Typ dla danych klienta
+ */
+type DbClientInfo = {
+  nazwa_firmy: string;
+};
+
+/**
+ * Pobierz nazwę klienta
+ * @param klientId - ID klienta
+ */
+export async function getClientName(klientId: number): Promise<string> {
+  const result = await sql<DbClientInfo[]>`
+    SELECT nazwa_firmy
+    FROM klient
+    WHERE id = ${klientId}
+  `;
+
+  return result[0]?.nazwa_firmy || "Nieznany klient";
+}
+
+/**
+ * Typ dla obrotów miesięcznych z bazy
+ */
+type DbMonthlyTurnover = {
+  miesiac: string;
+  wartosc: number;
+  liczba_umow: number;
+};
+
+/**
+ * Pobierz obroty klienta w podziale na miesiące
+ * @param klientId - ID klienta
+ * @param dateFrom - data od (ISO string)
+ * @param dateTo - data do (ISO string)
+ */
+export async function getClientMonthlyTurnover(
+  klientId: number,
+  dateFrom: string,
+  dateTo: string,
+): Promise<DbMonthlyTurnover[]> {
+  const result = await sql<DbMonthlyTurnover[]>`
+    SELECT
+      TO_CHAR(data_od, 'YYYY-MM') as miesiac,
+      SUM(wartosc_umowy) as wartosc,
+      COUNT(*) as liczba_umow
+    FROM umowa
+    WHERE klient_id = ${klientId}
+      AND data_od >= ${dateFrom}
+      AND data_od <= ${dateTo}
+    GROUP BY TO_CHAR(data_od, 'YYYY-MM')
+    ORDER BY miesiac ASC
+  `;
+
+  return result.map((row) => ({
+    miesiac: row.miesiac,
+    wartosc: Number(row.wartosc),
+    liczba_umow: Number(row.liczba_umow),
+  }));
+}

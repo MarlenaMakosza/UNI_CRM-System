@@ -496,3 +496,27 @@ export async function fetchRepAgenda(
 
   return await response.json();
 }
+
+/**
+ * fetchClientTurnover - pobierz obroty klienta
+ */
+export async function fetchClientTurnover(
+  clientId: number,
+  from: string,
+  to: string
+): Promise<any> {
+  const response = await fetchWithAuth(
+    `${API_BASE_URL}/reports/client-turnover?client_id=${clientId}&from=${from}&to=${to}`
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+    throw new ApiError(
+      response.status,
+      response.statusText,
+      errorData.error || "Nie udało się pobrać obrotów klienta",
+    );
+  }
+
+  return await response.json();
+}

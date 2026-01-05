@@ -1,5 +1,11 @@
 import * as reportsRepo from "../repository/reportsRepository.ts";
-import type { AgendaItem, RepActivity, RepAgenda } from "../types/index.ts";
+import type {
+  AgendaItem,
+  RepActivity,
+  RepAgenda,
+  ClientTurnover,
+  MonthlyTurnover,
+} from "../types/index.ts";
 
 /**
  * Pobierz raport aktywności przedstawiciela
@@ -66,5 +72,50 @@ export async function getRepAgenda(
     przedstawiciel_id: przedstawicielId,
     data: date,
     zdarzenia: zdarzenia,
+  };
+}
+
+/**
+ * Pobierz obroty klienta w podziale na miesiące
+ * @param klientId - ID klienta
+ * @param dateFrom - data od (ISO string YYYY-MM-DD)
+ * @param dateTo - data do (ISO string YYYY-MM-DD)
+ */
+export async function getClientTurnover(
+  klientId: number,
+  dateFrom: string,
+  dateTo: string,
+): Promise<ClientTurnover> {
+  // Pobierz nazwę klienta
+  const klientNazwa = await reportsRepo.getClientName(klientId);
+
+  // Pobierz obroty miesięczne
+  const dbMonths = await reportsRepo.getClientMonthlyTurnover(
+    klientId,
+    dateFrom,
+    dateTo,
+  );
+
+  // Mapuj na format API
+  const miesiace: MonthlyTurnover[] = dbMonths.map((m) => ({
+    miesiac: m.miesiac,
+    wartosc: m.wartosc,
+    liczba_umow: m.liczba_umow,
+  }));
+
+  // Oblicz sumy
+  const sumaObrotow = miesiace.reduce((sum, m) => sum + m.wartosc, 0);
+  const liczbaUmowOgolem = miesiace.reduce((sum, m) => sum + m.liczba_umow, 0);
+
+  return {
+    klient_id: klientId,
+    klient_nazwa: klientNazwa,
+    okres: {
+      od: dateFrom,
+      do: dateTo,
+    },
+    suma_obrotow: sumaObrotow,
+    liczba_umow_ogolem: liczbaUmowOgolem,
+    miesiace: miesiace,
   };
 }
