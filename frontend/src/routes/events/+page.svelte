@@ -119,32 +119,30 @@
 </div>
 
 <style>
-
-
   .events-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 1.5rem;
+    gap: 20px;
   }
 
   .event-card {
     border: 1px solid #ddd;
-    padding: 1.5rem;
+    padding: 20px;
     background: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    border-radius: 4px;
   }
 
   .event-card:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    border-color: #2c5282;
+    border-color: #667eea;
+    background: #f9f9f9;
   }
 
   .event-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 1rem;
+    margin-bottom: 15px;
   }
 
   .event-header h3 {
@@ -152,53 +150,40 @@
     color: #2c5282;
   }
 
-  .status-badge {
-    padding: 0.25rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-  }
-
   .event-description {
-    margin: 0.5rem 0 1rem 0;
-    color: #555;
-    font-size: 0.95rem;
-    line-height: 1.4;
+    margin: 10px 0;
+    color: #666;
+    font-size: 14px;
   }
 
   .event-meta {
-    margin: 1rem 0;
-    padding: 0.75rem;
+    margin: 15px 0;
+    padding: 10px;
     background: #f5f5f5;
+    border-radius: 4px;
   }
 
   .event-meta p {
-    margin: 0.25rem 0;
-    font-size: 0.85rem;
+    margin: 5px 0;
+    font-size: 13px;
   }
 
   .event-dates {
-    margin: 1rem 0 0.5rem 0;
+    margin: 15px 0;
   }
 
   .event-dates p {
-    margin: 0.25rem 0;
-    font-size: 0.85rem;
+    margin: 5px 0;
+    font-size: 13px;
     color: #666;
   }
 
   .event-notes {
-    margin-top: 0.75rem;
-    padding: 0.5rem;
-    background: #fff9e6;
-    font-size: 0.85rem;
+    margin-top: 10px;
+    padding: 10px;
+    background: #fffacd;
+    font-size: 13px;
     color: #666;
-  }
-
-  .error {
-    color: red;
-    padding: 1rem;
-    background: #fee;
     border-radius: 4px;
   }
 </style>

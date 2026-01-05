@@ -100,7 +100,7 @@ VALUES ('5678901234', 'FreshMart Sp. z o.o.', 'Michał', 'Kamiński', 'dyrektor 
 -- ===== UMOWY =====
 -- Umowa 1 - Sklep "U Janka"
 INSERT INTO umowa (klient_id, typ_id, przedstawiciel_id, status, data_od, data_do, wartosc_umowy)
-VALUES (1, 1, 1, 'aktywna', '2024-01-01', '2024-12-31', 15000.00);
+VALUES (1, 1, 1, 'Aktywna', '2024-01-01', '2024-12-31', 15000.00);
 
 INSERT INTO pozycja_umowy (umowa_id, produkt_id, ilosc, jednostka, cena_jednostkowa)
 VALUES
@@ -110,7 +110,7 @@ VALUES
 
 -- Umowa 2 - Delikatesy "Smak"
 INSERT INTO umowa (klient_id, typ_id, przedstawiciel_id, status, data_od, data_do, wartosc_umowy)
-VALUES (2, 1, 2, 'aktywna', '2024-02-01', '2024-12-31', 25000.00);
+VALUES (2, 1, 2, 'Aktywna', '2024-02-01', '2024-12-31', 25000.00);
 
 INSERT INTO pozycja_umowy (umowa_id, produkt_id, ilosc, jednostka, cena_jednostkowa)
 VALUES
@@ -121,7 +121,7 @@ VALUES
 
 -- Umowa 3 - "Zdrowa Żywność"
 INSERT INTO umowa (klient_id, typ_id, przedstawiciel_id, status, data_od, data_do, wartosc_umowy)
-VALUES (3, 1, 3, 'aktywna', '2024-03-01', '2024-12-31', 35000.00);
+VALUES (3, 1, 3, 'Aktywna', '2024-03-01', '2024-12-31', 35000.00);
 
 INSERT INTO pozycja_umowy (umowa_id, produkt_id, ilosc, jednostka, cena_jednostkowa)
 VALUES
@@ -190,9 +190,9 @@ VALUES
    'Follow-up', 'Wysłano szczegółową ofertę. Czekamy na decyzję zarządu');
 
 -- ===== DODATKOWE UMOWY DO STATYSTYK =====
--- Umowa z FreshMart (VIP) - w trakcie negocjacji
+-- Umowa z FreshMart (VIP) - wstrzymana (w trakcie negocjacji)
 INSERT INTO umowa (klient_id, typ_id, przedstawiciel_id, status, data_od, wartosc_umowy)
-VALUES (5, 1, 1, 'w negocjacji', '2025-01-01', 0.00);
+VALUES (5, 1, 1, 'Wstrzymana', '2025-01-01', 0.00);
 
 COMMIT;
 

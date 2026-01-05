@@ -71,66 +71,25 @@
 
 <style>
   .welcome-section {
-    margin-bottom: 3rem;
+    margin-bottom: 40px;
   }
 
   h1 {
-    color: #2d3748;
-    font-size: 2rem;
-    margin-bottom: 2rem;
+    color: #333;
+    font-size: 32px;
+    margin-bottom: 30px;
   }
 
   .user-info {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
-  }
-
-  .info-card {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .info-card h3 {
-    margin-top: 0;
-    color: #2d3748;
-    font-size: 1.125rem;
-  }
-
-  .info-card p {
-    margin: 0.5rem 0;
-    color: #4a5568;
+    gap: 20px;
+    margin-top: 30px;
   }
 
   .links-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .quick-link {
-    background: white;
-    padding: 2rem;
-    text-decoration: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-
-  .quick-link:hover {
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  .quick-link h3 {
-    color: #2d3748;
-    margin: 0.5rem 0;
-  }
-
-  .quick-link p {
-    color: #718096;
-    margin: 0;
-    font-size: 0.875rem;
+    gap: 20px;
   }
 </style>

@@ -25,6 +25,23 @@
   function goToNewClient() {
     goto("/clients/new");
   }
+
+  function getStatusBadgeClass(status: string): string {
+    switch (status) {
+      case "PROSPEKT":
+        return "status-prospekt";
+      case "W TRAKCIE":
+        return "status-w-trakcie";
+      case "AKTYWNY":
+        return "status-aktywny";
+      case "NIEAKTYWNY":
+        return "status-nieaktywny";
+      case "VIP":
+        return "status-vip";
+      default:
+        return "";
+    }
+  }
 </script>
 
 <div class="container">

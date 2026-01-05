@@ -34,6 +34,23 @@
   function goToEdit() {
     goto(`/clients/${page.params.id}/edit`);
   }
+
+  function getStatusBadgeClass(status: string): string {
+    switch (status) {
+      case "PROSPEKT":
+        return "status-prospekt";
+      case "W TRAKCIE":
+        return "status-w-trakcie";
+      case "AKTYWNY":
+        return "status-aktywny";
+      case "NIEAKTYWNY":
+        return "status-nieaktywny";
+      case "VIP":
+        return "status-vip";
+      default:
+        return "";
+    }
+  }
 </script>
 
 <div class="container">
@@ -134,7 +151,7 @@
         <div class="info-grid">
           <div class="info-item">
             <span class="label">Status klienta:</span>
-            <span class="value status-badge">{client.status_kod}</span>
+            <span class="status-badge {getStatusBadgeClass(client.status_kod)}">{client.status_kod}</span>
           </div>
         </div>
       </section>

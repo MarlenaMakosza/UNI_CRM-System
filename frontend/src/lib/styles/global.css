@@ -45,7 +45,6 @@ h2 {
 button {
   padding: 10px 20px;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
 }
@@ -98,7 +97,6 @@ button {
   background: #ffeeee;
   color: #cc0000;
   padding: 15px;
-  border-radius: 4px;
   margin-bottom: 15px;
   border-left: 4px solid #cc0000;
 }
@@ -109,7 +107,6 @@ button {
   border-left: 4px solid #1890ff;
   padding: 15px;
   margin-bottom: 15px;
-  border-radius: 4px;
 }
 
 .info-box p {
@@ -125,7 +122,6 @@ button {
   color: #666;
   padding: 30px;
   background: #f5f5f5;
-  border-radius: 4px;
 }
 
 /* Formularze */
@@ -150,7 +146,6 @@ button {
   width: 95%;
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 4px;
   font-size: 14px;
 }
 
@@ -190,7 +185,6 @@ button {
 .product-form {
   background: white;
   border: 1px solid #ddd;
-  border-radius: 4px;
   padding: 20px;
 }
 
@@ -219,54 +213,180 @@ tbody tr:hover {
 
 /* Karty */
 .card,
-.details-card {
+.details-card,
+.info-card {
   border: 1px solid #ddd;
   padding: 20px;
-  border-radius: 4px;
   background: white;
 }
 
+.info-card h3 {
+  margin-top: 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.info-card p {
+  margin: 8px 0;
+  color: #666;
+}
+
+/* Quick links - strona główna */
+.quick-link {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 30px;
+  text-decoration: none;
+  text-align: center;
+  display: block;
+}
+
+.quick-link:hover {
+  border-color: #667eea;
+  background: #f9f9f9;
+}
+
+.quick-link h3 {
+  color: #333;
+  margin: 8px 0;
+}
+
+.quick-link p {
+  color: #666;
+  margin: 0;
+  font-size: 14px;
+}
+
 /* Statusy */
-.badge {
+.badge,
+.status-badge {
   padding: 4px 12px;
   border-radius: 4px;
   font-size: 12px;
   font-weight: bold;
 }
 
+/* Statusy klientów - PROSPEKT (niebieski), W TRAKCIE (pomarańczowy), AKTYWNY (zielony), NIEAKTYWNY (szary), VIP (fioletowy) */
+.status-prospekt {
+  background: #2196f3 !important;
+  color: white !important;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-w-trakcie {
+  background: #ff9800 !important;
+  color: white !important;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-aktywny {
+  background: #4caf50 !important;
+  color: white !important;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-nieaktywny {
+  background: #607d8b !important;
+  color: white !important;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-vip {
+  background: #9c27b0 !important;
+  color: white !important;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Statusy umów - Aktywna (zielony), Zakończona (szary), Anulowana (czerwony), Wstrzymana (pomarańczowy) */
 .status-aktywna {
-  background: #c6f6d5;
-  color: #22543d;
+  background: #4caf50 !important;
+  color: white !important;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .status-zakonczono {
-  background: #e2e8f0;
-  color: #2d3748;
+  background: #607d8b !important;
+  color: white !important;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .status-anulowano {
-  background: #fed7d7;
-  color: #742a2a;
+  background: #f44336 !important;
+  color: white !important;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .status-wstrzymano {
-  background: #feebc8;
-  color: #7c2d12;
+  background: #ff9800 !important;
+  color: white !important;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
+/* Statusy wydarzeń - zaplanowane (niebieski), zrealizowane (zielony), odwołane (czerwony) */
 .status-planned {
-  background: #e3f2fd;
-  color: #1976d2;
+  background: #2196f3 !important;
+  color: white !important;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .status-completed {
-  background: #e8f5e9;
-  color: #388e3c;
+  background: #4caf50 !important;
+  color: white !important;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .status-cancelled {
-  background: #ffebee;
-  color: #d32f2f;
+  background: #f44336 !important;
+  color: white !important;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 /* Info grid */
@@ -350,7 +470,6 @@ tbody tr:hover {
   gap: 15px;
   padding: 15px;
   background: #f7f7f7;
-  border-radius: 4px;
   border: 1px solid #ddd;
 }
 
@@ -382,7 +501,6 @@ tbody tr:hover {
   width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
-  border-radius: 4px;
 }
 
 .field input.readonly-field,
@@ -420,7 +538,6 @@ tbody tr:hover {
   margin-top: 20px;
   padding: 15px;
   background: #f0f0f0;
-  border-radius: 4px;
   display: flex;
   justify-content: space-between;
 }
@@ -458,7 +575,6 @@ tbody tr:hover {
   background: #e6f7ff;
   color: #0066cc;
   font-weight: bold;
-  border-radius: 4px;
 }
 
 /* Utilities */
