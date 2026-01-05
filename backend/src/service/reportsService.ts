@@ -49,6 +49,8 @@ export async function getRepAgenda(
   const zdarzenia: AgendaItem[] = dbItems.map((item) => {
     // Wyciągnij godzinę z timestamp
     const dataPlanowana = new Date(item.data_planowana);
+    // Korekta strefy czasowej (+1 godzina)
+    dataPlanowana.setHours(dataPlanowana.getHours() + 1);
     const godzina = dataPlanowana.toTimeString().substring(0, 5); // HH:MM
 
     return {

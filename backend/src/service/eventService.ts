@@ -16,7 +16,6 @@ import {
  * @param {number} [przedstawicielId] - opcjonalny filtr po ID przedstawiciela (dla pracowników)
  * @returns {Promise<Event[]>} - lista wszystkich wydarzeń
  */
-//TODO Niech backend filtruje po przedstawicielu, które wydarzenia ma przekazać
 export async function listEvents(przedstawicielId?: number): Promise<Event[]> {
   const dbEvents = await eventRepo.getAllEvents(przedstawicielId);
   return dbEvents.map(mapDbEventToEvent);

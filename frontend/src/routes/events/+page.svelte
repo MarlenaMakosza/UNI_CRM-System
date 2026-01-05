@@ -25,6 +25,8 @@
   function formatDate(dateStr: string): string {
     if (!dateStr) return "Brak daty";
     const date = new Date(dateStr);
+    // Korekta strefy czasowej (+1 godzina)
+    date.setHours(date.getHours() + 1);
     return date.toLocaleDateString("pl-PL", {
       year: "numeric",
       month: "long",
