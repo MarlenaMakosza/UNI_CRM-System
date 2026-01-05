@@ -98,11 +98,6 @@
           saving = false;
           return;
         }
-        if (!item.jednostka || item.jednostka.trim() === "") {
-          error = `Pozycja ${i + 1}: Brak jednostki`;
-          saving = false;
-          return;
-        }
         if (!item.cena_jednostkowa || item.cena_jednostkowa <= 0) {
           error = `Pozycja ${i + 1}: Cena musi być większa od 0`;
           saving = false;
@@ -276,14 +271,6 @@
                     step="0.01"
                     required
                   />
-                </div>
-                <div class="field">
-                  <label for="jednostka-{index}">Jednostka <span class="required">*</span></label>
-                  <select id="jednostka-{index}" bind:value={item.jednostka} required>
-                    <option value="kg">kg</option>
-                    <option value="szt">szt</option>
-                    <option value="opakowanie">opakowanie</option>
-                  </select>
                 </div>
                 <div class="field">
                   <label for="cena-{index}">Cena jedn. (PLN)</label>

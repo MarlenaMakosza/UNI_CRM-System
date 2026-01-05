@@ -130,6 +130,27 @@ CREATE TABLE pozycja_umowy (
 );
 
 
+-- Trigger do automatycznego przeliczania wartości umowy
+CREATE OR REPLACE FUNCTION przelicz_wartosc_umowy()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE umowa
+  SET wartosc_umowy = COALESCE((
+    SELECT SUM(ilosc * cena_jednostkowa)
+    FROM pozycja_umowy
+    WHERE umowa_id = COALESCE(NEW.umowa_id, OLD.umowa_id)
+  ), 0)
+  WHERE id = COALESCE(NEW.umowa_id, OLD.umowa_id);
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_przelicz_wartosc_umowy
+AFTER INSERT OR UPDATE OR DELETE ON pozycja_umowy
+FOR EACH ROW
+EXECUTE FUNCTION przelicz_wartosc_umowy();
+
 -- Indeksy dla wydajności
 CREATE INDEX idx_adres_miejscowosc ON adres(miejscowosc);
 CREATE INDEX idx_adres_kod ON adres(kod_pocztowy);

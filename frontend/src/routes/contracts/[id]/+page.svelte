@@ -153,9 +153,9 @@
                 </tr>
               </thead>
               <tbody>
-                {#each contract.items as item}
+                {#each contract.items as item, index}
                   <tr>
-                    <td>{item.item_metadata.id}</td>
+                    <td>{index + 1}</td>
                     <td class="product-name">
                       <a href="/products/{item.product_info.produkt_id}/edit" class="product-link">
                         {item.product_info.nazwa}

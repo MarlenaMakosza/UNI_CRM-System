@@ -41,7 +41,7 @@
       contract = await fetchContractById(contractId);
 
       if (!contract) {
-        error = "Brak umowy o takim ID {contract.id}";
+        error = "Nie znaleziono umowy";
         loading = false;
         return;
       }
@@ -111,10 +111,10 @@
     try {
       const contractId = page.params.id;
 
-      if (!contractId){
-        error = "Nie ma umowy o takim ID {contractId}";
-        loading = false;
-        return
+      if (!contractId) {
+        error = "Brak ID umowy";
+        saving = false;
+        return;
       }
 
       // Walidacja podstawowa
@@ -141,11 +141,6 @@
         }
         if (!item.ilosc || item.ilosc <= 0) {
           error = `Pozycja ${i + 1}: Ilość musi być większa od 0`;
-          saving = false;
-          return;
-        }
-        if (!item.jednostka || item.jednostka.trim() === "") {
-          error = `Pozycja ${i + 1}: Brak jednostki`;
           saving = false;
           return;
         }
@@ -322,14 +317,6 @@
                       step="0.01"
                       required
                     />
-                  </div>
-                  <div class="field">
-                    <label for="edit-jednostka-{index}">Jednostka <span class="required">*</span></label>
-                    <select id="edit-jednostka-{index}" bind:value={item.jednostka} required>
-                      <option value="kg">kg</option>
-                      <option value="szt">szt</option>
-                      <option value="opakowanie">opakowanie</option>
-                    </select>
                   </div>
                   <div class="field">
                     <label for="edit-cena-{index}">Cena jedn. (PLN)</label>
