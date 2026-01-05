@@ -115,20 +115,7 @@
 </div>
 
 <style>
-  /* Wszystkie style w global.css - brak specyficznych styli dla tej strony */
   .container {
     max-width: 700px;
-  }
-
-  .error-message {
-    background: #fee;
-    color: #c53030;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    border-left: 4px solid #e53e3e;
-  }
-
-  .required {
-    color: #e53e3e;
   }
 </style>

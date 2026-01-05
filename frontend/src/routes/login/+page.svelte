@@ -77,67 +77,54 @@
 </div>
 
 <style>
+  /* Strona logowania - specyficzny układ pełnoekranowy */
   .login-container {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #667eea;
-    padding: 1rem;
+    padding: 20px;
   }
 
   .login-card {
     background: white;
-    padding: 3rem;
+    padding: 40px;
     width: 100%;
-    max-width: 420px;
+    max-width: 400px;
   }
 
   h1 {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 10px 0;
     text-align: center;
   }
 
   .subtitle {
-    margin: 0 0 2rem 0;
-    color: gray;
+    margin: 0 0 30px 0;
+    color: #666;
     text-align: center;
-    font-size: 0.875rem;
   }
 
   .login-form {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    gap: 20px;
   }
 
   .login-button {
-    margin-top: 0.5rem;
-    padding: 0.875rem;
-    background: #764ba2;
+    margin-top: 10px;
+    padding: 12px;
+    background: #667eea;
     color: white;
-    border: none;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
+    font-weight: bold;
   }
 
   .login-button:hover {
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    background: #5568d3;
   }
 
+  /* Nadpisanie global .error-message dla wycentrowania */
   .error-message {
-    padding: 0.75rem;
-    background-color: #fed7d7;
-    color: #c53030;
-    border-radius: 6px;
-    font-size: 0.875rem;
     text-align: center;
   }
 </style>

@@ -72,7 +72,7 @@
           </p>
           <p><strong>Email:</strong> {client.contact_person.contact_data.email}</p>
           <p><strong>Telefon:</strong> {client.contact_person.contact_data.telefon}</p>
-          <p><strong>Status:</strong> {client.status_kod}</p>
+          <p><strong>Status:</strong> <span class="status-badge {getStatusBadgeClass(client.status_kod)}">{client.status_kod}</span></p>
         </div>
       {/each}
     </div>
@@ -80,22 +80,22 @@
 </div>
 
 <style>
+  /* Style specyficzne dla listy klientów */
   .clients-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
+    gap: 15px;
   }
 
   .client-card {
     border: 1px solid #ddd;
-    padding: 1.5rem;
+    padding: 15px;
     background: white;
     cursor: pointer;
   }
 
   .client-card:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    border-color: #2c5282;
+    border-color: #667eea;
   }
 
   .client-card h3 {
@@ -104,14 +104,7 @@
   }
 
   .client-card p {
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
-  }
-
-  .error {
-    color: red;
-    padding: 1rem;
-    background: #fee;
-    border-radius: 4px;
+    margin: 5px 0;
+    font-size: 14px;
   }
 </style>

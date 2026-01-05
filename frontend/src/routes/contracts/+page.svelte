@@ -125,56 +125,55 @@
 </div>
 
 <style>
+  /* Style specyficzne dla listy umów */
   .contracts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 15px;
   }
 
   .contract-card {
     background: white;
     border: 1px solid #ddd;
-    padding: 1.5rem;
+    padding: 15px;
     cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
   .contract-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: #667eea;
   }
 
   .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #eee;
   }
 
   .card-header h2 {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: 18px;
     color: #2c5282;
   }
 
   .card-body {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 5px;
   }
 
   .info-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
   }
 
   .card-footer {
-    margin-top: 1rem;
-    padding-top: 0.75rem;
+    margin-top: 10px;
+    padding-top: 10px;
     border-top: 1px solid #eee;
     color: #999;
-    font-size: 0.75rem;
+    font-size: 12px;
   }
 </style>

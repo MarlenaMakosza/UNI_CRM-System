@@ -246,64 +246,51 @@
 </div>
 
 <style>
-  /* Tylko specyficzne style dla raportów - reszta w global.css */
-  h1 {
-    color: #2c5282;
-    margin-bottom: 2rem;
-  }
-
+  /* Style specyficzne dla raportów */
   .report-section {
-    margin-bottom: 3rem;
-  }
-
-  .report-section h2 {
-    color: #2c5282;
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
+    margin-bottom: 40px;
   }
 
   .form-row {
     display: flex;
-    gap: 1rem;
+    gap: 15px;
     align-items: end;
-    margin-bottom: 1.5rem;
+    margin-bottom: 20px;
     flex-wrap: wrap;
   }
 
-  .form-group {
+  .form-row .form-group {
     flex: 1;
     min-width: 150px;
+    margin-bottom: 0;
   }
 
+  /* Karty statystyk */
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
   }
 
   .stat-card {
-    background: white;
-    border: 1px solid white;
-    padding: 1.5rem;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 20px;
     text-align: center;
-  }
-
-  .stat-card:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   .stat-card.highlight {
     background: #667eea;
     color: white;
-    border: none;
+    border-color: #667eea;
   }
 
   .stat-value {
-    font-size: 2rem;
-    font-weight: 700;
+    font-size: 28px;
+    font-weight: bold;
     color: #2c5282;
-    margin-bottom: 0.5rem;
+    margin-bottom: 5px;
   }
 
   .stat-card.highlight .stat-value {
@@ -311,7 +298,7 @@
   }
 
   .stat-label {
-    font-size: 0.875rem;
+    font-size: 13px;
     color: #666;
   }
 
@@ -320,18 +307,18 @@
   }
 
   .report-period {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    background: #edf2f7;
+    margin-top: 20px;
+    padding: 15px;
+    background: #f5f5f5;
     text-align: center;
-    color: #4a5568;
   }
 
+  /* Harmonogram dnia */
   .agenda-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 15px;
   }
 
   .agenda-header h3 {
@@ -342,32 +329,28 @@
   .event-count {
     background: #667eea;
     color: white;
-    padding: 0.25rem 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 600;
+    padding: 5px 10px;
+    font-size: 13px;
+    font-weight: bold;
   }
 
   .agenda-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 10px;
   }
 
   .agenda-item {
     display: flex;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    background: #f7fafc;
+    gap: 15px;
+    padding: 15px;
+    background: #f5f5f5;
     border-left: 4px solid #667eea;
   }
 
-  .agenda-item:hover {
-    background: #edf2f7;
-  }
-
   .time {
-    font-size: 1.25rem;
-    font-weight: 700;
+    font-size: 18px;
+    font-weight: bold;
     color: #667eea;
     min-width: 60px;
   }
@@ -379,40 +362,36 @@
   .event-header {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
+    gap: 10px;
+    margin-bottom: 5px;
   }
 
   .event-type {
-    background: #e2e8f0;
-    color: #2c5282;
-    padding: 0.25rem 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 600;
+    background: #ddd;
+    color: #333;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: bold;
     text-transform: uppercase;
   }
 
   .client-link {
     color: #2c5282;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: color 0.2s;
+    font-weight: bold;
   }
 
   .client-link:hover {
     color: #667eea;
-    text-decoration: underline;
   }
 
   .event-description {
-    margin: 0.5rem 0;
-    color: #4a5568;
+    margin: 5px 0;
+    color: #666;
   }
 
   .event-address {
-    color: #666;
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
+    color: #999;
+    font-size: 13px;
+    margin-top: 5px;
   }
 </style>

@@ -179,7 +179,7 @@
         <div class="info-grid">
           <div class="info-item">
             <span class="label">Klient ID:</span>
-            <a href="/clients/{event.relations.klient_id}" class="value-link">
+            <a href="/clients/{event.relations.klient_id}" class="id-link">
               {event.relations.klient_id}
             </a>
           </div>
@@ -190,7 +190,7 @@
           {#if event.relations.umowa_id !== 0}
             <div class="info-item">
               <span class="label">Umowa ID:</span>
-              <a href="/contracts/{event.relations.umowa_id}" class="value-link">
+              <a href="/contracts/{event.relations.umowa_id}" class="id-link">
                 {event.relations.umowa_id}
               </a>
             </div>
@@ -224,95 +224,54 @@
 </div>
 
 <style>
+  /* Style specyficzne dla szczegółów wydarzenia */
   .container {
     max-width: 900px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-  .section {
-    padding: 1.5rem;
-    border-bottom: 1px solid #eee;
-  }
-
-  .section:last-child {
-    border-bottom: none;
-  }
-
-  .status-badge {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: uppercase;
-  }
-
-  .info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
-  }
-
-  .info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .value-link {
-    font-size: 1rem;
-    color: #2c5282;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    border-bottom: 2px solid transparent;
-    background: rgba(0, 0, 0, 0.03);
-  }
-
-  .value-link:hover {
-    color: #667eea;
-    border-bottom-color: #667eea;
   }
 
   .description {
     margin: 0;
+    padding: 15px;
+    background: #f5f5f5;
     color: #555;
-    font-size: 1rem;
-    line-height: 1.6;
-    padding: 1rem;
-    background: #f9f9f9;
   }
 
   .notes-box {
-    padding: 1rem;
-    background: #fff9e6;
+    padding: 15px;
+    background: #fffacd;
   }
 
   .notes-box p {
     margin: 0;
     color: #666;
-    line-height: 1.6;
   }
 
   .address-box {
-    padding: 1rem;
-    background: #e0e9ff;
+    padding: 15px;
+    background: #e6f0ff;
   }
 
   .address-line {
-    margin: 0.25rem 0;
+    margin: 5px 0;
     color: #333;
-    font-size: 1rem;
-    line-height: 1.6;
   }
 
   .address-line:first-child {
-    font-weight: 600;
+    font-weight: bold;
     color: #2c5282;
   }
 
-  .error {
-    color: red;
-    padding: 1rem;
-    background: #fee;
-    border-radius: 4px;
+  .id-link {
+    display: inline-block;
+    padding: 5px 12px;
+    background: #e6f0ff;
+    color: #2c5282;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .id-link:hover {
+    background: #cce0ff;
   }
 </style>

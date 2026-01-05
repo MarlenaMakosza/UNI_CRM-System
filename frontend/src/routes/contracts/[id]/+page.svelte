@@ -123,7 +123,7 @@
         <div class="info-grid">
           <div class="info-item">
             <span class="label">Klient ID:</span>
-            <a href="/clients/{contract.relations.klient_id}" class="value-link">
+            <a href="/clients/{contract.relations.klient_id}" class="id-link">
               {contract.relations.klient_id}
             </a>
           </div>
@@ -184,29 +184,23 @@
 </div>
 
 <style>
+  /* Style specyficzne dla szczegółów umowy */
   .container {
     max-width: 1000px;
-  }
-
-  .header-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 2rem;
   }
 
   .contract-details {
     background: white;
     border: 1px solid #ddd;
-    overflow: hidden;
   }
 
   .header-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2rem;
-    background: #f7fafc;
-    border-bottom: 1px solid #e2e8f0;
+    padding: 20px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #ddd;
   }
 
   .header-section h1 {
@@ -214,46 +208,23 @@
     color: #2c5282;
   }
 
-  .section {
-    padding: 2rem;
-    border-bottom: 1px solid #e2e8f0;
-  }
-
-  .section:last-child {
-    border-bottom: none;
-  }
-
-  .section h2 {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    color: #2c5282;
-    font-size: 1.25rem;
-  }
-
-  .items-table {
-    overflow-x: auto;
-  }
-
   .product-name {
-    font-weight: 600;
+    font-weight: bold;
     color: #2c5282;
   }
 
   .product-link {
     color: #2c5282;
-    text-decoration: none;
-    font-weight: 600;
-    border-bottom: 2px solid transparent;
+    font-weight: bold;
   }
 
   .product-link:hover {
     color: #667eea;
-    border-bottom-color: #667eea;
   }
 
   .product-desc {
     color: #666;
-    font-size: 0.875rem;
+    font-size: 13px;
   }
 
   .number {
@@ -261,22 +232,35 @@
   }
 
   .total {
-    font-weight: 600;
+    font-weight: bold;
     color: #2c5282;
   }
 
   tfoot {
-    font-weight: 700;
-    background: #f7fafc;
+    font-weight: bold;
+    background: #f5f5f5;
   }
 
   .total-label {
     text-align: right;
-    font-size: 1rem;
   }
 
   .total-value {
-    font-size: 1.125rem;
+    font-size: 16px;
     color: #2c5282;
+  }
+
+  .id-link {
+    display: inline-block;
+    padding: 5px 12px;
+    background: #e6f0ff;
+    color: #2c5282;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .id-link:hover {
+    background: #cce0ff;
   }
 </style>

@@ -80,9 +80,9 @@
         <tbody>
           {#each products as product}
             <tr>
-              <td class="id-col">{product.id}</td>
+              <td>{product.id}</td>
               <td class="name-col">{product.nazwa}</td>
-              <td class="desc-col">{product.opis}</td>
+              <td>{product.opis}</td>
               <td class="price-col">{formatMoney(product.cena)}</td>
               <td class="actions-col">
                 <button
@@ -93,7 +93,7 @@
                   Edytuj
                 </button>
                 <button
-                  class="delete-btn"
+                  class="delete-button"
                   onclick={() => handleDelete(product.id, product.nazwa)}
                   title="Usuń"
                 >
@@ -113,69 +113,31 @@
 </div>
 
 <style>
-  /* Tylko specyficzne style dla tej strony - reszta w global.css */
+  /* Style specyficzne dla tabeli produktów */
   .products-table {
     background: white;
     border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .id-col {
-    width: 60px;
-    color: #718096;
-    font-weight: 600;
   }
 
   .name-col {
-    font-weight: 600;
+    font-weight: bold;
     color: #2c5282;
-  }
-
-  .desc-col {
-    color: #666;
-    max-width: 400px;
   }
 
   .price-col {
-    font-weight: 700;
+    font-weight: bold;
     color: #2c5282;
     text-align: right;
-    width: 120px;
   }
 
   .actions-col {
-    width: 100px;
     text-align: center;
   }
 
-  .delete-btn {
-    margin-top: 1rem;
-    background: red;
-    color: white;
-    border: none;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 0.5rem 1rem;
-  }
-
-  .delete-btn:hover {
-    background: #AA0000;
-    box-shadow: 0 2px 4px rgba(255, 126, 234, 0.3);
-  }
-
   .summary {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: #f7fafc;
-    border-radius: 4px;
+    margin-top: 15px;
+    padding: 15px;
+    background: #f5f5f5;
     text-align: right;
-    color: #4a5568;
-  }
-
-  .summary strong {
-    color: #2c5282;
   }
 </style>

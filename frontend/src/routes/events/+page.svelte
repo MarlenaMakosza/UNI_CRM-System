@@ -119,30 +119,29 @@
 </div>
 
 <style>
+  /* Style specyficzne dla listy wydarzeń */
   .events-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 15px;
   }
 
   .event-card {
     border: 1px solid #ddd;
-    padding: 20px;
+    padding: 15px;
     background: white;
     cursor: pointer;
-    border-radius: 4px;
   }
 
   .event-card:hover {
     border-color: #667eea;
-    background: #f9f9f9;
   }
 
   .event-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
   }
 
   .event-header h3 {
@@ -157,19 +156,14 @@
   }
 
   .event-meta {
-    margin: 15px 0;
+    margin: 10px 0;
     padding: 10px;
     background: #f5f5f5;
-    border-radius: 4px;
   }
 
   .event-meta p {
     margin: 5px 0;
     font-size: 13px;
-  }
-
-  .event-dates {
-    margin: 15px 0;
   }
 
   .event-dates p {
@@ -184,6 +178,5 @@
     background: #fffacd;
     font-size: 13px;
     color: #666;
-    border-radius: 4px;
   }
 </style>

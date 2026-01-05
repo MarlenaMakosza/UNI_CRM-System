@@ -171,19 +171,8 @@
   }
 
   .product-id {
-    background: #f7fafc;
-    padding: 0.75rem;
-    margin-bottom: 1.5rem;
-    color: #4a5568;
-    font-size: 0.9rem;
-  }
-
-  .warning-box {
-    background: #fffbeb;
-    border-left: 4px solid #f59e0b;
-    padding: 1rem;
-    margin-bottom: 2rem;
-    color: #78350f;
-    font-size: 0.9rem;
+    background: #f5f5f5;
+    padding: 10px;
+    margin-bottom: 15px;
   }
 </style>

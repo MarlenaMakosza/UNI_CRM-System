@@ -351,10 +351,4 @@
   .container {
     max-width: 800px;
   }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
 </style>
