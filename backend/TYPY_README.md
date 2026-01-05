@@ -6,7 +6,7 @@
 
 ## Rozwiązanie - 4 proste pliki
 
-### 1. `domain.ts` - Encje z bazy danych
+### 1. `domainTypes.ts` - Encje z bazy danych
 ```typescript
 type Client = {
   id: number;

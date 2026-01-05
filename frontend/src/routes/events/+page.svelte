@@ -119,45 +119,7 @@
 </div>
 
 <style>
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-  }
-
-  h1 {
-    color: #333;
-    margin: 0;
-  }
-
-  .add-button {
-    background: #667eea;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .add-button:hover {
-    background: #5568d3;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
-  }
-
-  .add-button:active {
-    transform: translateY(0);
-  }
 
   .events-list {
     display: grid;
@@ -167,22 +129,15 @@
 
   .event-card {
     border: 1px solid #ddd;
-    border-radius: 8px;
     padding: 1.5rem;
-    background: #fff;
+    background: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     cursor: pointer;
-    transition: all 0.2s ease;
   }
 
   .event-card:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
     border-color: #2c5282;
-  }
-
-  .event-card:active {
-    transform: translateY(0);
   }
 
   .event-header {
@@ -199,25 +154,9 @@
 
   .status-badge {
     padding: 0.25rem 0.75rem;
-    border-radius: 12px;
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
-  }
-
-  .status-planned {
-    background-color: #e3f2fd;
-    color: #1976d2;
-  }
-
-  .status-completed {
-    background-color: #e8f5e9;
-    color: #388e3c;
-  }
-
-  .status-cancelled {
-    background-color: #ffebee;
-    color: #d32f2f;
   }
 
   .event-description {
@@ -231,7 +170,6 @@
     margin: 1rem 0;
     padding: 0.75rem;
     background: #f5f5f5;
-    border-radius: 4px;
   }
 
   .event-meta p {
@@ -253,8 +191,6 @@
     margin-top: 0.75rem;
     padding: 0.5rem;
     background: #fff9e6;
-    border-left: 3px solid #ffc107;
-    border-radius: 4px;
     font-size: 0.85rem;
     color: #666;
   }

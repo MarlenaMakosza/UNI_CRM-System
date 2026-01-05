@@ -63,7 +63,7 @@ The codebase has undergone a type system refactoring to eliminate null confusion
 **Key Principles:**
 - **No nulls in domain types**: Use empty string `""` instead of `null`
 - **Four type categories**:
-  - `domain.ts`: Database entities (Client, Address) - use empty strings
+  - `domainTypes.ts`: Database entities (Client, Address) - use empty strings
   - `requests.ts`: API request types - use `undefined` for optional fields
   - `responses.ts`: API response types
   - `utils.ts`: Conversion utilities (`nullToEmpty`, `undefinedToEmpty`, `isEmpty`)

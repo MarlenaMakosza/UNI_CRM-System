@@ -2,10 +2,11 @@
   import { onMount } from "svelte";
   import { page } from "$app/state";
   import { goto } from "$app/navigation";
-  import { type Event } from "$lib";
-  import { fetchEventById } from "$lib";
+  import { type Event, type ClientDetails } from "$lib";
+  import { fetchEventById, fetchClientById } from "$lib";
 
   let event = $state<Event | null>(null);
+  let client = $state<ClientDetails | null>(null);
   let loading = $state(true);
   let error = $state("");
 
@@ -20,6 +21,16 @@
 
     try {
       event = await fetchEventById(eventId);
+
+      // Jeśli to wizyta, pobierz też dane klienta (z adresem)
+      if (event && event.details.typ_nazwa === "wizyta") {
+        try {
+          client = await fetchClientById(String(event.relations.klient_id));
+        } catch (clientErr) {
+          console.warn("Nie udało się pobrać danych klienta:", clientErr);
+          // Nie przerywamy, wizytę można wyświetlić bez adresu
+        }
+      }
     } catch (err) {
       error = err instanceof Error ? err.message : "Nieznany błąd";
     } finally {
@@ -77,7 +88,7 @@
   <div class="header-buttons">
     <button class="back-button" onclick={goBack}>← Powrót do listy</button>
     {#if event}
-      <button class="edit-button" onclick={goToEdit}>✏️ Edytuj</button>
+      <button class="edit-button" onclick={goToEdit}>Edytuj</button>
     {/if}
   </div>
 
@@ -168,7 +179,9 @@
         <div class="info-grid">
           <div class="info-item">
             <span class="label">Klient ID:</span>
-            <span class="value">{event.relations.klient_id}</span>
+            <a href="/clients/{event.relations.klient_id}" class="value-link">
+              {event.relations.klient_id}
+            </a>
           </div>
           <div class="info-item">
             <span class="label">Przedstawiciel ID:</span>
@@ -177,7 +190,9 @@
           {#if event.relations.umowa_id !== 0}
             <div class="info-item">
               <span class="label">Umowa ID:</span>
-              <span class="value">{event.relations.umowa_id}</span>
+              <a href="/contracts/{event.relations.umowa_id}" class="value-link">
+                {event.relations.umowa_id}
+              </a>
             </div>
           {:else}
             <div class="info-item">
@@ -187,6 +202,23 @@
           {/if}
         </div>
       </section>
+
+      {#if client && event.details.typ_nazwa === "wizyta"}
+        <section class="section">
+          <h2>Adres wizyty</h2>
+          <div class="address-box">
+            <p class="address-line">
+              {client.adres.ulica} {client.adres.numer_budynku}{#if client.adres.numer_lokalu}/{client.adres.numer_lokalu}{/if}
+            </p>
+            <p class="address-line">
+              {client.adres.kod_pocztowy} {client.adres.miejscowosc}
+            </p>
+            <p class="address-line">
+              woj. {client.adres.wojewodztwo}
+            </p>
+          </div>
+        </section>
+      {/if}
     </div>
   {/if}
 </div>
@@ -197,61 +229,6 @@
     margin: 0 auto;
     padding: 2rem;
   }
-
-  .header-buttons {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .back-button {
-    background: #4a5568;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-  }
-
-  .back-button:hover {
-    background: #2d3748;
-  }
-
-  .edit-button {
-    background: #667eea;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
-  }
-
-  .edit-button:hover {
-    background: #5568d3;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
-  }
-
-  .edit-button:active {
-    transform: translateY(0);
-  }
-
-  h1 {
-    color: #333;
-    margin-bottom: 2rem;
-  }
-
-  .details-card {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
   .section {
     padding: 1.5rem;
     border-bottom: 1px solid #eee;
@@ -261,44 +238,11 @@
     border-bottom: none;
   }
 
-  .section h2 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    color: #2c5282;
-    font-size: 1.2rem;
-  }
-
-  .header-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .header-section h2 {
-    margin-bottom: 0;
-  }
-
   .status-badge {
     padding: 0.5rem 1rem;
-    border-radius: 12px;
     font-size: 0.85rem;
     font-weight: 600;
     text-transform: uppercase;
-  }
-
-  .status-planned {
-    background-color: #e3f2fd;
-    color: #1976d2;
-  }
-
-  .status-completed {
-    background-color: #e8f5e9;
-    color: #388e3c;
-  }
-
-  .status-cancelled {
-    background-color: #ffebee;
-    color: #d32f2f;
   }
 
   .info-grid {
@@ -313,20 +257,19 @@
     gap: 0.25rem;
   }
 
-  .label {
-    font-size: 0.85rem;
-    color: #666;
-    font-weight: 600;
-  }
-
-  .value {
+  .value-link {
     font-size: 1rem;
-    color: #333;
+    color: #2c5282;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+    background: rgba(0, 0, 0, 0.03);
   }
 
-  .value.muted {
-    color: #999;
-    font-style: italic;
+  .value-link:hover {
+    color: #667eea;
+    border-bottom-color: #667eea;
   }
 
   .description {
@@ -336,21 +279,34 @@
     line-height: 1.6;
     padding: 1rem;
     background: #f9f9f9;
-    border-radius: 4px;
-    border-left: 4px solid #2c5282;
   }
 
   .notes-box {
     padding: 1rem;
     background: #fff9e6;
-    border-left: 4px solid #ffc107;
-    border-radius: 4px;
   }
 
   .notes-box p {
     margin: 0;
     color: #666;
     line-height: 1.6;
+  }
+
+  .address-box {
+    padding: 1rem;
+    background: #e0e9ff;
+  }
+
+  .address-line {
+    margin: 0.25rem 0;
+    color: #333;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .address-line:first-child {
+    font-weight: 600;
+    color: #2c5282;
   }
 
   .error {

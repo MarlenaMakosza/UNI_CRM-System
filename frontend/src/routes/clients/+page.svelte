@@ -21,10 +21,17 @@
   function openClient(clientId: number) {
     goto(`/clients/${clientId}`);
   }
+
+  function goToNewClient() {
+    goto("/clients/new");
+  }
 </script>
 
 <div class="container">
-  <h1>Lista Klientów CRM</h1>
+  <div class="header">
+    <h1>Lista Klientów CRM</h1>
+    <button class="add-button" onclick={goToNewClient}>+ Dodaj klienta</button>
+  </div>
 
   {#if loading}
     <p>Ładowanie...</p>
@@ -56,17 +63,6 @@
 </div>
 
 <style>
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-
-  h1 {
-    color: #333;
-    margin-bottom: 2rem;
-  }
-
   .clients-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -75,22 +71,14 @@
 
   .client-card {
     border: 1px solid #ddd;
-    border-radius: 8px;
     padding: 1.5rem;
-    background: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: white;
     cursor: pointer;
-    transition: all 0.2s ease;
   }
 
   .client-card:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
     border-color: #2c5282;
-  }
-
-  .client-card:active {
-    transform: translateY(0);
   }
 
   .client-card h3 {

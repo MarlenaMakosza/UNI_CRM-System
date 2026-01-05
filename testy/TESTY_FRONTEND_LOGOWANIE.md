@@ -35,12 +35,12 @@ Frontend będzie dostępny na: `http://localhost:5173` (lub innym porcie wskazan
 frontend/src/
 ├── lib/
 │   ├── api/
-│   │   └── client.ts              # API client - komunikacja z backendem
+│   │   └── fetching.ts              # API client - komunikacja z backendem
 │   ├── stores/
 │   │   └── auth.ts                # Auth store - globalny stan autoryzacji
 │   ├── types/
 │   │   ├── auth.ts                # Typy autoryzacji (User, LoginRequest, etc.)
-│   │   └── domain.ts              # Typy domenowe (ClientSummary, etc.)
+│   │   └── domainTypes.ts              # Typy domenowe (ClientSummary, etc.)
 │   └── index.ts                   # Główny plik eksportów
 ├── routes/
 │   ├── login/
@@ -237,7 +237,7 @@ headers["Authorization"] = `Bearer ${token}`;
 
 ## 📝 KOMPONENTY
 
-### 1. `/lib/api/client.ts`
+### 1. `/lib/api/fetching.ts`
 
 **Funkcje:**
 - `login(credentials)` - logowanie użytkownika
