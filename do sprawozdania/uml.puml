@@ -1,0 +1,133 @@
+@startuml
+  skinparam backgroundColor #FEFEFE
+  skinparam shadowing false
+  skinparam defaultFontName Arial
+  skinparam activity {
+      BackgroundColor #E3F2FD
+      BorderColor #1565C0
+      FontSize 12
+  }
+  skinparam note {
+      BackgroundColor #FFFDE7
+      BorderColor #FBC02D
+  }
+
+  title Proces obsługi kontraktów z kontrahentami
+
+  |#E3F2FD| Pozyskanie klienta |
+  start
+  :Rejestracja klienta;
+  note right
+    **Dane klienta:**
+    • nazwa_firmy
+    • NIP
+    • adres (ulica, nr, kod, miasto)
+    • osoba kontaktowa (telefon, email, imie, nazwisko, stanowisko)
+    • status: prospekt/w_trakcie/
+      aktywny/nieaktywny/vip
+  end note
+
+  |#FFF3E0| Kontakt z klientem |
+  :Planowanie zdarzenia;
+  note right
+    **Dane zdarzenia:**
+    • typ: telefon/wizyta/follow-up/
+      telefon_po_dostawie/newsletter
+    • status zdarzenia (zaplanowane, odwołane, zrealizowane)
+    • data_planowana
+    • opis
+    • notatki
+    • przedstawiciel_id
+    • klient_id
+    • inne opcjonalne pola (umowa, data realizacji)
+  end note
+
+  :Realizacja zdarzenia;
+
+  if (Status zdarzenia?) then (zrealizowane)
+  else (odwołane)
+    :Ponowne planowanie;
+    detach
+  endif
+
+  |#E8F5E9| Tworzenie umowy |
+  :Utworzenie umowy;
+  note right
+    **Dane umowy:**
+    • typ: ramowa/jednorazowa
+    • data_od
+    • data_do (opcjonalne)
+    • klient_id
+    • przedstawiciel_id
+    • status: Aktywna
+  end note
+
+  :Dodanie pozycji umowy;
+  note right
+    **Dane pozycji:**
+    • produkt_id
+    • ilość
+    • cena_jednostkowa
+    ──────────────────
+    wartość = ilość × cena
+  end note
+
+  :Automatyczne obliczenie
+  wartości umowy;
+  note right
+    **Trigger SQL:**
+    wartosc_umowy =
+    SUM(ilosc × cena_jednostkowa)
+  end note
+
+  |#FCE4EC| Realizacja |
+  switch (Status umowy?)
+  case (Aktywna)
+    :Umowa w trakcie realizacji;
+  case (Wstrzymana)
+    :Umowa zawieszona;
+  case (Anulowana)
+    :Umowa odwołana;
+    stop
+  case (Zakończona)
+    :Umowa zrealizowana;
+  endswitch
+
+  :Kontakt po dostawie;
+  note right
+    **Zdarzenie:**
+    • typ: telefon_po_dostawie
+    • aby przeprowadzić ocenę satysfakcji
+  end note
+
+  |#F3E5F5| Raportowanie |
+  fork
+    :Raport aktywności
+    przedstawiciela;
+    note right
+      **Statystyki:**
+      • liczba telefonów
+      • liczba wizyt
+      • liczba umów
+      • suma wartości
+    end note
+  fork again
+    :Raport obrotów
+    klienta;
+    note right
+      **Dane:**
+      • suma obrotów
+      • liczba umów
+      • rozbicie miesięczne
+    end note
+    fork again
+    :Harmonogramy przedstawicieli;
+    note right
+      **Dane:**
+      • harmonogram wizyt poszczególnych pracowników
+    end note
+  end fork
+
+  stop
+
+  @enduml
