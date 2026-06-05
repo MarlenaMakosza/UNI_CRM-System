@@ -1,68 +1,70 @@
-# CRM System - Firma X
+# CRM System
 
-System CRM do zarządzania klientami, umowami i wydarzeniami dla przedstawicieli handlowych.
+> Academic project created for university purposes.
 
-## Wymagania
-- Docker i Docker Compose
+CRM system for managing clients, contracts and events for sales representatives.
 
-## Szybki start (Docker)
+## Requirements
+- Docker and Docker Compose
 
-1. Skopiować plik `.env.example` na `.env`:
+## Quick start (Docker)
+
+1. Copy `.env.example` to `.env`:
 ```shell
 cp .env.example .env
 ```
 
-2. Uruchomić cały system:
+2. Start the whole system:
 ```shell
 docker compose up -d --build
 ```
 
-2a. W przypadku problemów może być konieczne ręczne zainstalowanie zależności.
-W głównym folderze projektu wykonać:
+2a. If you run into issues, you may need to install dependencies manually.
+In the main project folder run:
 
 ```shell
 deno install
 ```
 
-Następnie przejść do folderu `/frontend` i wykonać:
+Then go to the `/frontend` folder and run:
 
 ```shell
 npm install
 ```
 
-3. Otworzyć przeglądarkę:
+3. Open your browser:
    - **Frontend**: http://localhost
    - **Backend API**: http://localhost:8080/api
 
-## Konta testowe
+## Test accounts
 
-| Imię i nazwisko | Rola | Region | Email | Hasło |
-|-----------------|------|--------|-------|-------|
-| Jan Kowalski | Szef | Zielona Góra | jan.kowalski@firmx.pl | password123 |
-| Anna Nowak | Pracownik | Szczecin | anna.nowak@firmx.pl | password123 |
-| Piotr Wiśniewski | Pracownik | Wrocław | piotr.wisniewski@firmx.pl | password123 |
-| Marek Zieliński | Pracownik | Poznań | marek.zielinski@firmx.pl | password123 |
+| Name | Role | Region | Email | Password |
+|------|------|--------|-------|----------|
+| Jan Kowalski | Boss | Zielona Góra | jan.kowalski@firmx.pl | password123 |
+| Anna Nowak | Employee | Szczecin | anna.nowak@firmx.pl | password123 |
+| Piotr Wiśniewski | Employee | Wrocław | piotr.wisniewski@firmx.pl | password123 |
+| Marek Zieliński | Employee | Poznań | marek.zielinski@firmx.pl | password123 |
 
-## Zatrzymanie systemu
+## Stopping the system
 
-Aby zatrzymać system:
+To stop the system:
 ```shell
 docker compose down
 ```
 
-Aby usunąć również dane z bazy:
+To also remove database data:
 ```shell
 docker compose down -v
 ```
 
-## Rozwój lokalny (bez Dockera)
+## Local development
 
 ### Backend (Deno)
 ```shell
-# Uruchomić tylko bazę danych
+# Start only the database
 docker compose up db -d
 
-# Uruchomić backend w trybie dev
+# Start backend in dev mode
 deno task dev
 ```
 
