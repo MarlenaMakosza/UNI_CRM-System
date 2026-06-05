@@ -4,6 +4,8 @@
 
 CRM system for managing clients, contracts and events for sales representatives.
 
+![Dashboard](dashboard.png)
+
 ## Requirements
 - Docker and Docker Compose
 
