@@ -1,78 +1,85 @@
 # CRM System
 
-> Academic project created for university purposes.
-
-CRM system for managing clients, contracts and events for sales representatives.
+A university project. A CRM for managing clients, contracts and events for a small sales team.
 
 ![Dashboard](dashboard.png)
 
+## Tech stack
+
+| Technology | Role |
+|---|---|
+| [Deno](https://deno.land/) + [Oak](https://deno.land/x/oak) | Backend REST API |
+| [SvelteKit](https://kit.svelte.dev/) | Frontend |
+| [PostgreSQL](https://www.postgresql.org/) | Database |
+| [Docker Compose](https://docs.docker.com/compose/) | Local environment |
+| TypeScript | Everywhere |
+
+## Features
+
+- Client database (companies + decision maker contacts)
+- Logging phone calls and scheduling visits
+- Post-visit notes (outcome, competitor prices)
+- Contract recording
+- Follow-up reminders
+- Manager reports: visits, contracts, calls, turnover per client
+
 ## Requirements
-- Docker and Docker Compose
 
-## Quick start (Docker)
+- [Docker](https://www.docker.com/) and Docker Compose
 
-1. Copy `.env.example` to `.env`:
-```shell
+## Quick start
+
+```bash
 cp .env.example .env
-```
-
-2. Start the whole system:
-```shell
 docker compose up -d --build
 ```
 
-2a. If you run into issues, you may need to install dependencies manually.
-In the main project folder run:
-
-```shell
-deno install
-```
-
-Then go to the `/frontend` folder and run:
-
-```shell
-npm install
-```
-
-3. Open your browser:
-   - **Frontend**: http://localhost
-   - **Backend API**: http://localhost:8080/api
+- **Frontend**: http://localhost
+- **Backend API**: http://localhost:8080/api
 
 ## Test accounts
 
-| Name | Role | Region | Email | Password |
-|------|------|--------|-------|----------|
-| Jan Kowalski | Boss | Zielona Góra | jan.kowalski@firmx.pl | password123 |
-| Anna Nowak | Employee | Szczecin | anna.nowak@firmx.pl | password123 |
-| Piotr Wiśniewski | Employee | Wrocław | piotr.wisniewski@firmx.pl | password123 |
-| Marek Zieliński | Employee | Poznań | marek.zielinski@firmx.pl | password123 |
+| Name | Role | Email | Password |
+|------|------|-------|----------|
+| Jan Kowalski | Boss | jan.kowalski@firmx.pl | password123 |
+| Anna Nowak | Employee | anna.nowak@firmx.pl | password123 |
+| Piotr Wiśniewski | Employee | piotr.wisniewski@firmx.pl | password123 |
+| Marek Zieliński | Employee | marek.zielinski@firmx.pl | password123 |
 
 ## Stopping the system
 
-To stop the system:
-```shell
-docker compose down
-```
-
-To also remove database data:
-```shell
-docker compose down -v
+```bash
+docker compose down        # stop
+docker compose down -v     # stop + remove database data
 ```
 
 ## Local development
 
 ### Backend (Deno)
-```shell
-# Start only the database
-docker compose up db -d
 
-# Start backend in dev mode
+```bash
+docker compose up db -d
 deno task dev
 ```
 
 ### Frontend (SvelteKit)
-```shell
+
+```bash
 cd frontend
 npm install
 npm run dev
 ```
+
+## Project structure
+
+```
+backend/      # Deno REST API (Oak)
+frontend/     # SvelteKit app
+db/           # SQL schema, seed data, DB client
+diagrams/     # architecture and DB diagrams
+.postman/     # Postman collection for API testing
+```
+
+## Note on AI assistance
+
+The frontend was developed with the assistance of AI tools (Claude by Anthropic). All code was reviewed, understood, and integrated by the author.
