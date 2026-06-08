@@ -2,6 +2,8 @@
 
 A university project. A CRM for managing clients, contracts and events for a small sales team.
 
+> Last updated: January 2026
+
 ![Dashboard](dashboard.png)
 
 ## Tech stack
